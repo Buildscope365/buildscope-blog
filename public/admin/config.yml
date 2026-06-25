@@ -74,12 +74,18 @@ collections:
         name: "category"
         widget: "select"
         options:
-          - { label: "工程管理", value: "project-management" }
-          - { label: "工料測量", value: "quantity-surveying" }
-          - { label: "合約管理", value: "contract-management" }
+          - { label: "QS 白話文", value: "quantity-surveying" }
+          - { label: "合約與 Claim", value: "contract-management" }
           - { label: "NEC 合約", value: "nec" }
-          - { label: "付款保障", value: "sop" }
+          - { label: "SOP Ordinance", value: "sop" }
+          - { label: "RFI / TQ", value: "rfi-tq" }
+          - { label: "EOT / LAD", value: "eot-lad" }
+          - { label: "VO / Payment Claim", value: "vo-payment" }
           - { label: "地盤管理", value: "site-management" }
+          - { label: "工程技術", value: "construction-technology" }
+          - { label: "AI 工程工具", value: "ai-tools" }
+          - { label: "工程案例", value: "case-studies" }
+          - { label: "工程管理", value: "project-management" }
 
       - label: "標籤"
         name: "tags"
