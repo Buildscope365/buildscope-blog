@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { CATEGORIES } from '../../data/site';
+
+export function getStaticPaths() {
+  return CATEGORIES.map((category) => ({ params: { category: category.slug }, props: { category } }));
+}
+const { category } = Astro.props;
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.category === category.slug))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout title={category.name} description={`${category.description}｜BuildScope ${category.name}文章分類`}>
+  <header class="blueprint-grid border-b border-white/10 py-16 md:py-24">
+    <div class="container-shell grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+      <div>
+        <p class="eyebrow">Category / {category.code}</p>
+        <h1 class="section-title mt-6">{category.name}</h1>
+        <p class="mt-5 max-w-2xl text-lg leading-8 text-steel-300">{category.description}</p>
+      </div>
+      <div class="text-7xl font-black text-white/[.06] md:text-9xl">{category.code}</div>
+    </div>
+  </header>
+  <section class="container-shell py-14 md:py-20">
+    <div class="mb-8 flex items-center justify-between">
+      <p class="text-sm text-steel-400">共 {posts.length} 篇文章</p>
+      <a href="/blog/" class="text-sm font-black text-signal-orange hover:text-white">全部文章 →</a>
+    </div>
+    {posts.length > 0 ? (
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{posts.map((post) => <PostCard post={post} />)}</div>
+    ) : (
+      <div class="border border-dashed border-white/15 px-6 py-20 text-center text-steel-300">文章正在整理中。</div>
+    )}
+  </section>
+</BaseLayout>

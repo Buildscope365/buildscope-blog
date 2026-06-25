@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const templates = [
+  { type: 'DOCX', title: 'Early Warning 通知框架', desc: '協助整理現況、風險、潛在影響及建議行動。', status: '即將推出' },
+  { type: 'XLSX', title: 'Variation Register', desc: '集中管理指示、報價、金額、進度影響與狀態。', status: '即將推出' },
+  { type: 'DOCX', title: 'Site Meeting Minutes', desc: '以行動、責任人和限期為核心的會議紀錄格式。', status: '即將推出' },
+  { type: 'PDF', title: '付款申索檢查表', desc: '發出付款文件前的程序與證明文件執漏清單。', status: '即將推出' },
+];
+---
+<BaseLayout title="工程範本" description="適合香港工程、QS、PM 與合約管理工作的實用文件範本。">
+  <header class="blueprint-grid border-b border-white/10 py-16 md:py-24">
+    <div class="container-shell">
+      <p class="eyebrow">Work Smarter</p>
+      <h1 class="section-title mt-6">工程文件範本</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-8 text-steel-300">不是空白表格，而是把實務思路放進文件結構。以下為預告內容，正式下載版本將陸續上架。</p>
+    </div>
+  </header>
+  <section class="container-shell py-16 md:py-20">
+    <div class="grid gap-5 md:grid-cols-2">
+      {templates.map((template) => (
+        <article class="card-surface p-7 md:p-9">
+          <div class="flex items-start justify-between gap-4">
+            <span class="border border-signal-orange/40 bg-signal-orange/8 px-3 py-2 font-mono text-xs font-black text-signal-orange">{template.type}</span>
+            <span class="text-xs text-steel-400">{template.status}</span>
+          </div>
+          <h2 class="mt-10 text-2xl font-black">{template.title}</h2>
+          <p class="mt-4 text-sm leading-7 text-steel-300">{template.desc}</p>
+          <a href="/contact/" class="mt-8 inline-block text-sm font-black text-signal-orange hover:text-white">通知我上架 →</a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

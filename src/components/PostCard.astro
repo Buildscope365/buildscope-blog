@@ -1,0 +1,52 @@
+---
+import CategoryBadge from './CategoryBadge.astro';
+import { getCategory } from '../data/site';
+const { post, featured = false } = Astro.props;
+const category = getCategory(post.data.category);
+const date = post.data.date.toLocaleDateString('zh-HK', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+<article
+  class:list={[
+    'group card-surface relative overflow-hidden rounded-sm transition duration-300 hover:-translate-y-1 hover:border-signal-orange/45',
+    featured ? 'grid min-h-[27rem] lg:grid-cols-[1.1fr_.9fr]' : 'flex h-full flex-col',
+  ]}
+>
+  <div
+    class:list={[
+      'blueprint-grid relative overflow-hidden',
+      featured ? 'min-h-64 lg:min-h-full' : 'h-52',
+      post.data.heroAccent === 'red' ? 'bg-[#401a20]' : post.data.heroAccent === 'blue' ? 'bg-[#12304e]' : 'bg-[#302318]',
+    ]}
+  >
+    {post.data.coverImage && (
+      <img
+        src={post.data.coverImage}
+        alt=""
+        loading={featured ? 'eager' : 'lazy'}
+        class="absolute inset-0 size-full object-cover opacity-70 transition duration-500 group-hover:scale-105"
+      />
+    )}
+    <div class="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-ink-950/75"></div>
+    <div class="absolute -right-12 -top-12 size-48 rotate-12 border-[24px] border-white/5"></div>
+    {!post.data.coverImage && <div class="absolute bottom-5 left-5 font-mono text-6xl font-black text-white/10">{category.code}</div>}
+    <div class="absolute right-5 top-5 grid size-12 place-items-center border border-white/20 text-xl text-white/60">↗</div>
+  </div>
+  <div class:list={['flex flex-1 flex-col', featured ? 'p-7 md:p-10' : 'p-6']}>
+    <CategoryBadge label={category.name} slug={category.slug} />
+    <h3 class:list={['text-balance mt-5 font-black leading-tight tracking-[-.035em] text-white group-hover:text-signal-orange', featured ? 'text-3xl md:text-4xl' : 'text-xl']}>
+      <a href={`/blog/${post.id}/`} class="after:absolute after:inset-0">{post.data.title}</a>
+    </h3>
+    <p class="mt-4 line-clamp-3 text-sm leading-7 text-steel-300">{post.data.description}</p>
+    <div class="mt-auto flex items-center gap-3 pt-7 text-xs text-steel-400">
+      <time datetime={post.data.date.toISOString()}>{date}</time>
+      <span>•</span>
+      <span>{post.data.readingTime}</span>
+      <span>•</span>
+      <span>{post.data.difficulty}</span>
+    </div>
+  </div>
+</article>

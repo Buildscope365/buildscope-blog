@@ -1,0 +1,10 @@
+---
+const { title = 'BuildScope 提提你', tone = 'orange' } = Astro.props;
+---
+<aside class:list={[
+  'my-8 border-l-4 p-5',
+  tone === 'red' ? 'border-signal-red bg-signal-red/8' : 'border-signal-orange bg-signal-orange/8',
+]}>
+  <p class="!mt-0 text-sm font-black text-white">{title}</p>
+  <div class="mt-2 text-sm leading-7 text-steel-300"><slot /></div>
+</aside>

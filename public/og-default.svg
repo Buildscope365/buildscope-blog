@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#25405d" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="glow" x1="0" x2="1">
+      <stop stop-color="#ff8a1f"/>
+      <stop offset="1" stop-color="#ff3d2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#081526"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity=".38"/>
+  <circle cx="1060" cy="70" r="310" fill="#102a44"/>
+  <path d="M925 0h275v275L925 0Z" fill="url(#glow)" opacity=".92"/>
+  <rect x="72" y="70" width="88" height="12" rx="6" fill="#ff6a2a"/>
+  <text x="72" y="188" fill="#fff" font-family="Arial, sans-serif" font-size="78" font-weight="800">工程白話文</text>
+  <text x="72" y="275" fill="#fff" font-family="Arial, sans-serif" font-size="78" font-weight="800">BuildScope</text>
+  <text x="76" y="354" fill="#9fb4c9" font-family="Arial, sans-serif" font-size="31">香港工程 · QS · PM · 合約 · NEC · SOP</text>
+  <path d="M72 470h740" stroke="#25405d" stroke-width="2"/>
+  <text x="72" y="535" fill="#ff8a1f" font-family="Arial, sans-serif" font-size="28" font-weight="700">把複雜工程知識，講到人人都明。</text>
+</svg>

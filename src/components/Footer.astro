@@ -1,0 +1,37 @@
+---
+import Logo from './Logo.astro';
+import { CATEGORIES } from '../data/site';
+---
+<footer class="border-t border-white/10 bg-ink-950">
+  <div class="container-shell grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
+    <div class="lg:col-span-2">
+      <Logo />
+      <p class="mt-6 max-w-md text-sm leading-7 text-steel-300">
+        為香港工程、QS、PM 及建造業從業員而設的白話知識平台。把艱深條文、流程與地盤經驗，整理成真正用得着的內容。
+      </p>
+    </div>
+    <div>
+      <p class="text-xs font-black tracking-[.18em] text-signal-orange">知識分類</p>
+      <ul class="mt-5 grid gap-3 text-sm text-steel-300">
+        {CATEGORIES.slice(0, 5).map((category) => (
+          <li><a class="hover:text-white" href={`/category/${category.slug}/`}>{category.name}</a></li>
+        ))}
+      </ul>
+    </div>
+    <div>
+      <p class="text-xs font-black tracking-[.18em] text-signal-orange">網站</p>
+      <ul class="mt-5 grid gap-3 text-sm text-steel-300">
+        <li><a class="hover:text-white" href="/about/">關於 BuildScope</a></li>
+        <li><a class="hover:text-white" href="/contact/">聯絡我們</a></li>
+        <li><a class="hover:text-white" href="/rss.xml">RSS 訂閱</a></li>
+        <li><a class="hover:text-white" href="/sitemap-index.xml">Sitemap</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/8">
+    <div class="container-shell flex flex-col gap-2 py-6 text-xs text-steel-400 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {new Date().getFullYear()} 工程白話文 BuildScope</p>
+      <p>香港製作 · 為工程人說人話</p>
+    </div>
+  </div>
+</footer>

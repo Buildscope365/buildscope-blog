@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+
+const resources = [
+  { code: '01', title: '工程術語速查', text: '用白話理解常見 QS、PM、合約及地盤術語。', href: '/blog/', label: '瀏覽文章' },
+  { code: '02', title: '合約通知檢查表', text: '發出通知前核對時限、收件人、送達方式及附件紀錄。', href: '/templates/', label: '查看範本' },
+  { code: '03', title: 'Variation 管理框架', text: '由潛在變更到議價完成，建立可追蹤的項目紀錄。', href: '/blog/variation-records/', label: '閱讀指南' },
+  { code: '04', title: '付款申索清單', text: 'QS 發出付款申索前的快速執漏流程。', href: '/blog/payment-claim-checklist/', label: '閱讀指南' },
+];
+---
+<BaseLayout title="免費資源" description="BuildScope 為香港工程從業員整理的免費指南、檢查表與知識資源。">
+  <header class="blueprint-grid border-b border-white/10 py-18 md:py-28">
+    <div class="container-shell">
+      <p class="eyebrow">Practical Resources</p>
+      <h1 class="display-title mt-7 max-w-5xl !text-[clamp(3rem,8vw,6rem)]">少啲重複犯錯，<br /><span class="text-signal-orange">多啲即拎即用。</span></h1>
+      <p class="mt-7 max-w-2xl text-lg leading-8 text-steel-300">為日常工程管理整理的實用入口。內容會持續更新。</p>
+    </div>
+  </header>
+  <section class="container-shell py-20">
+    <SectionHeading eyebrow="Resource Index" title="免費知識工具" />
+    <div class="mt-12 grid gap-px border border-white/10 bg-white/10 md:grid-cols-2">
+      {resources.map((item) => (
+        <article class="group bg-ink-900 p-7 hover:bg-ink-800 md:p-10">
+          <span class="font-mono text-xs text-signal-red">RES / {item.code}</span>
+          <h2 class="mt-9 text-2xl font-black group-hover:text-signal-orange">{item.title}</h2>
+          <p class="mt-4 max-w-lg text-sm leading-7 text-steel-300">{item.text}</p>
+          <a href={item.href} class="mt-8 inline-block text-sm font-black text-white hover:text-signal-orange">{item.label} →</a>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

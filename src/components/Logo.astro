@@ -1,0 +1,15 @@
+---
+const { compact = false } = Astro.props;
+---
+<a href="/" class="group inline-flex items-center gap-3" aria-label="工程白話文 BuildScope 首頁">
+  <span class="relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-sm bg-white text-lg font-black text-ink-900">
+    B
+    <span class="absolute -right-2 -top-2 size-5 rotate-45 bg-signal-red"></span>
+  </span>
+  {!compact && (
+    <span class="leading-none">
+      <span class="block text-[.68rem] font-bold tracking-[.22em] text-steel-300">工程白話文</span>
+      <span class="mt-1 block text-lg font-black tracking-tight text-white group-hover:text-signal-orange">BuildScope</span>
+    </span>
+  )}
+</a>

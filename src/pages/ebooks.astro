@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="電子書" description="BuildScope 香港工程、合約管理、NEC、SOP 及地盤實務電子書。">
+  <header class="blueprint-grid border-b border-white/10 py-16 md:py-24">
+    <div class="container-shell">
+      <p class="eyebrow">BuildScope Editions</p>
+      <h1 class="section-title mt-6">工程白話電子書</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-8 text-steel-300">把系列文章重新整理成有脈絡、可保存、方便團隊培訓的專題指南。</p>
+    </div>
+  </header>
+  <section class="container-shell py-16 md:py-24">
+    <article class="grid overflow-hidden border border-white/10 bg-ink-800 lg:grid-cols-[.8fr_1.2fr]">
+      <div class="blueprint-grid relative min-h-[30rem] bg-[#2c2018] p-8">
+        <div class="absolute inset-8 border border-signal-orange/35"></div>
+        <div class="relative flex h-full flex-col justify-between">
+          <span class="font-mono text-xs tracking-[.18em] text-signal-orange">BUILDSCOPE / EDITION 01</span>
+          <div>
+            <p class="text-6xl font-black leading-none text-white/12">NEC</p>
+            <h2 class="mt-5 text-4xl font-black leading-tight">由 Early Warning 到 Compensation Event</h2>
+          </div>
+          <p class="text-sm font-bold text-steel-300">香港工程團隊白話實務指南</p>
+        </div>
+      </div>
+      <div class="flex flex-col justify-center p-8 md:p-12 lg:p-16">
+        <p class="eyebrow">Coming Soon</p>
+        <h2 class="mt-6 text-3xl font-black tracking-tight md:text-5xl">第一本專題正在施工中。</h2>
+        <p class="mt-6 max-w-xl text-base leading-8 text-steel-300">涵蓋通知時機、風險會議、紀錄方法、常見誤解及現場溝通框架。內容將以一般教育用途編寫，並提醒讀者按實際合約版本核對。</p>
+        <a href="/contact/" class="button-primary mt-9 self-start">登記出版通知 →</a>
+      </div>
+    </article>
+  </section>
+</BaseLayout>

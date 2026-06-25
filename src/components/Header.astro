@@ -1,0 +1,65 @@
+---
+import Logo from './Logo.astro';
+
+const path = Astro.url.pathname;
+const links = [
+  { href: '/blog/', label: '文章' },
+  { href: '/resources/', label: '資源' },
+  { href: '/templates/', label: '範本' },
+  { href: '/ebooks/', label: '電子書' },
+  { href: '/about/', label: '關於' },
+];
+---
+<header class="sticky top-0 z-50 border-b border-white/8 bg-ink-900/88 backdrop-blur-xl">
+  <div class="container-shell flex h-[4.75rem] items-center justify-between">
+    <Logo />
+    <nav class="hidden items-center gap-7 lg:flex" aria-label="主要導覽">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'text-sm font-bold transition-colors hover:text-signal-orange',
+            path.startsWith(link.href) ? 'text-signal-orange' : 'text-steel-300',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+      <a href="/contact/" class="button-primary !min-h-10 !px-4">聯絡我們</a>
+    </nav>
+    <button
+      id="menu-toggle"
+      class="grid size-11 place-items-center rounded-sm border border-white/15 lg:hidden"
+      aria-label="開啟選單"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="space-y-1.5" aria-hidden="true">
+        <span class="block h-0.5 w-5 bg-white"></span>
+        <span class="block h-0.5 w-5 bg-white"></span>
+        <span class="block h-0.5 w-5 bg-white"></span>
+      </span>
+    </button>
+  </div>
+  <nav id="mobile-menu" class="container-shell hidden border-t border-white/8 py-4 lg:hidden" aria-label="手機導覽">
+    <div class="grid gap-1">
+      {links.map((link) => (
+        <a href={link.href} class="rounded-sm px-3 py-3 text-base font-bold text-steel-300 hover:bg-white/5 hover:text-white">
+          {link.label}
+        </a>
+      ))}
+      <a href="/contact/" class="button-primary mt-2">聯絡我們</a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('#menu-toggle');
+  const menu = document.querySelector<HTMLElement>('#mobile-menu');
+  toggle?.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    toggle.setAttribute('aria-label', isOpen ? '開啟選單' : '關閉選單');
+    menu?.classList.toggle('hidden');
+  });
+</script>

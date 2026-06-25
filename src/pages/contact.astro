@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site';
+---
+<BaseLayout title="聯絡我們" description="聯絡工程白話文 BuildScope，提出內容建議、合作或工程知識題目。">
+  <header class="blueprint-grid border-b border-white/10 py-16 md:py-24">
+    <div class="container-shell">
+      <p class="eyebrow">Get In Touch</p>
+      <h1 class="section-title mt-6">一齊把工程講清楚。</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-8 text-steel-300">內容建議、合作邀請、錯誤更正，或你想我們拆解的工程問題，都可以留言。</p>
+    </div>
+  </header>
+  <section class="container-shell grid gap-12 py-16 lg:grid-cols-[.75fr_1.25fr] lg:py-24">
+    <div>
+      <p class="text-xs font-black tracking-[.16em] text-signal-orange">直接聯絡</p>
+      <a href={`mailto:${SITE.email}`} class="mt-4 block text-xl font-black hover:text-signal-orange">{SITE.email}</a>
+      <div class="mt-12 border-l-2 border-signal-red pl-5">
+        <p class="text-sm leading-7 text-steel-300">BuildScope 內容只供一般教育及資訊用途，不構成法律、合約、工程或其他專業意見。</p>
+      </div>
+    </div>
+    <form
+      name="contact"
+      method="POST"
+      action="/thank-you/"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      class="card-surface grid gap-6 p-6 md:p-10"
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      <p class="hidden"><label>請勿填寫：<input name="bot-field" /></label></p>
+      <div class="grid gap-6 sm:grid-cols-2">
+        <label class="grid gap-2 text-sm font-bold">姓名
+          <input class="min-h-12 border border-white/15 bg-ink-950 px-4 text-white placeholder:text-steel-400 focus:border-signal-orange" type="text" name="name" autocomplete="name" required />
+        </label>
+        <label class="grid gap-2 text-sm font-bold">電郵
+          <input class="min-h-12 border border-white/15 bg-ink-950 px-4 text-white placeholder:text-steel-400 focus:border-signal-orange" type="email" name="email" autocomplete="email" required />
+        </label>
+      </div>
+      <label class="grid gap-2 text-sm font-bold">主題
+        <select class="min-h-12 border border-white/15 bg-ink-950 px-4 text-white focus:border-signal-orange" name="topic">
+          <option>內容題目建議</option><option>合作邀請</option><option>錯誤更正</option><option>其他</option>
+        </select>
+      </label>
+      <label class="grid gap-2 text-sm font-bold">訊息
+        <textarea class="min-h-44 border border-white/15 bg-ink-950 p-4 text-white focus:border-signal-orange" name="message" required></textarea>
+      </label>
+      <button class="button-primary justify-self-start" type="submit">送出訊息 →</button>
+    </form>
+  </section>
+</BaseLayout>

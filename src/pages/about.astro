@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="關於我們" description="認識工程白話文 BuildScope：為香港建造業拆解複雜工程知識。">
+  <header class="blueprint-grid border-b border-white/10 py-18 md:py-28">
+    <div class="container-shell grid gap-12 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
+      <div>
+        <p class="eyebrow">About BuildScope</p>
+        <h1 class="display-title mt-7 !text-[clamp(3rem,8vw,6.2rem)]">專業不等於<br /><span class="text-signal-orange">一定要難明。</span></h1>
+      </div>
+      <p class="max-w-xl text-lg leading-9 text-steel-300">BuildScope 相信，工程知識只有被理解、被討論、被正確應用，才真正有價值。</p>
+    </div>
+  </header>
+  <section class="container-shell grid gap-14 py-20 lg:grid-cols-[.75fr_1.25fr]">
+    <div>
+      <p class="font-mono text-sm text-signal-red">WHY / 01</p>
+      <h2 class="mt-5 text-3xl font-black">我們為甚麼開始</h2>
+    </div>
+    <div class="space-y-6 text-base leading-8 text-steel-300">
+      <p>香港建造業有大量寶貴經驗，但知識往往散落在合約條文、公司程序、前輩口述和無數電郵之中。新入行的人不知道從哪裏問，資深同事亦未必有時間重新解釋。</p>
+      <p>工程白話文 BuildScope 希望建立一個可靠、清楚、貼近香港工作場景的知識平台。我們會拆解概念、指出程序風險，亦會誠實區分一般教育內容與需要專業意見的個別情況。</p>
+    </div>
+  </section>
+  <section class="border-y border-white/10 bg-ink-950/50">
+    <div class="container-shell grid gap-px bg-white/10 md:grid-cols-3">
+      {[
+        ['01', '講人話', '先說清問題，再解釋術語。'],
+        ['02', '重實務', '每篇內容都連結到工作中的下一步。'],
+        ['03', '守界線', '不把一般資訊包裝成個別法律或專業意見。'],
+      ].map(([number, title, text]) => (
+        <div class="bg-ink-900 px-7 py-12">
+          <span class="font-mono text-xs text-signal-orange">{number}</span>
+          <h3 class="mt-8 text-2xl font-black">{title}</h3>
+          <p class="mt-4 text-sm leading-7 text-steel-300">{text}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+  <section class="container-shell py-20 text-center">
+    <h2 class="section-title">有題目想我們拆解？</h2>
+    <p class="mx-auto mt-5 max-w-2xl text-steel-300">歡迎提出你在合約、QS、PM 或地盤管理上經常遇到的問題。</p>
+    <a href="/contact/" class="button-primary mt-8">聯絡 BuildScope →</a>
+  </section>
+</BaseLayout>

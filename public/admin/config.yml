@@ -1,0 +1,137 @@
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: "content: 新增 {{collection}}「{{slug}}」"
+    update: "content: 更新 {{collection}}「{{slug}}」"
+    delete: "content: 刪除 {{collection}}「{{slug}}」"
+    uploadMedia: "media: 上傳「{{path}}」"
+    deleteMedia: "media: 刪除「{{path}}」"
+
+site_url: "https://buildscope.hk"
+display_url: "https://buildscope.hk"
+logo:
+  src: "/favicon.svg"
+  show_in_header: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+publish_mode: simple
+show_preview_links: true
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: "blog"
+    label: "文章"
+    label_singular: "文章"
+    description: "管理 BuildScope Blog 文章。儲存後會提交到 Git repository，並觸發 Netlify 重新部署。"
+    folder: "src/content/blog"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    preview_path: "blog/{{slug}}/"
+    summary: "{{date}}｜{{title}}"
+    sortable_fields: ["date", "title", "author", "category"]
+    view_groups:
+      - label: "分類"
+        field: "category"
+      - label: "難度"
+        field: "difficulty"
+    view_filters:
+      - label: "精選文章"
+        field: "featured"
+        pattern: true
+      - label: "草稿"
+        field: "draft"
+        pattern: true
+    editor:
+      preview: true
+    fields:
+      - label: "標題"
+        name: "title"
+        widget: "string"
+
+      - label: "文章簡介"
+        name: "description"
+        widget: "text"
+        hint: "用於搜尋結果、文章卡及社交分享描述，建議 80–160 字。"
+
+      - label: "發布日期"
+        name: "date"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD"
+
+      - label: "分類"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "工程管理", value: "project-management" }
+          - { label: "工料測量", value: "quantity-surveying" }
+          - { label: "合約管理", value: "contract-management" }
+          - { label: "NEC 合約", value: "nec" }
+          - { label: "付款保障", value: "sop" }
+          - { label: "地盤管理", value: "site-management" }
+
+      - label: "標籤"
+        name: "tags"
+        widget: "list"
+        allow_add: true
+        collapsed: false
+        field:
+          label: "標籤"
+          name: "tag"
+          widget: "string"
+
+      - label: "封面圖片"
+        name: "coverImage"
+        widget: "image"
+        required: false
+        hint: "建議使用 1600 × 900 或相同比例圖片；檔案會上傳到 public/images/uploads。"
+
+      - label: "作者"
+        name: "author"
+        widget: "string"
+        default: "BuildScope 編輯部"
+
+      - label: "難度"
+        name: "difficulty"
+        widget: "select"
+        default: "入門"
+        options: ["入門", "進階", "專業"]
+
+      - label: "閱讀時間"
+        name: "readingTime"
+        widget: "string"
+        default: "5 分鐘"
+
+      - label: "精選文章"
+        name: "featured"
+        widget: "boolean"
+        default: false
+
+      - label: "草稿"
+        name: "draft"
+        widget: "boolean"
+        default: false
+
+      - label: "卡片重點色"
+        name: "heroAccent"
+        widget: "select"
+        default: "orange"
+        options:
+          - { label: "橙色", value: "orange" }
+          - { label: "紅色", value: "red" }
+          - { label: "藍色", value: "blue" }
+
+      - label: "文章內容"
+        name: "body"
+        widget: "markdown"

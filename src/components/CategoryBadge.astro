@@ -1,0 +1,10 @@
+---
+const { label, slug } = Astro.props;
+---
+<a
+  href={`/category/${slug}/`}
+  class="inline-flex items-center gap-2 text-xs font-black tracking-[.08em] text-signal-orange uppercase hover:text-white"
+>
+  <span class="size-1.5 rounded-full bg-signal-red"></span>
+  {label}
+</a>
