@@ -59,11 +59,12 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
       window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
     </script>
     <script>
-      import netlifyIdentity from 'netlify-identity-widget';
+      import * as netlifyIdentityModule from 'netlify-identity-widget';
 
       const browserWindow = window as Window & {
         netlifyIdentity?: unknown;
       };
+      const netlifyIdentity = netlifyIdentityModule.default ?? netlifyIdentityModule;
       browserWindow.netlifyIdentity = netlifyIdentity;
 
       const callbackScript = document.createElement('script');
