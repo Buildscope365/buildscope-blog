@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://buildscope.hk/sitemap-index.xml
+Sitemap: https://buildscope-blog.netlify.app/sitemap-index.xml

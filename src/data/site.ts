@@ -2,7 +2,7 @@ export const SITE = {
   name: '工程白話文 BuildScope',
   shortName: 'BuildScope',
   description: '香港工程、QS、PM、合約 Claim、NEC、SOP、地盤管理及 AI 工具白話知識平台。',
-  url: 'https://buildscope.hk',
+  url: 'https://buildscope-blog.netlify.app',
   email: 'hello@buildscope.hk',
 };
 

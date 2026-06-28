@@ -1,6 +1,8 @@
 backend:
   name: git-gateway
   branch: main
+  identity_url: "https://buildscope-blog.netlify.app/.netlify/identity"
+  gateway_url: "https://buildscope-blog.netlify.app/.netlify/git"
   commit_messages:
     create: "content: 新增 {{collection}}「{{slug}}」"
     update: "content: 更新 {{collection}}「{{slug}}」"
@@ -8,8 +10,8 @@ backend:
     uploadMedia: "media: 上傳「{{path}}」"
     deleteMedia: "media: 刪除「{{path}}」"
 
-site_url: "https://buildscope.hk"
-display_url: "https://buildscope.hk"
+site_url: "https://buildscope-blog.netlify.app"
+display_url: "https://buildscope-blog.netlify.app"
 logo:
   src: "/favicon.svg"
   show_in_header: true

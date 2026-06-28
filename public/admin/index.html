@@ -8,7 +8,17 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
+    <script>
+      window.BUILDSCOPE_NETLIFY_SITE_URL = "https://buildscope-blog.netlify.app";
+    </script>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.init({
+          APIUrl: `${window.BUILDSCOPE_NETLIFY_SITE_URL}/.netlify/identity`,
+        });
+      }
+    </script>
     <script src="https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js"></script>
   </body>
 </html>
