@@ -23,7 +23,9 @@
       // sessionStorage can be blocked in strict browser modes; the redirect should still work.
     }
 
-    if (!isAdminPage()) {
+    if (isAdminPage()) {
+      window.location.reload();
+    } else {
       window.location.assign(adminPath);
     }
   }
@@ -45,12 +47,14 @@
   }
 
   function initIdentityCallbackHandling() {
-    var identity = window.netlifyIdentity;
+    var identity = window.netlifyIdentity || window.BUILDSCOPE_NETLIFY_IDENTITY;
 
     if (!identity || window.__buildscopeNetlifyIdentityCallbackReady) {
       return;
     }
 
+    window.netlifyIdentity = identity;
+    window.BUILDSCOPE_NETLIFY_IDENTITY = identity;
     window.__buildscopeNetlifyIdentityCallbackReady = true;
 
     if (hasCallbackToken) {
