@@ -84,6 +84,19 @@
   function openIdentityFlow(identity) {
     try {
       restoreCallbackHash();
+      var panel = document.getElementById("buildscope-identity-token-panel");
+      var notice = document.getElementById("buildscope-identity-notice");
+
+      if (panel) {
+        panel.style.zIndex = "1";
+        panel.style.pointerEvents = "none";
+      }
+
+      if (notice) {
+        notice.style.zIndex = "1";
+        notice.style.pointerEvents = "none";
+      }
+
       identity.open();
     } catch (error) {
       console.error("Netlify Identity open error:", error);
@@ -103,7 +116,7 @@
 
     panel.id = "buildscope-identity-token-panel";
     panel.style.cssText =
-      "position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:rgba(8,21,38,.94);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:white;padding:1.5rem;";
+      "position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:rgba(8,21,38,.94);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:white;padding:1.5rem;";
     panel.innerHTML = [
       '<section style="max-width:30rem;border:1px solid rgba(255,255,255,.16);background:#0b1a2d;padding:2rem;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35);">',
       '<img src="/favicon.svg" alt="BuildScope" style="width:5rem;height:5rem;margin:0 auto 1rem;" />',
