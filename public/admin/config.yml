@@ -1,20 +1,11 @@
 backend:
   name: git-gateway
   branch: main
-  identity_url: "https://buildscope-blog.netlify.app/.netlify/identity"
-  gateway_url: "https://buildscope-blog.netlify.app/.netlify/git"
-  commit_messages:
-    create: "content: 新增 {{collection}}「{{slug}}」"
-    update: "content: 更新 {{collection}}「{{slug}}」"
-    delete: "content: 刪除 {{collection}}「{{slug}}」"
-    uploadMedia: "media: 上傳「{{path}}」"
-    deleteMedia: "media: 刪除「{{path}}」"
 
 site_url: "https://buildscope-blog.netlify.app"
 display_url: "https://buildscope-blog.netlify.app"
-logo:
-  src: "/favicon.svg"
-  show_in_header: true
+
+logo_url: "/favicon.svg"
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -29,9 +20,8 @@ slug:
 
 collections:
   - name: "blog"
-    label: "文章"
-    label_singular: "文章"
-    description: "管理 BuildScope Blog 文章。儲存後會提交到 Git repository，並觸發 Netlify 重新部署。"
+    label: "Blog posts"
+    label_singular: "Blog post"
     folder: "src/content/blog"
     create: true
     delete: true
@@ -39,40 +29,35 @@ collections:
     format: "yaml-frontmatter"
     slug: "{{slug}}"
     preview_path: "blog/{{slug}}/"
-    summary: "{{date}}｜{{title}}"
-    sortable_fields: ["date", "title", "author", "category"]
+    summary: "{{date}} - {{title}}"
+    sortable_fields:
+      - "date"
+      - "title"
+      - "author"
+      - "category"
     view_groups:
-      - label: "分類"
+      - label: "Category"
         field: "category"
-      - label: "難度"
+      - label: "Difficulty"
         field: "difficulty"
-    view_filters:
-      - label: "精選文章"
-        field: "featured"
-        pattern: true
-      - label: "草稿"
-        field: "draft"
-        pattern: true
-    editor:
-      preview: true
     fields:
-      - label: "標題"
+      - label: "Title"
         name: "title"
         widget: "string"
 
-      - label: "文章簡介"
+      - label: "Description"
         name: "description"
         widget: "text"
-        hint: "用於搜尋結果、文章卡及社交分享描述，建議 80–160 字。"
+        hint: "Short SEO description for listing pages and social previews."
 
-      - label: "發布日期"
+      - label: "Date"
         name: "date"
         widget: "datetime"
         date_format: "YYYY-MM-DD"
         time_format: false
         format: "YYYY-MM-DD"
 
-      - label: "分類"
+      - label: "Category"
         name: "category"
         widget: "select"
         options:
@@ -87,59 +72,67 @@ collections:
           - { label: "工程技術", value: "construction-technology" }
           - { label: "AI 工程工具", value: "ai-tools" }
           - { label: "工程案例", value: "case-studies" }
-          - { label: "工程管理", value: "project-management" }
+          - { label: "Project Management", value: "project-management" }
 
-      - label: "標籤"
+      - label: "Tags"
         name: "tags"
         widget: "list"
+        required: false
         allow_add: true
         collapsed: false
         field:
-          label: "標籤"
+          label: "Tag"
           name: "tag"
           widget: "string"
 
-      - label: "封面圖片"
+      - label: "Cover image"
         name: "coverImage"
         widget: "image"
         required: false
-        hint: "建議使用 1600 × 900 或相同比例圖片；檔案會上傳到 public/images/uploads。"
+        hint: "Uploaded images are stored in public/images/uploads."
 
-      - label: "作者"
+      - label: "Author"
         name: "author"
         widget: "string"
         default: "BuildScope 編輯部"
 
-      - label: "難度"
+      - label: "Difficulty"
         name: "difficulty"
         widget: "select"
         default: "入門"
-        options: ["入門", "進階", "專業"]
+        options:
+          - "入門"
+          - "中階"
+          - "進階"
 
-      - label: "閱讀時間"
+      - label: "Reading time"
         name: "readingTime"
         widget: "string"
+        required: false
         default: "5 分鐘"
 
-      - label: "精選文章"
+      - label: "Featured"
         name: "featured"
         widget: "boolean"
+        required: false
         default: false
 
-      - label: "草稿"
+      - label: "Draft"
         name: "draft"
         widget: "boolean"
+        required: false
         default: false
 
-      - label: "卡片重點色"
+      - label: "Hero accent"
         name: "heroAccent"
         widget: "select"
+        required: false
         default: "orange"
         options:
-          - { label: "橙色", value: "orange" }
-          - { label: "紅色", value: "red" }
-          - { label: "藍色", value: "blue" }
+          - { label: "Orange", value: "orange" }
+          - { label: "Red", value: "red" }
+          - { label: "Blue", value: "blue" }
 
-      - label: "文章內容"
+      - label: "Body"
         name: "body"
         widget: "markdown"
