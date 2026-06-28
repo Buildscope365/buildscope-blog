@@ -82,21 +82,8 @@
   }
 
   function openIdentityFlow(identity) {
-    var tokenType = getCallbackTokenType();
-
     try {
       restoreCallbackHash();
-
-      if (tokenType === "invite_token") {
-        identity.open("signup");
-        return;
-      }
-
-      if (tokenType === "recovery_token") {
-        identity.open("recovery");
-        return;
-      }
-
       identity.open();
     } catch (error) {
       console.error("Netlify Identity open error:", error);
