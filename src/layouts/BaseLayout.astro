@@ -57,7 +57,9 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <Footer />
     <script is:inline>
       window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
-      const identityTokenMatch = (window.location.hash || '').match(/(confirmation_token|invite_token|recovery_token)=/);
+      const identityCallbackHash = window.location.hash || '';
+      const identityTokenMatch = identityCallbackHash.match(/(confirmation_token|invite_token|recovery_token)=/);
+      window.BUILDSCOPE_IDENTITY_CALLBACK_HASH = identityCallbackHash;
       window.BUILDSCOPE_IDENTITY_TOKEN_TYPE = identityTokenMatch ? identityTokenMatch[1] : '';
       const hasIdentityToken = !!window.BUILDSCOPE_IDENTITY_TOKEN_TYPE;
 
