@@ -67,6 +67,7 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
         };
 
         const loadCallback = () => {
+          window.BUILDSCOPE_NETLIFY_IDENTITY = window.netlifyIdentity || window.BUILDSCOPE_NETLIFY_IDENTITY;
           loadScript('/netlify-identity-callback.js');
         };
 
