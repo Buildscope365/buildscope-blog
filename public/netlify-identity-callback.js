@@ -4,14 +4,18 @@
   var callbackHashPattern = /(confirmation_token|invite_token|recovery_token)=/;
   var redirectFlag = "buildscopeIdentityCallbackPending";
   var siteUrl = (window.BUILDSCOPE_NETLIFY_SITE_URL || window.location.origin).replace(/\/+$/, "");
-  var hasCallbackToken = Boolean(window.BUILDSCOPE_IDENTITY_TOKEN_TYPE) || callbackHashPattern.test(window.location.hash || "");
+  var savedCallbackHash = window.BUILDSCOPE_IDENTITY_CALLBACK_HASH || "";
+  var hasCallbackToken =
+    callbackHashPattern.test(savedCallbackHash) ||
+    Boolean(window.BUILDSCOPE_IDENTITY_TOKEN_TYPE) ||
+    callbackHashPattern.test(window.location.hash || "");
 
   function getCallbackTokenType() {
     if (window.BUILDSCOPE_IDENTITY_TOKEN_TYPE) {
       return window.BUILDSCOPE_IDENTITY_TOKEN_TYPE;
     }
 
-    var hash = window.location.hash || "";
+    var hash = savedCallbackHash || window.location.hash || "";
     for (var index = 0; index < callbackTokens.length; index += 1) {
       if (hash.indexOf(callbackTokens[index] + "=") !== -1) {
         return callbackTokens[index];
@@ -28,6 +32,18 @@
     return callbackTokens.some(function (token) {
       return (window.location.hash || "").indexOf(token + "=") !== -1;
     });
+  }
+
+  function restoreCallbackHash() {
+    if (!hasCallbackToken || !savedCallbackHash || callbackHashPattern.test(window.location.hash || "")) {
+      return;
+    }
+
+    try {
+      window.history.replaceState(null, document.title, window.location.pathname + window.location.search + savedCallbackHash);
+    } catch (error) {
+      window.location.hash = savedCallbackHash.replace(/^#/, "");
+    }
   }
 
   function redirectToAdmin() {
@@ -69,6 +85,8 @@
     var tokenType = getCallbackTokenType();
 
     try {
+      restoreCallbackHash();
+
       if (tokenType === "invite_token") {
         identity.open("signup");
         return;
@@ -132,6 +150,7 @@
 
     if (hasCallbackToken) {
       rememberCallbackFlow();
+      restoreCallbackHash();
       renderCallbackFallback(identity);
     }
 
