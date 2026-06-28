@@ -20,6 +20,7 @@
     <script is:inline>
       const netlifySiteUrl = 'https://buildscope-blog.netlify.app';
       const browserWindow = window;
+      let identityInstance;
 
       browserWindow.BUILDSCOPE_NETLIFY_SITE_URL = netlifySiteUrl;
 
@@ -46,11 +47,12 @@
         (event) => {
           const button = event.target instanceof Element ? event.target.closest('button') : null;
           const isIdentityLoginButton = button?.textContent?.trim() === 'Login with Netlify Identity';
-          const identity = browserWindow.netlifyIdentity || browserWindow.BUILDSCOPE_NETLIFY_IDENTITY;
+          const identity = identityInstance || browserWindow.netlifyIdentity || browserWindow.BUILDSCOPE_NETLIFY_IDENTITY;
 
           if (isIdentityLoginButton && identity?.open) {
             event.preventDefault();
             event.stopPropagation();
+            browserWindow.__buildscopeAdminLoginBridgeClicked = true;
             identity.open('login');
           }
         },
@@ -59,11 +61,12 @@
 
       loadScript('https://identity.netlify.com/v1/netlify-identity-widget.js')
         .then(() => {
-          browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = browserWindow.netlifyIdentity;
+          identityInstance = browserWindow.netlifyIdentity;
+          browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = identityInstance;
           return loadScript('/netlify-identity-callback.js');
         })
         .then(() => {
-          if (!browserWindow.netlifyIdentity && !browserWindow.BUILDSCOPE_NETLIFY_IDENTITY) {
+          if (!identityInstance && !browserWindow.netlifyIdentity && !browserWindow.BUILDSCOPE_NETLIFY_IDENTITY) {
             throw new Error('Netlify Identity widget did not initialize');
           }
 
