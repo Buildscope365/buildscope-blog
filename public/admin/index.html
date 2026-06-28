@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>BuildScope CMS Admin</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var siteUrl = "https://buildscope-blog.netlify.app";
+        var callbackTokens = ["confirmation_token", "invite_token", "recovery_token"];
+        var hasCallbackToken = /(confirmation_token|invite_token|recovery_token)=/.test(window.location.hash || "");
+
+        window.BUILDSCOPE_NETLIFY_SITE_URL = siteUrl;
+
+        function hasTokenInHash() {
+          return callbackTokens.some(function (token) {
+            return (window.location.hash || "").indexOf(token + "=") !== -1;
+          });
+        }
+
+        function openIdentityLogin() {
+          if (!window.netlifyIdentity || !window.netlifyIdentity.open) {
+            console.error("Netlify Identity widget is not ready.");
+            return;
+          }
+
+          window.netlifyIdentity.open("login");
+        }
+
+        window.BUILDSCOPE_ADMIN_OPEN_LOGIN = openIdentityLogin;
+
+        function initIdentity() {
+          if (!window.netlifyIdentity || window.__buildscopeIdentityInitialized) {
+            return;
+          }
+
+          window.__buildscopeIdentityInitialized = true;
+
+          window.netlifyIdentity.on("init", function () {
+            if (hasCallbackToken) {
+              window.netlifyIdentity.open();
+            }
+          });
+
+          window.netlifyIdentity.on("login", function () {
+            window.netlifyIdentity.close();
+            window.location.assign("/admin/");
+          });
+
+          window.netlifyIdentity.on("signup", function () {
+            if (!hasTokenInHash()) {
+              window.location.assign("/admin/");
+            }
+          });
+
+          window.netlifyIdentity.on("error", function (error) {
+            console.error("Netlify Identity error:", error);
+          });
+
+          window.netlifyIdentity.init({
+            APIUrl: siteUrl + "/.netlify/identity",
+          });
+        }
+
+        document.addEventListener(
+          "click",
+          function (event) {
+            var button = event.target && event.target.closest ? event.target.closest("button") : null;
+            var buttonText = button && button.textContent ? button.textContent.trim() : "";
+
+            if (buttonText === "Login with Netlify Identity") {
+              window.setTimeout(openIdentityLogin, 0);
+            }
+          },
+          true,
+        );
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initIdentity);
+        } else {
+          initIdentity();
+        }
+      })();
+    </script>
+    <script src="/netlify-identity-callback.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js"></script>
+  </body>
+</html>
