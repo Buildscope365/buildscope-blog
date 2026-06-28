@@ -57,6 +57,27 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <Footer />
     <script is:inline>
       window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
+      const identityTokenMatch = (window.location.hash || '').match(/(confirmation_token|invite_token|recovery_token)=/);
+      window.BUILDSCOPE_IDENTITY_TOKEN_TYPE = identityTokenMatch ? identityTokenMatch[1] : '';
+      const hasIdentityToken = !!window.BUILDSCOPE_IDENTITY_TOKEN_TYPE;
+
+      const showIdentityLoadingNotice = () => {
+        if (!hasIdentityToken || document.getElementById('buildscope-identity-notice')) {
+          return;
+        }
+
+        const notice = document.createElement('div');
+        notice.id = 'buildscope-identity-notice';
+        notice.style.cssText =
+          'position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(8,21,38,.92);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:white;padding:1.5rem;';
+        notice.innerHTML =
+          '<section style="max-width:28rem;border:1px solid rgba(255,255,255,.16);background:#0b1a2d;padding:2rem;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35);">' +
+          '<img src="/favicon.svg" alt="BuildScope" style="width:5rem;height:5rem;margin:0 auto 1rem;" />' +
+          '<h1 style="font-size:1.5rem;margin:0 0 .75rem;">Preparing your admin account…</h1>' +
+          '<p style="color:#b9c3d1;line-height:1.6;margin:0;">Please wait while Netlify Identity opens your invitation or confirmation flow.</p>' +
+          '</section>';
+        document.body.appendChild(notice);
+      };
 
       const loadIdentityCallback = () => {
         window.BUILDSCOPE_NETLIFY_IDENTITY = window.netlifyIdentity;
@@ -67,11 +88,23 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
       };
 
       if (window.netlifyIdentity) {
+        showIdentityLoadingNotice();
         loadIdentityCallback();
       } else {
+        showIdentityLoadingNotice();
         const identityScript = document.createElement('script');
         identityScript.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
         identityScript.onload = loadIdentityCallback;
+        identityScript.onerror = () => {
+          const notice = document.getElementById('buildscope-identity-notice');
+          if (notice) {
+            notice.innerHTML =
+              '<section style="max-width:30rem;border:1px solid rgba(255,255,255,.16);background:#0b1a2d;padding:2rem;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35);">' +
+              '<h1 style="font-size:1.5rem;margin:0 0 .75rem;">Netlify Identity could not load</h1>' +
+              '<p style="color:#b9c3d1;line-height:1.6;margin:0;">Please disable ad blockers for this site, or open the invitation link in an Incognito window.</p>' +
+              '</section>';
+          }
+        };
         document.body.appendChild(identityScript);
       }
     </script>
