@@ -49,7 +49,6 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <title>{pageTitle}</title>
   </head>
   <body>
@@ -59,12 +58,21 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <script is:inline>
       window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
 
-      if (window.netlifyIdentity) {
+      const loadIdentityCallback = () => {
         window.BUILDSCOPE_NETLIFY_IDENTITY = window.netlifyIdentity;
 
         const callbackScript = document.createElement('script');
         callbackScript.src = '/netlify-identity-callback.js';
         document.body.appendChild(callbackScript);
+      };
+
+      if (window.netlifyIdentity) {
+        loadIdentityCallback();
+      } else {
+        const identityScript = document.createElement('script');
+        identityScript.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+        identityScript.onload = loadIdentityCallback;
+        document.body.appendChild(identityScript);
       }
     </script>
   </body>
