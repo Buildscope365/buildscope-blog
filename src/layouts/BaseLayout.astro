@@ -58,7 +58,7 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <script is:inline>
       window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
     </script>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script is:inline src="/netlify-identity-callback.js"></script>
   </body>
 </html>
