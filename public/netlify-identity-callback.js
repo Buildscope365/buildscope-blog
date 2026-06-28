@@ -4,9 +4,13 @@
   var callbackHashPattern = /(confirmation_token|invite_token|recovery_token)=/;
   var redirectFlag = "buildscopeIdentityCallbackPending";
   var siteUrl = (window.BUILDSCOPE_NETLIFY_SITE_URL || window.location.origin).replace(/\/+$/, "");
-  var hasCallbackToken = callbackHashPattern.test(window.location.hash || "");
+  var hasCallbackToken = Boolean(window.BUILDSCOPE_IDENTITY_TOKEN_TYPE) || callbackHashPattern.test(window.location.hash || "");
 
   function getCallbackTokenType() {
+    if (window.BUILDSCOPE_IDENTITY_TOKEN_TYPE) {
+      return window.BUILDSCOPE_IDENTITY_TOKEN_TYPE;
+    }
+
     var hash = window.location.hash || "";
     for (var index = 0; index < callbackTokens.length; index += 1) {
       if (hash.indexOf(callbackTokens[index] + "=") !== -1) {
