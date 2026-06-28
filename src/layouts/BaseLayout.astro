@@ -56,20 +56,27 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <main><slot /></main>
     <Footer />
     <script is:inline>
-      window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
-    </script>
-    <script>
-      import * as netlifyIdentityModule from 'netlify-identity-widget';
+      (() => {
+        window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
 
-      const browserWindow = window as Window & {
-        netlifyIdentity?: unknown;
-      };
-      const netlifyIdentity = netlifyIdentityModule.default ?? netlifyIdentityModule;
-      browserWindow.netlifyIdentity = netlifyIdentity;
+        const loadScript = (src, onload) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = onload;
+          document.body.appendChild(script);
+        };
 
-      const callbackScript = document.createElement('script');
-      callbackScript.src = '/netlify-identity-callback.js';
-      document.body.appendChild(callbackScript);
+        const loadCallback = () => {
+          loadScript('/netlify-identity-callback.js');
+        };
+
+        if (window.netlifyIdentity) {
+          loadCallback();
+          return;
+        }
+
+        loadScript('https://identity.netlify.com/v1/netlify-identity-widget.js', loadCallback);
+      })();
     </script>
   </body>
 </html>
