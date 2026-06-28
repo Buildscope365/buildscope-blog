@@ -24,6 +24,12 @@
     return "";
   }
 
+  function getCallbackTokenValue() {
+    var hash = savedCallbackHash || window.location.hash || "";
+    var match = hash.match(/(?:confirmation|invite|recovery|email_change)_token=([^&]+)/);
+    return match ? decodeURIComponent(match[1]) : "";
+  }
+
   function isAdminPage() {
     return window.location.pathname === adminPath || window.location.pathname.indexOf(adminPath) === 0;
   }
@@ -104,6 +110,40 @@
     }
   }
 
+  function completeInviteWithPassword(identity, password, statusNode) {
+    var token = getCallbackTokenValue();
+
+    if (!token) {
+      statusNode.textContent = "Invite token is missing. Please open the newest invitation email again.";
+      return;
+    }
+
+    if (!identity.gotrue || !identity.gotrue.acceptInvite) {
+      statusNode.textContent = "Netlify Identity is still loading. Please wait a few seconds and try again.";
+      return;
+    }
+
+    statusNode.textContent = "Setting up your account…";
+
+    identity.gotrue
+      .acceptInvite(token, password, true)
+      .then(function () {
+        try {
+          window.sessionStorage.removeItem(redirectFlag);
+        } catch (error) {
+          // Ignore storage failures.
+        }
+
+        window.location.assign(adminPath);
+      })
+      .catch(function (error) {
+        var message =
+          (error && (error.description || error.message || error.msg)) ||
+          "Invite setup failed. The link may be expired. Please send a fresh Netlify Identity invite.";
+        statusNode.textContent = message;
+      });
+  }
+
   function renderCallbackFallback(identity) {
     if (!hasCallbackToken || document.getElementById("buildscope-identity-token-panel")) {
       return;
@@ -112,6 +152,15 @@
     var tokenType = getCallbackTokenType();
     var title = tokenType === "invite_token" ? "Set up your BuildScope admin account" : "Continue BuildScope admin verification";
     var buttonText = tokenType === "recovery_token" ? "Continue password recovery" : "Continue account setup";
+    var inviteFields =
+      tokenType === "invite_token"
+        ? [
+            '<label style="display:block;text-align:left;color:#dbe4f0;font-size:.9rem;font-weight:700;margin:.75rem 0 .35rem;">Password</label>',
+            '<input id="buildscope-identity-password" type="password" autocomplete="new-password" minlength="6" style="box-sizing:border-box;width:100%;border:1px solid rgba(255,255,255,.22);border-radius:4px;background:#081526;color:white;padding:.8rem;font:inherit;" />',
+            '<label style="display:block;text-align:left;color:#dbe4f0;font-size:.9rem;font-weight:700;margin:.75rem 0 .35rem;">Confirm password</label>',
+            '<input id="buildscope-identity-password-confirm" type="password" autocomplete="new-password" minlength="6" style="box-sizing:border-box;width:100%;border:1px solid rgba(255,255,255,.22);border-radius:4px;background:#081526;color:white;padding:.8rem;font:inherit;" />',
+          ].join("")
+        : "";
     var panel = document.createElement("div");
 
     panel.id = "buildscope-identity-token-panel";
@@ -123,17 +172,41 @@
       '<h1 style="font-size:1.5rem;margin:0 0 .75rem;">',
       title,
       "</h1>",
-      '<p style="color:#b9c3d1;line-height:1.6;margin:0 0 1.25rem;">If the Netlify Identity popup does not appear automatically, click the button below.</p>',
+      '<p style="color:#b9c3d1;line-height:1.6;margin:0 0 1.25rem;">Set your password below. If the Netlify Identity popup appears, you can also complete the setup there.</p>',
+      inviteFields,
       '<button id="buildscope-identity-token-button" type="button" style="border:0;border-radius:4px;background:#ff7a1a;color:#081526;font-weight:800;padding:.8rem 1rem;cursor:pointer;">',
       buttonText,
       "</button>",
+      '<p id="buildscope-identity-token-status" style="min-height:1.5rem;color:#ffb199;font-size:.9rem;line-height:1.5;margin:.9rem 0 0;"></p>',
       '<p style="color:#7f8da3;font-size:.85rem;line-height:1.5;margin:1rem 0 0;">Tip: use the newest invitation email only. Old links may be expired.</p>',
       "</section>",
     ].join("");
 
     document.body.appendChild(panel);
     document.getElementById("buildscope-identity-token-button").addEventListener("click", function () {
-      openIdentityFlow(identity);
+      var statusNode = document.getElementById("buildscope-identity-token-status");
+
+      if (tokenType !== "invite_token") {
+        openIdentityFlow(identity);
+        return;
+      }
+
+      var passwordInput = document.getElementById("buildscope-identity-password");
+      var confirmInput = document.getElementById("buildscope-identity-password-confirm");
+      var password = passwordInput ? passwordInput.value : "";
+      var confirmPassword = confirmInput ? confirmInput.value : "";
+
+      if (!password || password.length < 6) {
+        statusNode.textContent = "Please enter a password with at least 6 characters.";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        statusNode.textContent = "Passwords do not match.";
+        return;
+      }
+
+      completeInviteWithPassword(identity, password, statusNode);
     });
   }
 
@@ -157,7 +230,6 @@
     identity.on("init", function (user) {
       if (hasCallbackToken) {
         renderCallbackFallback(identity);
-        openIdentityFlow(identity);
         return;
       }
 
@@ -194,7 +266,6 @@
     if (hasCallbackToken) {
       window.setTimeout(function () {
         renderCallbackFallback(identity);
-        openIdentityFlow(identity);
       }, 250);
     }
   }
