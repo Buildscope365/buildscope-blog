@@ -49,32 +49,18 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <title>{pageTitle}</title>
   </head>
   <body>
     <Header />
     <main><slot /></main>
     <Footer />
-    <script>
-      import identityDefault from 'netlify-identity-widget';
-      import * as identityNamespace from 'netlify-identity-widget';
+    <script is:inline>
+      window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
 
-      const resolveIdentity = (candidate: any) => {
-        if (candidate?.open) return candidate;
-        if (candidate?.default?.open) return candidate.default;
-        if (candidate?.netlifyIdentity?.open) return candidate.netlifyIdentity;
-        return undefined;
-      };
-
-      const identity = resolveIdentity(identityDefault) || resolveIdentity(identityNamespace);
-
-      const browserWindow = window as any;
-
-      browserWindow.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
-
-      if (identity) {
-        browserWindow.netlifyIdentity = identity;
-        browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = identity;
+      if (window.netlifyIdentity) {
+        window.BUILDSCOPE_NETLIFY_IDENTITY = window.netlifyIdentity;
 
         const callbackScript = document.createElement('script');
         callbackScript.src = '/netlify-identity-callback.js';
