@@ -42,14 +42,23 @@
           document.body.appendChild(script);
         });
 
+      const resolveIdentity = (candidate) => {
+        if (candidate?.open) return candidate;
+        if (candidate?.default?.open) return candidate.default;
+        if (candidate?.netlifyIdentity?.open) return candidate.netlifyIdentity;
+        return undefined;
+      };
+
       document.addEventListener(
         'click',
         (event) => {
           const button = event.target instanceof Element ? event.target.closest('button') : null;
           const isIdentityLoginButton = button?.textContent?.trim() === 'Login with Netlify Identity';
-          const identity = identityInstance || browserWindow.netlifyIdentity || browserWindow.BUILDSCOPE_NETLIFY_IDENTITY;
+          const identity = resolveIdentity(identityInstance) ||
+            resolveIdentity(browserWindow.netlifyIdentity) ||
+            resolveIdentity(browserWindow.BUILDSCOPE_NETLIFY_IDENTITY);
 
-          if (isIdentityLoginButton && identity?.open) {
+          if (isIdentityLoginButton && identity) {
             event.preventDefault();
             event.stopPropagation();
             browserWindow.__buildscopeAdminLoginBridgeClicked = true;
@@ -61,12 +70,16 @@
 
       loadScript('https://identity.netlify.com/v1/netlify-identity-widget.js')
         .then(() => {
-          identityInstance = browserWindow.netlifyIdentity;
+          identityInstance = resolveIdentity(browserWindow.netlifyIdentity) || browserWindow.netlifyIdentity;
           browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = identityInstance;
           return loadScript('/netlify-identity-callback.js');
         })
         .then(() => {
-          if (!identityInstance && !browserWindow.netlifyIdentity && !browserWindow.BUILDSCOPE_NETLIFY_IDENTITY) {
+          if (
+            !resolveIdentity(identityInstance) &&
+            !resolveIdentity(browserWindow.netlifyIdentity) &&
+            !resolveIdentity(browserWindow.BUILDSCOPE_NETLIFY_IDENTITY)
+          ) {
             throw new Error('Netlify Identity widget did not initialize');
           }
 
