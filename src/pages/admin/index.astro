@@ -17,43 +17,53 @@
       </main>
     </noscript>
 
-    <script>
-      import * as netlifyIdentityModule from 'netlify-identity-widget';
-
+    <script is:inline>
       const netlifySiteUrl = 'https://buildscope-blog.netlify.app';
-      const browserWindow = window as Window & {
-        BUILDSCOPE_NETLIFY_SITE_URL?: string;
-        netlifyIdentity?: unknown;
-      };
-      const netlifyIdentity = netlifyIdentityModule.default ?? netlifyIdentityModule;
+      const browserWindow = window;
 
       browserWindow.BUILDSCOPE_NETLIFY_SITE_URL = netlifySiteUrl;
-      browserWindow.netlifyIdentity = netlifyIdentity;
 
-      const callbackScript = document.createElement('script');
-      callbackScript.src = '/netlify-identity-callback.js';
-      callbackScript.onload = () => {
-        const cmsScript = document.createElement('script');
-        cmsScript.src = 'https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js';
-        cmsScript.onerror = () => {
-          document.body.innerHTML = `
-            <main style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; max-width: 44rem; line-height: 1.6;">
-              <h1>Unable to load BuildScope CMS</h1>
-              <p>Please refresh the page. If the issue continues, check the Decap CMS CDN or network connection.</p>
-            </main>
-          `;
-        };
-        document.body.appendChild(cmsScript);
-      };
-      callbackScript.onerror = () => {
+      const showError = (title, message) => {
         document.body.innerHTML = `
           <main style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; max-width: 44rem; line-height: 1.6;">
-            <h1>Unable to load BuildScope CMS login</h1>
-            <p>Please refresh the page. If the issue continues, check the local Identity callback script.</p>
+            <h1>${title}</h1>
+            <p>${message}</p>
           </main>
         `;
       };
-      document.body.appendChild(callbackScript);
+
+      const loadScript = (src) =>
+        new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error(`Failed to load ${src}`));
+          document.body.appendChild(script);
+        });
+
+      loadScript('https://identity.netlify.com/v1/netlify-identity-widget.js')
+        .then(() => loadScript('/netlify-identity-callback.js'))
+        .then(() => {
+          if (!browserWindow.netlifyIdentity) {
+            throw new Error('Netlify Identity widget did not initialize');
+          }
+
+          const cmsScript = document.createElement('script');
+          cmsScript.src = 'https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js';
+          cmsScript.onerror = () => {
+            showError(
+              'Unable to load BuildScope CMS',
+              'Please refresh the page. If the issue continues, check the Decap CMS CDN or network connection.',
+            );
+          };
+          document.body.appendChild(cmsScript);
+        })
+        .catch(() => {
+          showError(
+            'Unable to load BuildScope CMS login',
+            'Please refresh the page. If the issue continues, check the Netlify Identity connection.',
+          );
+        });
     </script>
   </body>
 </html>
