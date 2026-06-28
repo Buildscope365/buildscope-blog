@@ -8,11 +8,48 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
+    <noscript>
+      <main style="font-family: system-ui, sans-serif; margin: 2rem; max-width: 42rem;">
+        <h1>BuildScope CMS needs JavaScript</h1>
+        <p>Please enable JavaScript to use the Decap CMS admin.</p>
+      </main>
+    </noscript>
     <script>
       window.BUILDSCOPE_NETLIFY_SITE_URL = "https://buildscope-blog.netlify.app";
+
+      if (window.location.protocol === "file:") {
+        document.body.innerHTML = `
+          <main style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; max-width: 44rem; line-height: 1.6;">
+            <h1 style="margin-bottom: 0.75rem;">Please open BuildScope CMS through a web server</h1>
+            <p>Decap CMS cannot load <code>config.yml</code> when <code>index.html</code> is opened directly from your computer with a <code>file://</code> URL.</p>
+            <p>Use the live admin instead:</p>
+            <p><a href="https://buildscope-blog.netlify.app/admin/">https://buildscope-blog.netlify.app/admin/</a></p>
+            <p>For local testing, run <code>npm run dev</code> and open <code>http://localhost:4321/admin/</code>.</p>
+          </main>
+        `;
+      } else {
+        const loadScript = (src) =>
+          new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.body.appendChild(script);
+          });
+
+        loadScript("https://identity.netlify.com/v1/netlify-identity-widget.js")
+          .then(() => loadScript("/netlify-identity-callback.js"))
+          .then(() => loadScript("https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js"))
+          .catch((error) => {
+            console.error("Failed to load BuildScope CMS scripts:", error);
+            document.body.innerHTML = `
+              <main style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; max-width: 44rem; line-height: 1.6;">
+                <h1>Unable to load BuildScope CMS</h1>
+                <p>Please refresh the page. If the issue continues, check your internet connection and the Netlify Identity / Decap CMS script URLs.</p>
+              </main>
+            `;
+          });
+      }
     </script>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script src="/netlify-identity-callback.js"></script>
-    <script src="https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js"></script>
   </body>
 </html>
