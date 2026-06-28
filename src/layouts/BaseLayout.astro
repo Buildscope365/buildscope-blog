@@ -55,29 +55,31 @@ const socialImage = new URL(image, Astro.site ?? SITE.url);
     <Header />
     <main><slot /></main>
     <Footer />
-    <script is:inline>
-      (() => {
-        window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
+    <script>
+      import identityDefault from 'netlify-identity-widget';
+      import * as identityNamespace from 'netlify-identity-widget';
 
-        const loadScript = (src, onload) => {
-          const script = document.createElement('script');
-          script.src = src;
-          script.onload = onload;
-          document.body.appendChild(script);
-        };
+      const resolveIdentity = (candidate: any) => {
+        if (candidate?.open) return candidate;
+        if (candidate?.default?.open) return candidate.default;
+        if (candidate?.netlifyIdentity?.open) return candidate.netlifyIdentity;
+        return undefined;
+      };
 
-        const loadCallback = () => {
-          window.BUILDSCOPE_NETLIFY_IDENTITY = window.netlifyIdentity || window.BUILDSCOPE_NETLIFY_IDENTITY;
-          loadScript('/netlify-identity-callback.js');
-        };
+      const identity = resolveIdentity(identityDefault) || resolveIdentity(identityNamespace);
 
-        if (window.netlifyIdentity) {
-          loadCallback();
-          return;
-        }
+      const browserWindow = window as any;
 
-        loadScript('https://identity.netlify.com/v1/netlify-identity-widget.js', loadCallback);
-      })();
+      browserWindow.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
+
+      if (identity) {
+        browserWindow.netlifyIdentity = identity;
+        browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = identity;
+
+        const callbackScript = document.createElement('script');
+        callbackScript.src = '/netlify-identity-callback.js';
+        document.body.appendChild(callbackScript);
+      }
     </script>
   </body>
 </html>
