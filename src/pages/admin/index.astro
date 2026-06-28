@@ -41,10 +41,29 @@
           document.body.appendChild(script);
         });
 
+      document.addEventListener(
+        'click',
+        (event) => {
+          const button = event.target instanceof Element ? event.target.closest('button') : null;
+          const isIdentityLoginButton = button?.textContent?.trim() === 'Login with Netlify Identity';
+          const identity = browserWindow.netlifyIdentity || browserWindow.BUILDSCOPE_NETLIFY_IDENTITY;
+
+          if (isIdentityLoginButton && identity?.open) {
+            event.preventDefault();
+            event.stopPropagation();
+            identity.open('login');
+          }
+        },
+        true,
+      );
+
       loadScript('https://identity.netlify.com/v1/netlify-identity-widget.js')
-        .then(() => loadScript('/netlify-identity-callback.js'))
         .then(() => {
-          if (!browserWindow.netlifyIdentity) {
+          browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = browserWindow.netlifyIdentity;
+          return loadScript('/netlify-identity-callback.js');
+        })
+        .then(() => {
+          if (!browserWindow.netlifyIdentity && !browserWindow.BUILDSCOPE_NETLIFY_IDENTITY) {
             throw new Error('Netlify Identity widget did not initialize');
           }
 
