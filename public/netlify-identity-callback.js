@@ -23,9 +23,7 @@
       // sessionStorage can be blocked in strict browser modes; the redirect should still work.
     }
 
-    if (isAdminPage()) {
-      window.location.reload();
-    } else {
+    if (!isAdminPage()) {
       window.location.assign(adminPath);
     }
   }
@@ -85,7 +83,7 @@
     });
 
     identity.on("signup", function () {
-      if (hasRememberedCallbackFlow() && !tokenStillInHash()) {
+      if (hasCallbackToken || (hasRememberedCallbackFlow() && !tokenStillInHash())) {
         redirectToAdmin();
       }
     });
