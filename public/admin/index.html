@@ -25,6 +25,7 @@
         var callbackTokens = ["confirmation_token", "invite_token", "recovery_token"];
         var hasCallbackToken = /(confirmation_token|invite_token|recovery_token)=/.test(window.location.hash || "");
         var root = document.getElementById("buildscope-admin-root");
+        var cmsLoaded = false;
 
         window.BUILDSCOPE_NETLIFY_SITE_URL = siteUrl;
 
@@ -72,6 +73,12 @@
         }
 
         function loadDecapCMS() {
+          if (cmsLoaded) {
+            return;
+          }
+
+          cmsLoaded = true;
+
           if (root && root.parentNode) {
             root.parentNode.removeChild(root);
           }
@@ -114,17 +121,19 @@
 
           window.netlifyIdentity.on("login", function () {
             window.netlifyIdentity.close();
-            window.location.assign("/admin/");
+            loadDecapCMS();
           });
 
           window.netlifyIdentity.on("signup", function () {
             if (!hasTokenInHash()) {
-              window.location.assign("/admin/");
+              window.netlifyIdentity.close();
+              loadDecapCMS();
             }
           });
 
           window.netlifyIdentity.on("recovery", function () {
-            window.location.assign("/admin/");
+            window.netlifyIdentity.close();
+            loadDecapCMS();
           });
 
           window.netlifyIdentity.on("error", function (error) {
