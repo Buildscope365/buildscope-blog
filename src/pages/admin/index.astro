@@ -17,14 +17,16 @@
       </main>
     </noscript>
 
-    <script is:inline>
+    <script>
+      import identityDefault from 'netlify-identity-widget';
+      import * as identityNamespace from 'netlify-identity-widget';
+
       const netlifySiteUrl = 'https://buildscope-blog.netlify.app';
-      const browserWindow = window;
-      let identityInstance;
+      const browserWindow = window as any;
 
       browserWindow.BUILDSCOPE_NETLIFY_SITE_URL = netlifySiteUrl;
 
-      const renderLoginGate = (identity) => {
+      const renderLoginGate = (identity: any) => {
         browserWindow.BUILDSCOPE_ADMIN_OPEN_LOGIN = () => {
           browserWindow.__buildscopeAdminLoginGateClicked = true;
           identity.open('login');
@@ -48,7 +50,7 @@
         });
       };
 
-      const showError = (title, message) => {
+      const showError = (title: string, message: string) => {
         document.body.innerHTML = `
           <main style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; max-width: 44rem; line-height: 1.6;">
             <h1>${title}</h1>
@@ -57,8 +59,8 @@
         `;
       };
 
-      const loadScript = (src) =>
-        new Promise((resolve, reject) => {
+      const loadScript = (src: string) =>
+        new Promise<void>((resolve, reject) => {
           const script = document.createElement('script');
           script.src = src;
           script.onload = () => resolve();
@@ -66,12 +68,14 @@
           document.body.appendChild(script);
         });
 
-      const resolveIdentity = (candidate) => {
+      const resolveIdentity = (candidate: any) => {
         if (candidate?.open) return candidate;
         if (candidate?.default?.open) return candidate.default;
         if (candidate?.netlifyIdentity?.open) return candidate.netlifyIdentity;
         return undefined;
       };
+
+      const identity = resolveIdentity(identityDefault) || resolveIdentity(identityNamespace);
 
       const loadCMS = () => {
         const cmsScript = document.createElement('script');
@@ -85,25 +89,17 @@
         document.body.appendChild(cmsScript);
       };
 
-      loadScript('https://identity.netlify.com/v1/netlify-identity-widget.js')
-        .then(() => {
-          identityInstance = resolveIdentity(browserWindow.netlifyIdentity) || browserWindow.netlifyIdentity;
-          browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = identityInstance;
-          return loadScript('/netlify-identity-callback.js');
-        })
-        .then(() => {
-          if (
-            !resolveIdentity(identityInstance) &&
-            !resolveIdentity(browserWindow.netlifyIdentity) &&
-            !resolveIdentity(browserWindow.BUILDSCOPE_NETLIFY_IDENTITY)
-          ) {
-            throw new Error('Netlify Identity widget did not initialize');
-          }
+      if (!identity) {
+        showError(
+          'Unable to load BuildScope CMS login',
+          'The Netlify Identity widget could not be initialized. Please refresh the page and try again.',
+        );
+      } else {
+        browserWindow.netlifyIdentity = identity;
+        browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = identity;
 
-          const identity = resolveIdentity(identityInstance) ||
-            resolveIdentity(browserWindow.netlifyIdentity) ||
-            resolveIdentity(browserWindow.BUILDSCOPE_NETLIFY_IDENTITY);
-
+        loadScript('/netlify-identity-callback.js')
+        .then(() => {
           browserWindow.netlifyIdentity = identity;
           browserWindow.BUILDSCOPE_NETLIFY_IDENTITY = identity;
 
@@ -126,6 +122,7 @@
             'Please refresh the page. If the issue continues, check the Netlify Identity connection.',
           );
         });
+      }
     </script>
   </body>
 </html>
