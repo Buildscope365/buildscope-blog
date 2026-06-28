@@ -18,13 +18,14 @@
     </noscript>
 
     <script>
-      import netlifyIdentity from 'netlify-identity-widget';
+      import * as netlifyIdentityModule from 'netlify-identity-widget';
 
       const netlifySiteUrl = 'https://buildscope-blog.netlify.app';
       const browserWindow = window as Window & {
         BUILDSCOPE_NETLIFY_SITE_URL?: string;
         netlifyIdentity?: unknown;
       };
+      const netlifyIdentity = netlifyIdentityModule.default ?? netlifyIdentityModule;
 
       browserWindow.BUILDSCOPE_NETLIFY_SITE_URL = netlifySiteUrl;
       browserWindow.netlifyIdentity = netlifyIdentity;
