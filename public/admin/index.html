@@ -9,11 +9,22 @@
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
+    <main
+      id="buildscope-admin-root"
+      style="min-height: 100vh; display: grid; place-items: center; background: #f3f5f8; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;"
+    >
+      <section style="display: grid; justify-items: center; gap: 2rem;">
+        <img src="/favicon.svg" alt="BuildScope" style="width: min(42vw, 300px); height: auto;" />
+        <p style="color: #526173; margin: 0;">Loading BuildScope CMS...</p>
+      </section>
+    </main>
+
     <script>
       (function () {
         var siteUrl = "https://buildscope-blog.netlify.app";
         var callbackTokens = ["confirmation_token", "invite_token", "recovery_token"];
         var hasCallbackToken = /(confirmation_token|invite_token|recovery_token)=/.test(window.location.hash || "");
+        var root = document.getElementById("buildscope-admin-root");
 
         window.BUILDSCOPE_NETLIFY_SITE_URL = siteUrl;
 
@@ -23,9 +34,23 @@
           });
         }
 
+        function showError(message) {
+          root.innerHTML = [
+            '<section style="max-width: 42rem; padding: 2rem; line-height: 1.6; color: #17212b;">',
+            "<h1>Unable to load BuildScope CMS login</h1>",
+            "<p>",
+            message,
+            "</p>",
+            '<p><a href="/" style="color: #7a86a1;">Go back to site</a></p>',
+            "</section>",
+          ].join("");
+        }
+
         function openIdentityLogin() {
           if (!window.netlifyIdentity || !window.netlifyIdentity.open) {
-            console.error("Netlify Identity widget is not ready.");
+            showError(
+              "Netlify Identity widget is not ready. Please refresh the page, or check whether identity.netlify.com is blocked by the browser/network.",
+            );
             return;
           }
 
@@ -34,16 +59,56 @@
 
         window.BUILDSCOPE_ADMIN_OPEN_LOGIN = openIdentityLogin;
 
+        function renderLoginGate() {
+          root.innerHTML = [
+            '<section style="display: grid; justify-items: center; gap: 2rem;">',
+            '<img src="/favicon.svg" alt="BuildScope" style="width: min(42vw, 300px); height: auto;" />',
+            '<button id="buildscope-admin-login" type="button" style="border: 0; border-radius: 4px; background: #2f4147; color: white; padding: 0.7rem 1rem; box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18); cursor: pointer; font: inherit;">Login with Netlify Identity</button>',
+            '<a href="/" style="color: #7a86a1; text-decoration: none;">← Go back to site</a>',
+            "</section>",
+          ].join("");
+
+          document.getElementById("buildscope-admin-login").addEventListener("click", openIdentityLogin);
+        }
+
+        function loadDecapCMS() {
+          if (root && root.parentNode) {
+            root.parentNode.removeChild(root);
+          }
+
+          var cmsScript = document.createElement("script");
+          cmsScript.src = "https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js";
+          cmsScript.onerror = function () {
+            document.body.innerHTML =
+              '<main style="font-family: system-ui, sans-serif; margin: 2rem; max-width: 42rem;"><h1>Unable to load Decap CMS</h1><p>Please refresh the page. If the issue continues, check the Decap CMS CDN connection.</p></main>';
+          };
+          document.body.appendChild(cmsScript);
+        }
+
         function initIdentity() {
-          if (!window.netlifyIdentity || window.__buildscopeIdentityInitialized) {
+          if (!window.netlifyIdentity) {
+            showError(
+              "Netlify Identity widget did not load. Please refresh the page, or check whether identity.netlify.com is blocked by the browser/network.",
+            );
+            return;
+          }
+
+          if (window.__buildscopeIdentityInitialized) {
             return;
           }
 
           window.__buildscopeIdentityInitialized = true;
 
-          window.netlifyIdentity.on("init", function () {
+          window.netlifyIdentity.on("init", function (user) {
             if (hasCallbackToken) {
               window.netlifyIdentity.open();
+              return;
+            }
+
+            if (user) {
+              loadDecapCMS();
+            } else {
+              renderLoginGate();
             }
           });
 
@@ -58,6 +123,10 @@
             }
           });
 
+          window.netlifyIdentity.on("recovery", function () {
+            window.location.assign("/admin/");
+          });
+
           window.netlifyIdentity.on("error", function (error) {
             console.error("Netlify Identity error:", error);
           });
@@ -67,19 +136,6 @@
           });
         }
 
-        document.addEventListener(
-          "click",
-          function (event) {
-            var button = event.target && event.target.closest ? event.target.closest("button") : null;
-            var buttonText = button && button.textContent ? button.textContent.trim() : "";
-
-            if (buttonText === "Login with Netlify Identity") {
-              window.setTimeout(openIdentityLogin, 0);
-            }
-          },
-          true,
-        );
-
         if (document.readyState === "loading") {
           document.addEventListener("DOMContentLoaded", initIdentity);
         } else {
@@ -87,7 +143,5 @@
         }
       })();
     </script>
-    <script src="/netlify-identity-callback.js"></script>
-    <script src="https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js"></script>
   </body>
 </html>
