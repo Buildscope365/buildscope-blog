@@ -18,6 +18,7 @@
       window.BUILDSCOPE_NETLIFY_SITE_URL = "https://buildscope-blog.netlify.app";
 
       if (window.location.protocol === "file:") {
+        window.BUILDSCOPE_DISABLE_CMS = true;
         document.body.innerHTML = `
           <main style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; max-width: 44rem; line-height: 1.6;">
             <h1 style="margin-bottom: 0.75rem;">Please open BuildScope CMS through a web server</h1>
@@ -28,27 +29,9 @@
           </main>
         `;
       } else {
-        const loadScript = (src) =>
-          new Promise((resolve, reject) => {
-            const script = document.createElement("script");
-            script.src = src;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.body.appendChild(script);
-          });
-
-        loadScript("https://identity.netlify.com/v1/netlify-identity-widget.js")
-          .then(() => loadScript("/netlify-identity-callback.js"))
-          .then(() => loadScript("https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js"))
-          .catch((error) => {
-            console.error("Failed to load BuildScope CMS scripts:", error);
-            document.body.innerHTML = `
-              <main style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; max-width: 44rem; line-height: 1.6;">
-                <h1>Unable to load BuildScope CMS</h1>
-                <p>Please refresh the page. If the issue continues, check your internet connection and the Netlify Identity / Decap CMS script URLs.</p>
-              </main>
-            `;
-          });
+        document.write('<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"><\\/script>');
+        document.write('<script src="/netlify-identity-callback.js"><\\/script>');
+        document.write('<script src="https://unpkg.com/decap-cms@^3.8.0/dist/decap-cms.js"><\\/script>');
       }
     </script>
   </body>
