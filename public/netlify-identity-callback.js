@@ -46,8 +46,15 @@
     }
   }
 
+  function resolveIdentity(candidate) {
+    if (candidate && candidate.open) return candidate;
+    if (candidate && candidate.default && candidate.default.open) return candidate.default;
+    if (candidate && candidate.netlifyIdentity && candidate.netlifyIdentity.open) return candidate.netlifyIdentity;
+    return undefined;
+  }
+
   function initIdentityCallbackHandling() {
-    var identity = window.netlifyIdentity || window.BUILDSCOPE_NETLIFY_IDENTITY;
+    var identity = resolveIdentity(window.netlifyIdentity) || resolveIdentity(window.BUILDSCOPE_NETLIFY_IDENTITY);
 
     if (!identity || window.__buildscopeNetlifyIdentityCallbackReady) {
       return;
