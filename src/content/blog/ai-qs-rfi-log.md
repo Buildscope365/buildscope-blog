@@ -1,13 +1,18 @@
 ---
-title: "AI 點樣幫 QS 整理 RFI Log？"
-description: "AI 可以協助分類、摘要和找出逾期 RFI，但前提是資料結構、私隱和人工覆核都做得好。"
+title: AI 點樣幫 QS 整理 RFI Log？
+description: AI 可以協助分類、摘要和找出逾期 RFI，但前提是資料結構、私隱和人工覆核都做得好。
 date: 2026-06-18
-category: "ai-tools"
-tags: ["AI", "QS", "RFI Log", "自動化"]
-author: "BuildScope 編輯部"
-difficulty: "入門"
-readingTime: "7 分鐘"
-heroAccent: "blue"
+category: ai-tools
+tags:
+  - AI
+  - QS
+  - RFI Log
+  - 自動化
+coverImage: /images/uploads/build_scope_1779366620_3901930538417998897_17318970168.jpeg
+author: BuildScope 編輯部
+difficulty: 入門
+readingTime: 7 分鐘
+heroAccent: blue
 ---
 
 RFI Log 經常有幾百項記錄。QS 想找出哪些 RFI 可能涉及 variation、哪些答案逾期、哪些工作已經開展，手動逐行閱讀非常耗時。
