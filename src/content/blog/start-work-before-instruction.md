@@ -8,7 +8,7 @@ tags:
   - Variation
   - Claim
   - 記錄
-coverImage: /images/uploads/do_ju_sin_la_blog_featured_1200x630.jpg
+coverImage: /images/uploads/chatgpt-image-jul-1-2026-08_45_03-pm.png
 author: BuildScope 編輯部
 difficulty: 入門
 readingTime: 7 分鐘
