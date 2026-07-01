@@ -1,14 +1,19 @@
 ---
-title: "做住先？點解做咗唔代表收得到錢"
-description: "地盤一句「做住先」可能令工程向前，也可能令承包商失去證明指示、範圍和價值的最好時機。"
+title: 做住先？點解做咗唔代表收得到錢
+description: 地盤一句「做住先」可能令工程向前，也可能令承包商失去證明指示、範圍和價值的最好時機。
 date: 2026-06-25
-category: "contract-management"
-tags: ["口頭指示", "Variation", "Claim", "記錄"]
-author: "BuildScope 編輯部"
-difficulty: "入門"
+category: contract-management
+tags:
+  - 口頭指示
+  - Variation
+  - Claim
+  - 記錄
+coverImage: /images/uploads/do_ju_sin_la_blog_featured_1200x630.jpg
+author: BuildScope 編輯部
+difficulty: 入門
+readingTime: 7 分鐘
 featured: true
-readingTime: "7 分鐘"
-heroAccent: "red"
+heroAccent: red
 ---
 
 地盤最常見、也最昂貴的三個字，可能就是「做住先」。工程團隊想避免停工很合理，但**完成了額外工作，不等於合約上自然有權收取額外款項**。
