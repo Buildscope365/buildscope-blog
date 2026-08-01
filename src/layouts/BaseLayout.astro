@@ -1,114 +1,29 @@
 ---
-import '../styles/global.css';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE } from '../data/site';
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "@fontsource/noto-sans-tc/400.css";
+import "@fontsource/noto-sans-tc/700.css";
+import "@fontsource/noto-sans-tc/900.css";
+import "../styles/global.css";
 
-interface Props {
-  title?: string;
-  description?: string;
-  image?: string;
-  type?: 'website' | 'article';
-  publishedTime?: string;
-  noindex?: boolean;
-}
-
-const {
-  title,
-  description = SITE.description,
-  image = '/og-default.svg',
-  type = 'website',
-  publishedTime,
-  noindex = false,
-} = Astro.props;
-const pageTitle = title ? `${title} | ${SITE.shortName}` : `${SITE.name}｜香港工程知識平台`;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE.url);
-const socialImage = new URL(image, Astro.site ?? SITE.url);
+interface Props { title?: string; description?: string; }
+const { title = "工程白話文 BuildScope", description = "用白話拆解合約、施工、管理及建築科技，讓每個工程人都可以即學即用。" } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
-<html lang="zh-Hant-HK">
+<html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#081526" />
-    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
-    <meta property="og:type" content={type} />
-    <meta property="og:locale" content="zh_HK" />
-    <meta property="og:site_name" content={SITE.name} />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={socialImage} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={socialImage} />
-    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
-    <title>{pageTitle}</title>
+    <link rel="icon" type="image/png" href="/images/buildscope-logo.png" />
+    <title>{title}</title>
   </head>
   <body>
     <Header />
     <main><slot /></main>
     <Footer />
-    <script is:inline>
-      window.BUILDSCOPE_NETLIFY_SITE_URL = 'https://buildscope-blog.netlify.app';
-      const identityCallbackHash = window.location.hash || '';
-      const identityTokenMatch = identityCallbackHash.match(/(confirmation_token|invite_token|recovery_token)=/);
-      window.BUILDSCOPE_IDENTITY_CALLBACK_HASH = identityCallbackHash;
-      window.BUILDSCOPE_IDENTITY_TOKEN_TYPE = identityTokenMatch ? identityTokenMatch[1] : '';
-      const hasIdentityToken = !!window.BUILDSCOPE_IDENTITY_TOKEN_TYPE;
-
-      const showIdentityLoadingNotice = () => {
-        if (!hasIdentityToken || document.getElementById('buildscope-identity-notice')) {
-          return;
-        }
-
-        const notice = document.createElement('div');
-        notice.id = 'buildscope-identity-notice';
-        notice.style.cssText =
-          'position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:rgba(8,21,38,.92);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:white;padding:1.5rem;';
-        notice.innerHTML =
-          '<section style="max-width:28rem;border:1px solid rgba(255,255,255,.16);background:#0b1a2d;padding:2rem;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35);">' +
-          '<img src="/favicon.svg" alt="BuildScope" style="width:5rem;height:5rem;margin:0 auto 1rem;" />' +
-          '<h1 style="font-size:1.5rem;margin:0 0 .75rem;">Preparing your admin account…</h1>' +
-          '<p style="color:#b9c3d1;line-height:1.6;margin:0;">Please wait while Netlify Identity opens your invitation or confirmation flow.</p>' +
-          '</section>';
-        document.body.appendChild(notice);
-      };
-
-      const loadIdentityCallback = () => {
-        window.BUILDSCOPE_NETLIFY_IDENTITY = window.netlifyIdentity;
-
-        const callbackScript = document.createElement('script');
-        callbackScript.src = '/netlify-identity-callback.js';
-        document.body.appendChild(callbackScript);
-      };
-
-      if (window.netlifyIdentity) {
-        showIdentityLoadingNotice();
-        loadIdentityCallback();
-      } else {
-        showIdentityLoadingNotice();
-        const identityScript = document.createElement('script');
-        identityScript.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-        identityScript.onload = loadIdentityCallback;
-        identityScript.onerror = () => {
-          const notice = document.getElementById('buildscope-identity-notice');
-          if (notice) {
-            notice.innerHTML =
-              '<section style="max-width:30rem;border:1px solid rgba(255,255,255,.16);background:#0b1a2d;padding:2rem;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.35);">' +
-              '<h1 style="font-size:1.5rem;margin:0 0 .75rem;">Netlify Identity could not load</h1>' +
-              '<p style="color:#b9c3d1;line-height:1.6;margin:0;">Please disable ad blockers for this site, or open the invitation link in an Incognito window.</p>' +
-              '</section>';
-          }
-        };
-        document.body.appendChild(identityScript);
-      }
-    </script>
   </body>
 </html>

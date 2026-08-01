@@ -1,37 +1,46 @@
----
-import Logo from './Logo.astro';
-import { CATEGORIES } from '../data/site';
----
-<footer class="border-t border-white/10 bg-ink-950">
-  <div class="container-shell grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
-    <div class="lg:col-span-2">
-      <Logo />
-      <p class="mt-6 max-w-md text-sm leading-7 text-steel-300">
-        為香港工程、QS、PM 及建造業從業員而設的白話知識平台。把艱深條文、流程與地盤經驗，整理成真正用得着的內容。
-      </p>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <img src="/images/buildscope-logo.png" alt="工程白話文 BuildScope" width="98" height="98" />
+      <div><strong>工程白話文</strong><span>用白話拆解建築工程知識</span><a href="https://www.instagram.com/build_scope/" target="_blank" rel="noreferrer">Instagram · @build_scope</a></div>
     </div>
-    <div>
-      <p class="text-xs font-black tracking-[.18em] text-signal-orange">知識分類</p>
-      <ul class="mt-5 grid gap-3 text-sm text-steel-300">
-        {CATEGORIES.slice(0, 5).map((category) => (
-          <li><a class="hover:text-white" href={`/category/${category.slug}/`}>{category.name}</a></li>
-        ))}
-      </ul>
-    </div>
-    <div>
-      <p class="text-xs font-black tracking-[.18em] text-signal-orange">網站</p>
-      <ul class="mt-5 grid gap-3 text-sm text-steel-300">
-        <li><a class="hover:text-white" href="/about/">關於 BuildScope</a></li>
-        <li><a class="hover:text-white" href="/contact/">聯絡我們</a></li>
-        <li><a class="hover:text-white" href="/rss.xml">RSS 訂閱</a></li>
-        <li><a class="hover:text-white" href="/sitemap-index.xml">Sitemap</a></li>
-      </ul>
-    </div>
+    <div><h3>內容</h3><a href="/blog/">工程 Blog</a><a href="/news/">工程新聞</a><a href="/templates/">文件範本</a><a href="/ebooks/">電子書</a></div>
+    <div><h3>工具</h3><a href="/dictionary/">工程字典</a><a href="/ai-tools/">AI 工程工具</a><a href="/about/">關於我們</a></div>
+    <div class="newsletter"><h3>訂閱工程電子報</h3><p>每週精選工程知識、新聞及實用工具。</p><form><label class="visually-hidden" for="footer-email">電郵地址</label><input id="footer-email" type="email" placeholder="輸入電郵地址" required /><button type="submit">訂閱</button></form><small class="form-message" aria-live="polite"></small></div>
   </div>
-  <div class="border-t border-white/8">
-    <div class="container-shell flex flex-col gap-2 py-6 text-xs text-steel-400 sm:flex-row sm:items-center sm:justify-between">
-      <p>© {new Date().getFullYear()} 工程白話文 BuildScope</p>
-      <p>香港製作 · 為工程人說人話</p>
-    </div>
-  </div>
+  <div class="container copyright">© 2026 工程白話文 BuildScope．保留所有權利。</div>
 </footer>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>(".newsletter form");
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const message = form.parentElement?.querySelector<HTMLElement>(".form-message");
+    if (message) message.textContent = "多謝訂閱！正式連接電郵系統後即可接收更新。";
+    form.reset();
+  });
+</script>
+
+<style>
+  .site-footer { padding-top: 56px; border-top: 1px solid var(--line); background: var(--white); }
+  .footer-grid { display: grid; grid-template-columns: 1.7fr .7fr .7fr 1.4fr; gap: 44px; }
+  .footer-brand { display: flex; align-items: flex-start; gap: 16px; }
+  .footer-brand img { width: 94px; height: 94px; border-radius: 50%; }
+  .footer-brand div { display: grid; }
+  .footer-brand strong { font-size: 1.15rem; }
+  .footer-brand span, .footer-brand a, .site-footer p { color: var(--body); font-size: .88rem; }
+  .footer-brand a { margin-top: 10px; color: var(--orange-dark); font-weight: 800; }
+  .site-footer h3 { margin: 0 0 12px; font-size: .9rem; }
+  .site-footer > .footer-grid > div:not(:first-child) { display: flex; flex-direction: column; align-items: flex-start; }
+  .site-footer > .footer-grid > div > a { margin-bottom: 7px; color: var(--body); font-size: .88rem; }
+  .site-footer > .footer-grid > div > a:hover { color: var(--orange-dark); }
+  .newsletter p { margin: 0 0 12px; }
+  .newsletter form { display: flex; width: 100%; }
+  .newsletter input { min-width: 0; flex: 1; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-right: 0; border-radius: 5px 0 0 5px; outline: none; }
+  .newsletter input:focus { border-color: var(--orange); }
+  .newsletter button { min-height: 44px; padding: 0 16px; border: 0; border-radius: 0 5px 5px 0; color: white; background: var(--orange); font-weight: 800; cursor: pointer; }
+  .form-message { display: block; margin-top: 8px; color: var(--success); }
+  .copyright { margin-top: 42px; padding: 20px 0; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font-size: .78rem; }
+  @media (max-width: 900px) { .footer-grid { grid-template-columns: 1.3fr 1fr 1fr; } .newsletter { grid-column: 1 / -1; } }
+  @media (max-width: 580px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; } .footer-brand { grid-column: 1 / -1; } }
+</style>

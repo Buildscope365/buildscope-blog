@@ -1,29 +1,21 @@
 {
-  "name": "buildscope-blog",
-  "type": "module",
+  "name": "buildscope-website",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "deploy": "npm run build && wrangler deploy",
+    "cf-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/mdx": "^7.0.0",
-    "@astrojs/rss": "^4.0.18",
-    "@astrojs/sitemap": "^3.7.3",
-    "@tailwindcss/vite": "^4.3.1",
-    "astro": "^7.0.2",
-    "netlify-identity-widget": "^1.9.2",
-    "tailwindcss": "^4.3.1"
-  },
-  "devDependencies": {
-    "@astrojs/check": "^0.9.5",
-    "typescript": "^5.9.3"
-  },
-  "engines": {
-    "node": ">=22.12.0"
+    "@astrojs/check": "latest",
+    "@fontsource/noto-sans-tc": "latest",
+    "@types/node": "latest",
+    "astro": "latest",
+    "typescript": "latest",
+    "wrangler": "latest"
   }
 }

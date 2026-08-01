@@ -1,13 +1,7 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
-<BaseLayout title="找不到頁面" noindex>
-  <section class="blueprint-grid grid min-h-[65svh] place-items-center py-20">
-    <div class="container-shell text-center">
-      <p class="font-mono text-8xl font-black text-white/8">404</p>
-      <h1 class="section-title -mt-5">這個工作面未移交。</h1>
-      <p class="mx-auto mt-5 max-w-xl text-steel-300">你要找的頁面可能已移動、改名，或者仍在施工中。</p>
-      <a href="/" class="button-primary mt-8">返回首頁 →</a>
-    </div>
-  </section>
+<BaseLayout title="找不到頁面｜工程白話文 BuildScope">
+  <section class="not-found container"><span>404</span><h1>這個工程項目暫時找不到。</h1><p>可能是網址已更新，或者內容仍在準備中。</p><a class="button button-primary" href="/">返回首頁</a></section>
 </BaseLayout>
+<style>.not-found{min-height:65vh;padding:120px 0;text-align:center}.not-found>span{color:var(--orange);font-size:5rem;font-weight:900}.not-found h1{margin:0 0 10px;font-size:clamp(2rem,5vw,4rem)}.not-found p{margin:0 0 28px;color:var(--body)}</style>
