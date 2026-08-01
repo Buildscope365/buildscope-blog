@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const items = [
+  ["2026.08.01", "香港建築新聞", "北部都會區工程進入新一輪招標及交付階段", "大型基建與新發展區項目陸續由規劃走向實際採購，承建商需提早檢視資源及界面風險。"],
+  ["2026.07.30", "政策及法例", "工程付款、合約通知及記錄管理最新觀察", "法例與合約要求並行，企業流程需要同步更新。"],
+  ["2026.07.28", "建築科技與 AI", "CIC 推動 AI 由個人工具走向企業級工程流程", "AI 應用逐步延伸至採購、計劃、品質及全生命週期管理。"],
+  ["2026.07.26", "安全消息", "惡劣天氣後復工檢查：棚架、機械及臨時工程", "復工前需要有系統地完成檢查、記錄、整改及批准。"],
+  ["2026.07.23", "大型工程", "主要公共工程招標動向及承建商應留意事項", "資源配置、分判市場及長交期物料將繼續影響投標策略。"],
+];
+---
+<BaseLayout title="工程新聞｜工程白話文 BuildScope" description="香港建築新聞、政策法例、建築科技與 AI、安全消息及大型工程動向。">
+  <header class="page-hero"><div class="container"><h1>工程<span>新聞</span></h1><p>聚焦香港建築新聞、政策法例、建築科技與 AI、安全消息及大型工程動向。</p></div></header>
+  <section class="section"><div class="container"><div class="news-table">{items.map(([date,type,title,summary]) => <article><time>{date}</time><span>{type}</span><div><h2>{title}</h2><p>{summary}</p></div><a href="#">閱讀摘要 →</a></article>)}</div></div></section>
+</BaseLayout>
+<style>
+  .news-table{border-top:3px solid var(--orange)}
+  article{display:grid;grid-template-columns:120px 170px 1fr auto;gap:22px;align-items:start;padding:30px 18px;border-bottom:1px solid var(--line)}
+  time,article>span{color:var(--orange-dark);font-size:.85rem;font-weight:800}h2{margin:0 0 8px;font-size:1.25rem}p{margin:0;color:var(--body)}article>a{color:var(--orange-dark);font-weight:800;white-space:nowrap}
+  @media(max-width:760px){article{grid-template-columns:100px 1fr}article>span{grid-column:2}article>div{grid-column:1/-1}article>a{grid-column:1/-1}}
+</style>

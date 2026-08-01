@@ -1,65 +1,70 @@
 ---
-import Logo from './Logo.astro';
-
-const path = Astro.url.pathname;
-const links = [
-  { href: '/blog/', label: '文章' },
-  { href: '/resources/', label: '資源' },
-  { href: '/templates/', label: '範本' },
-  { href: '/ebooks/', label: '電子書' },
-  { href: '/about/', label: '關於' },
+const pathname = Astro.url.pathname;
+const nav = [
+  ["首頁", "/"],
+  ["工程 Blog", "/blog/"],
+  ["工程新聞", "/news/"],
+  ["文件範本", "/templates/"],
+  ["電子書", "/ebooks/"],
+  ["工程字典", "/dictionary/"],
+  ["AI 工具", "/ai-tools/"],
+  ["關於我們", "/about/"],
 ];
 ---
-<header class="sticky top-0 z-50 border-b border-white/8 bg-ink-900/88 backdrop-blur-xl">
-  <div class="container-shell flex h-[4.75rem] items-center justify-between">
-    <Logo />
-    <nav class="hidden items-center gap-7 lg:flex" aria-label="主要導覽">
-      {links.map((link) => (
-        <a
-          href={link.href}
-          class:list={[
-            'text-sm font-bold transition-colors hover:text-signal-orange',
-            path.startsWith(link.href) ? 'text-signal-orange' : 'text-steel-300',
-          ]}
-        >
-          {link.label}
-        </a>
-      ))}
-      <a href="/contact/" class="button-primary !min-h-10 !px-4">聯絡我們</a>
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a class="brand" href="/" aria-label="工程白話文 BuildScope 首頁">
+      <img src="/images/buildscope-logo.png" alt="工程白話文 BuildScope" width="62" height="62" />
+      <span><strong>工程白話文</strong><small>BuildScope</small></span>
+    </a>
+    <nav class="desktop-nav" aria-label="主要導覽">
+      {nav.map(([label, href]) => <a href={href} class:list={{ active: href === "/" ? pathname === "/" : pathname.startsWith(href) }}>{label}</a>)}
     </nav>
-    <button
-      id="menu-toggle"
-      class="grid size-11 place-items-center rounded-sm border border-white/15 lg:hidden"
-      aria-label="開啟選單"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-    >
-      <span class="space-y-1.5" aria-hidden="true">
-        <span class="block h-0.5 w-5 bg-white"></span>
-        <span class="block h-0.5 w-5 bg-white"></span>
-        <span class="block h-0.5 w-5 bg-white"></span>
-      </span>
+    <a class="header-cta" href="/blog/">瀏覽最新文章</a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="開啟選單">
+      <span></span><span></span><span></span>
     </button>
   </div>
-  <nav id="mobile-menu" class="container-shell hidden border-t border-white/8 py-4 lg:hidden" aria-label="手機導覽">
-    <div class="grid gap-1">
-      {links.map((link) => (
-        <a href={link.href} class="rounded-sm px-3 py-3 text-base font-bold text-steel-300 hover:bg-white/5 hover:text-white">
-          {link.label}
-        </a>
-      ))}
-      <a href="/contact/" class="button-primary mt-2">聯絡我們</a>
+  <nav id="mobile-menu" class="mobile-nav" aria-label="手機導覽" hidden>
+    <div class="container">
+      {nav.map(([label, href]) => <a href={href}>{label}<span>→</span></a>)}
     </div>
   </nav>
 </header>
 
 <script>
-  const toggle = document.querySelector<HTMLButtonElement>('#menu-toggle');
-  const menu = document.querySelector<HTMLElement>('#mobile-menu');
-  toggle?.addEventListener('click', () => {
-    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', String(!isOpen));
-    toggle.setAttribute('aria-label', isOpen ? '開啟選單' : '關閉選單');
-    menu?.classList.toggle('hidden');
+  const button = document.querySelector<HTMLButtonElement>(".menu-button");
+  const menu = document.querySelector<HTMLElement>("#mobile-menu");
+  button?.addEventListener("click", () => {
+    const open = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!open));
+    button.setAttribute("aria-label", open ? "開啟選單" : "關閉選單");
+    if (menu) menu.hidden = open;
+    document.body.classList.toggle("menu-open", !open);
   });
 </script>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.97); backdrop-filter: blur(10px); }
+  .header-inner { display: flex; align-items: center; gap: 24px; min-height: 86px; }
+  .brand { display: flex; align-items: center; flex: 0 0 auto; gap: 10px; }
+  .brand img { width: 58px; height: 58px; object-fit: cover; border-radius: 50%; }
+  .brand span { display: grid; line-height: 1.05; }
+  .brand strong { font-size: .98rem; letter-spacing: -.02em; }
+  .brand small { margin-top: 5px; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .desktop-nav { display: flex; align-items: stretch; justify-content: center; gap: clamp(10px, 1.5vw, 24px); margin-left: auto; }
+  .desktop-nav a { position: relative; padding: 31px 0 27px; color: var(--body); white-space: nowrap; font-size: .82rem; font-weight: 700; }
+  .desktop-nav a::after { content: ""; position: absolute; right: 0; bottom: 20px; left: 0; height: 2px; background: var(--orange); transform: scaleX(0); transition: transform .2s ease; }
+  .desktop-nav a:hover, .desktop-nav a.active { color: var(--ink); }
+  .desktop-nav a:hover::after, .desktop-nav a.active::after { transform: scaleX(1); }
+  .header-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 15px; border-radius: 5px; color: white; background: var(--orange); white-space: nowrap; font-size: .82rem; font-weight: 800; }
+  .header-cta:hover { background: var(--orange-dark); }
+  .menu-button { display: none; width: 44px; height: 44px; margin-left: auto; padding: 10px; border: 1px solid var(--line); background: white; cursor: pointer; }
+  .menu-button span { display: block; height: 2px; margin: 5px 0; background: var(--ink); }
+  .mobile-nav { position: fixed; inset: 86px 0 0; overflow-y: auto; background: white; }
+  .mobile-nav a { display: flex; align-items: center; justify-content: space-between; min-height: 60px; border-bottom: 1px solid var(--line); font-size: 1.08rem; font-weight: 800; }
+  .mobile-nav span { color: var(--orange); }
+  @media (max-width: 1120px) { .desktop-nav, .header-cta { display: none; } .menu-button { display: block; } }
+  @media (max-width: 500px) { .header-inner { min-height: 74px; } .brand img { width: 50px; height: 50px; } .mobile-nav { inset-top: 74px; } }
+</style>

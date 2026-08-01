@@ -1,100 +1,155 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import NewsletterCallout from '../components/NewsletterCallout.astro';
-import { CATEGORIES } from '../data/site';
-
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const featured = posts.find((post) => post.data.featured) ?? posts[0];
-const latest = posts.filter((post) => post.id !== featured.id).slice(0, 3);
+import BaseLayout from "../layouts/BaseLayout.astro";
+const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const articles = [
+  { category: "合約管理", title: "EOT 索償點樣先站得住腳？五個關鍵要素拆解", copy: "由合約通知到同期記錄，逐步建立完整延誤證據鏈。", date: "2026.08.01", time: "8 分鐘閱讀" },
+  { category: "施工管理", title: "混凝土澆築流程懶人包：由準備到養護", copy: "將現場最容易遺漏的檢查點，整理成清晰實務步驟。", date: "2026.07.28", time: "6 分鐘閱讀" },
+  { category: "AI × 工程", title: "AI 幫到工程人的五個實用應用場景", copy: "從文件整理到風險識別，AI 如何真正融入工程流程。", date: "2026.07.25", time: "5 分鐘閱讀" },
+];
+const cardArt = [
+  '<svg viewBox="0 0 120 90" aria-hidden="true"><path d="M44 8h32M44 82h32M48 10c0 18 5 24 18 35-13 11-18 17-18 35M72 10c0 18-5 24-18 35 13 11 18 17 18 35M35 8h50M35 82h50" fill="none" stroke="currentColor" stroke-width="2"/><path d="M30 78 88 60l22 11-59 16zM48 70l20 8M59 66l20 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+  '<svg viewBox="0 0 120 90" aria-hidden="true"><path d="M12 77h98M22 77V34l25-12v55M47 77V12h31v65M78 77V39l24 13v25M55 25h7M55 37h7M55 49h7M29 45h7M29 57h7M86 55h7M86 66h7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 77h92" stroke="#f97316" stroke-width="3"/></svg>',
+  '<svg viewBox="0 0 120 90" aria-hidden="true"><rect x="9" y="17" width="65" height="49" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 55V43l11-8 10 5 14-16 10 8v23M29 75h25M42 66v9" fill="none" stroke="currentColor" stroke-width="2"/><rect x="79" y="33" width="33" height="34" rx="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M95 33v-7M91 25h8M87 48h3M101 48h3M88 58h15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="95" cy="22" r="3" fill="#f97316"/></svg>'
+];
+const news = [
+  ["2026.08.01", "香港建築新聞", "北部都會區工程進入新一輪招標及交付階段"],
+  ["2026.07.30", "政策及法例", "工程付款、合約通知及記錄管理最新觀察"],
+  ["2026.07.28", "建築科技與 AI", "CIC 推動 AI 由個人工具走向企業級工程流程"],
+  ["2026.07.26", "安全消息", "惡劣天氣後復工檢查：棚架、機械及臨時工程"],
+];
+const templates = [
+  ["EOT Notice", "延誤通知格式、事件描述及保留權利用語", "DOCX"],
+  ["VO Submission", "變更估值、指示來源及時間成本影響", "DOCX"],
+  ["RFI Log", "問題、責任人、回覆期限及延誤追蹤", "XLSX"],
+  ["Site Daily Report", "工程進度、人手、天氣、相片及異常記錄", "DOCX"],
+];
 ---
 <BaseLayout>
-  <section class="blueprint-grid relative min-h-[calc(100svh-4.75rem)] overflow-hidden border-b border-white/10">
-    <div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-b from-signal-red/15 to-transparent"></div>
-    <div class="absolute -right-28 top-20 size-[26rem] rotate-12 border-[4rem] border-white/[.025]"></div>
-    <div class="container-shell relative grid min-h-[calc(100svh-4.75rem)] items-center gap-14 py-20 lg:grid-cols-[1.1fr_.9fr]">
-      <div>
-        <p class="eyebrow">Hong Kong Construction Knowledge</p>
-        <h1 class="display-title text-balance mt-7 max-w-4xl">
-          工程複雜，<br />
-          <span class="bg-gradient-to-r from-signal-orange to-signal-red bg-clip-text text-transparent">可以講得簡單。</span>
-        </h1>
-        <p class="mt-8 max-w-2xl text-base leading-8 text-steel-300 md:text-xl md:leading-9">
-          為香港 QS、PM、合約經理、地盤團隊、分判商及工程新手整理 Claim、NEC、SOP、RFI、EOT、VO 和 AI 工具。少一點術語，多一點真正用得着的解釋。
-        </p>
-        <div class="mt-10 flex flex-col gap-3 sm:flex-row">
-          <a class="button-primary" href="/blog/">開始閱讀 <span aria-hidden="true">→</span></a>
-          <a class="button-secondary" href="/resources/">免費工程資源</a>
-        </div>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <h1>工程知識，<br />唔需要講到咁<span>複雜。</span></h1>
+        <p>用白話拆解合約、施工、管理及建築科技，讓每個工程人都可以即學即用。</p>
+        <div class="hero-actions"><a class="button button-primary" href="/blog/">瀏覽最新文章 <span set:html={arrow}></span></a><a class="button" href="/ai-tools/">探索工程工具</a></div>
       </div>
-      <div class="relative mx-auto w-full max-w-md lg:max-w-none">
-        <div class="card-surface relative aspect-[4/5] overflow-hidden p-6 md:p-8">
-          <div class="flex items-center justify-between border-b border-white/10 pb-5">
-            <span class="font-mono text-xs tracking-[.2em] text-steel-400">SCOPE / 001</span>
-            <span class="size-3 rounded-full bg-signal-red shadow-[0_0_24px_#ff4b36]"></span>
-          </div>
-          <div class="mt-8 grid grid-cols-2 gap-3">
-            {['QS', 'PM', 'NEC', 'SOP'].map((label, i) => (
-              <div class:list={[
-                'blueprint-grid grid aspect-square place-items-center border text-3xl font-black',
-                i === 0 ? 'border-signal-orange/60 bg-signal-orange/10 text-signal-orange' : 'border-white/10 bg-white/[.025] text-white/35',
-              ]}>{label}</div>
-            ))}
-          </div>
-          <div class="mt-7">
-            <div class="mb-3 flex items-center justify-between text-xs">
-              <span class="text-steel-400">複雜度</span><span class="font-mono text-white">82 → 18</span>
-            </div>
-            <div class="h-1.5 bg-white/8"><div class="h-full w-4/5 bg-gradient-to-r from-signal-orange to-signal-red"></div></div>
-          </div>
-          <p class="absolute bottom-7 left-8 right-8 text-sm font-bold leading-6 text-steel-300">把條文、數字和現場經驗，轉成清楚的下一步。</p>
-        </div>
-        <div class="absolute -bottom-5 -left-5 border border-white/15 bg-ink-950 px-5 py-4 shadow-2xl">
-          <p class="font-mono text-[.65rem] tracking-[.16em] text-steel-400">READERS</p>
-          <p class="mt-1 text-lg font-black">工程人 / 說人話</p>
-        </div>
-      </div>
+      <div class="hero-media"><img src="/images/hero-construction.png" alt="建築物、塔式起重機及工程文件的技術線稿" /></div>
     </div>
   </section>
 
-  <section class="container-shell py-20 md:py-28">
-    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-      <SectionHeading eyebrow="Featured Story" title="今期重點文章" description="由常見誤解切入，把合約機制變成現場可以執行的做法。" />
-      <a href="/blog/" class="text-sm font-black text-signal-orange hover:text-white">查看全部文章 →</a>
-    </div>
-    <div class="mt-12"><PostCard post={featured} featured /></div>
-  </section>
-
-  <section class="border-y border-white/10 bg-ink-950/55 py-20 md:py-28">
-    <div class="container-shell">
-      <SectionHeading eyebrow="Knowledge Map" title="你正在處理哪一類問題？" description="按工作場景找內容，不用先學懂所有術語。" />
-      <div class="mt-12 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
-        {CATEGORIES.map((category, index) => (
-          <a href={`/category/${category.slug}/`} class="group relative bg-ink-900 p-7 transition hover:bg-ink-800 md:p-9">
-            <div class="flex items-start justify-between">
-              <span class="font-mono text-xs text-steel-400">0{index + 1}</span>
-              <span class="text-3xl font-black text-white/12 transition group-hover:text-signal-orange">{category.code}</span>
-            </div>
-            <h3 class="mt-12 text-xl font-black group-hover:text-signal-orange">{category.name}</h3>
-            <p class="mt-3 text-sm leading-7 text-steel-300">{category.description}</p>
-            <span class="mt-7 inline-block text-sm text-white transition group-hover:translate-x-1">進入分類 →</span>
-          </a>
-        ))}
-      </div>
+  <section class="section">
+    <div class="container">
+      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">01</span><h2 class="section-title">最新內容</h2></div><a class="section-link" href="/blog/"><span>查看全部文章</span><span set:html={arrow}></span></a></div>
+      <div class="content-grid">{articles.map((article, index) => <a class="content-card" href="/blog/"><span class="category">{article.category}</span><h3>{article.title}</h3><p>{article.copy}</p><div class="card-art" set:html={cardArt[index]}></div><footer><span>{article.date}</span><span>{article.time}</span></footer></a>)}</div>
     </div>
   </section>
 
-  <section class="container-shell py-20 md:py-28">
-    <SectionHeading eyebrow="Latest Articles" title="最新白話文章" description="每篇都以一個實際工作問題開始，讀完知道下一步可以做甚麼。" />
-    <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {latest.map((post) => <PostCard post={post} />)}
+  <section class="section section-soft">
+    <div class="container">
+      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">02</span><h2 class="section-title">工程新聞</h2></div><a class="section-link" href="/news/"><span>查看全部新聞</span><span set:html={arrow}></span></a></div>
+      <div class="listing news-list">{news.map(([date,type,title]) => <a class="listing-row" href="/news/"><time>{date}</time><span class="listing-type">{type}</span><strong>{title}</strong><span set:html={arrow}></span></a>)}</div>
     </div>
   </section>
 
-  <section class="container-shell pb-20 md:pb-28">
-    <NewsletterCallout />
+  <section class="section">
+    <div class="container">
+      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">03</span><h2 class="section-title">實用文件範本</h2></div><a class="section-link" href="/templates/"><span>查看全部範本</span><span set:html={arrow}></span></a></div>
+      <div class="template-rail">{templates.map(([name,desc,type]) => <a class="template-item" href="/templates/"><svg viewBox="0 0 48 56" aria-hidden="true"><path d="M8 2h21l11 11v41H8zM29 2v12h11M15 24h18M15 32h18M15 40h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><div><h3>{name}</h3><p>{desc}</p><span>下載 {type}</span></div></a>)}</div>
+    </div>
+  </section>
+
+  <section class="section section-soft">
+    <div class="container">
+      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">04</span><h2 class="section-title">電子書</h2></div><a class="section-link" href="/ebooks/"><span>查看全部電子書</span><span set:html={arrow}></span></a></div>
+      <div class="ebook-band"><div class="book"><span>工程白話文</span><strong>合約管理<br />白話指南</strong><small>由條款到實務的 12 堂課</small></div><div class="ebook-copy"><span class="orange-label">最新上架</span><h3>合約管理白話指南：由條款到實務的 12 堂課</h3><p>用白話拆解常見合約條款及實務應用，讓工程人知道風險、記錄做得更好、索償更完整。</p><div class="book-meta"><span>128 頁</span><span>PDF</span><span>繁體中文</span></div></div><a class="button button-primary" href="/ebooks/">查看電子書 <span set:html={arrow}></span></a></div>
+    </div>
+  </section>
+
+  <section class="section tools-section">
+    <div class="container split-tools">
+      <div class="dictionary-panel"><div class="section-title-wrap"><span class="section-number">05</span><h2 class="section-title">工程白話字典</h2></div><p>搜尋常見工程字眼，白話解釋專業術語。</p><form class="home-search" action="/dictionary/"><label class="visually-hidden" for="term">搜尋工程字眼</label><input id="term" name="q" placeholder="搜尋工程字眼，例如：EOT、Tender、PC…" /><button aria-label="搜尋"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button></form><div class="quick-terms"><a href="/dictionary/?q=EOT">EOT</a><a href="/dictionary/?q=VO">VO</a><a href="/dictionary/?q=RFI">RFI</a><a href="/dictionary/?q=Claim">Claim</a></div></div>
+      <div class="ai-panel"><div class="section-title-wrap"><span class="section-number">06</span><h2 class="section-title">AI 工程工具</h2></div><p>善用 AI 提升效率，解決日常工程難題。</p><a class="ai-demo" href="/ai-tools/"><div class="robot"><svg viewBox="0 0 48 48"><rect x="8" y="12" width="32" height="28" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M24 12V6M20 6h8M15 24h3M30 24h3M17 33h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div><strong>EOT Timeline Assistant</strong><span>輸入延誤事件日期，自動整理時間線及證據清單。</span></div><b>立即使用 →</b></a></div>
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  .hero { padding: 48px 0 34px; overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; min-height: 450px; }
+  .hero h1 { margin: 0; font-size: clamp(3.2rem, 6.5vw, 6.3rem); line-height: .98; letter-spacing: -.075em; }
+  .hero h1 span { color: var(--orange); }
+  .hero-copy p { max-width: 570px; margin: 28px 0 0; color: var(--body); font-size: 1.17rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+  .hero-actions :global(svg), .ebook-band :global(svg) { width: 18px; }
+  .hero-media { margin-right: -8vw; }
+  .hero-media img { width: 100%; max-height: 560px; object-fit: contain; mix-blend-mode: multiply; }
+  .content-card { position: relative; overflow: hidden; }
+  .content-card h3, .content-card p, .content-card footer { position: relative; z-index: 1; max-width: 74%; }
+  .card-art { position: absolute; right: 18px; bottom: 58px; width: 105px; color: #b7b7b7; opacity: .9; }
+  .card-art :global(svg) { width: 100%; height: auto; }
+  .template-rail { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); }
+  .template-item { display: grid; grid-template-columns: 48px 1fr; gap: 18px; min-height: 190px; padding: 28px; border-right: 1px solid var(--line); }
+  .template-item:last-child { border-right: 0; }
+  .template-item svg { width: 44px; color: var(--orange); }
+  .template-item h3 { margin: 0 0 8px; font-size: 1rem; }
+  .template-item p { margin: 0 0 14px; color: var(--body); font-size: .84rem; }
+  .template-item span { padding-bottom: 3px; border-bottom: 1px solid var(--orange); color: var(--orange-dark); font-size: .78rem; font-weight: 800; }
+  .ebook-band { display: grid; grid-template-columns: 180px 1fr auto; align-items: center; gap: 44px; padding: 34px 44px; border: 1px solid var(--line); background: white; }
+  .book { position: relative; display: flex; width: 150px; height: 202px; flex-direction: column; padding: 20px 18px; border-left: 8px solid #ddd; background: white; box-shadow: var(--shadow); }
+  .book::after { content: ""; position: absolute; inset: auto 15px 14px auto; width: 70px; height: 72px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transform: skewY(-20deg); }
+  .book span { color: var(--orange); font-size: .63rem; font-weight: 800; }
+  .book strong { margin-top: 22px; font-size: 1.2rem; line-height: 1.35; }
+  .book small { margin-top: auto; color: var(--muted); font-size: .58rem; }
+  .orange-label { color: var(--orange); font-size: .85rem; font-weight: 800; }
+  .ebook-copy h3 { margin: 10px 0; font-size: 1.55rem; }
+  .ebook-copy p { max-width: 620px; margin: 0; color: var(--body); }
+  .book-meta { display: flex; gap: 22px; margin-top: 20px; color: var(--muted); font-size: .83rem; }
+  .split-tools { display: grid; grid-template-columns: 1fr 1fr; }
+  .dictionary-panel, .ai-panel { padding-right: 46px; }
+  .ai-panel { padding-right: 0; padding-left: 46px; border-left: 1px solid var(--line); }
+  .split-tools p { color: var(--body); }
+  .home-search { display: flex; margin-top: 26px; }
+  .home-search input { min-width: 0; flex: 1; height: 52px; padding: 0 16px; border: 1px solid var(--line); border-right: 0; border-radius: 6px 0 0 6px; outline: 0; }
+  .home-search input:focus { border-color: var(--orange); }
+  .home-search button { width: 54px; border: 0; border-radius: 0 6px 6px 0; color: white; background: var(--orange); cursor: pointer; }
+  .home-search button svg { width: 22px; }
+  .quick-terms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .quick-terms a { padding: 3px 9px; border: 1px solid var(--line); border-radius: 4px; color: var(--body); font-size: .75rem; }
+  .ai-demo { display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 16px; margin-top: 26px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); }
+  .ai-demo:hover { border-color: var(--orange); }
+  .robot { display: grid; width: 50px; height: 50px; place-items: center; border: 1px solid var(--line); border-radius: 8px; }
+  .robot svg { width: 32px; }
+  .ai-demo div:nth-child(2) { display: grid; }
+  .ai-demo span { color: var(--body); font-size: .82rem; }
+  .ai-demo b { color: var(--orange-dark); font-size: .82rem; }
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-media { order: -1; width: min(100%, 650px); margin: -30px auto 20px; }
+    .hero-copy { max-width: 760px; }
+    .template-rail { grid-template-columns: 1fr 1fr; }
+    .template-item:nth-child(2) { border-right: 0; }
+    .template-item:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .ebook-band { grid-template-columns: 150px 1fr; }
+    .ebook-band > .button { grid-column: 2; justify-self: start; }
+    .split-tools { gap: 50px; }
+    .dictionary-panel { padding-right: 0; }
+    .ai-panel { padding-left: 30px; }
+  }
+  @media (max-width: 700px) {
+    .hero { padding-top: 40px; }
+    .hero-grid { min-height: auto; }
+    .hero h1 { font-size: clamp(3rem, 14vw, 4.8rem); }
+    .hero-media { margin-top: -12px; }
+    .content-card h3, .content-card p, .content-card footer { max-width: none; }
+    .card-art { display: none; }
+    .template-rail { grid-template-columns: 1fr; }
+    .template-item, .template-item:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); }
+    .template-item:last-child { border-bottom: 0; }
+    .ebook-band { grid-template-columns: 1fr; padding: 28px; }
+    .ebook-band > .button { grid-column: auto; }
+    .split-tools { grid-template-columns: 1fr; }
+    .ai-panel { padding: 44px 0 0; border-top: 1px solid var(--line); border-left: 0; }
+    .dictionary-panel { padding-bottom: 44px; }
+    .ai-demo { grid-template-columns: 48px 1fr; }
+    .ai-demo b { grid-column: 2; }
+  }
+</style>

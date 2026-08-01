@@ -1,80 +1,37 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
-import { CATEGORIES } from '../../data/site';
-
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const posts = [
+  ["合約管理", "EOT 索償點樣先站得住腳？五個關鍵要素拆解", "由通知、因果關係到同期記錄，建立完整延誤證據鏈。", "2026.08.01"],
+  ["工程管理", "地盤日日寫 Diary，點解 Delay Notice 仍然會漏？", "Site Diary 是證據來源，但不等於已履行合約通知責任。", "2026.07.30"],
+  ["Tender", "三份分判報價，最平嗰份點解未必最平？", "比較漏項、界面、風險轉移及付款條款後，價格可能完全改寫。", "2026.07.27"],
+  ["NEC", "PM 唔批 programme，會有咩後果？", "Programme 不只是進度表，也是 NEC 管理風險及評估 CE 的基礎。", "2026.07.24"],
+  ["AI × 工程", "AI 真正價值：由生成內容升級到標準化工程流程", "把 AI 由個人助手，發展成可管理、可審核的企業工作流程。", "2026.07.21"],
+  ["施工管理", "一分鐘睇懂 Curing 點解唔可以求其", "養護影響混凝土強度、耐久性、裂縫及日後修補成本。", "2026.07.18"],
+];
 ---
-<BaseLayout title="文章" description="瀏覽 BuildScope 所有香港工程、QS、PM、合約、NEC、SOP 與地盤管理文章。">
-  <header class="blueprint-grid border-b border-white/10 py-16 md:py-24">
-    <div class="container-shell">
-      <p class="eyebrow">Knowledge Library</p>
-      <h1 class="section-title mt-6">工程知識庫</h1>
-      <p class="mt-5 max-w-2xl text-base leading-8 text-steel-300">從合約條文到地盤執行，把複雜問題拆成清楚、可操作的內容。</p>
-    </div>
-  </header>
-
-  <section class="container-shell py-12 md:py-18">
-    <div class="flex flex-col gap-5 border-b border-white/10 pb-8 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex flex-wrap gap-2" role="group" aria-label="按分類篩選文章">
-        <button class="filter-button bg-signal-orange text-ink-900" data-filter="all">全部</button>
-        {CATEGORIES.map((category) => (
-          <button class="filter-button border border-white/15 text-steel-300 hover:border-signal-orange hover:text-white" data-filter={category.slug}>
-            {category.name}
-          </button>
-        ))}
-      </div>
-      <p id="post-count" class="text-sm text-steel-400">共 {posts.length} 篇文章</p>
-    </div>
-    <div id="post-grid" class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {posts.map((post) => (
-        <div data-post data-category={post.data.category}>
-          <PostCard post={post} />
-        </div>
-      ))}
-    </div>
-    <p id="empty-state" class="hidden py-20 text-center text-steel-300">這個分類暫時未有文章。</p>
-  </section>
+<BaseLayout title="工程 Blog｜工程白話文 BuildScope" description="BuildScope 工程 Blog，以白話拆解合約、施工、管理及 AI 工程應用。">
+  <header class="page-hero"><div class="container"><h1>工程 <span>Blog</span></h1><p>將複雜的合約條款、施工流程及工程管理問題，整理成工程人真正用得上的內容。</p></div></header>
+  <section class="section"><div class="container"><div class="filters" aria-label="文章分類"><button class="active" data-filter="all">全部</button><button data-filter="合約管理">合約管理</button><button data-filter="工程管理">工程管理</button><button data-filter="Tender">Tender</button><button data-filter="NEC">NEC</button><button data-filter="AI × 工程">AI × 工程</button></div><div class="posts">{posts.map(([category,title,copy,date], index) => <article class="post" data-category={category}><span class="post-number">{String(index + 1).padStart(2,"0")}</span><div><span class="category">{category}</span><h2>{title}</h2><p>{copy}</p><time>{date}</time></div><a href="#" aria-label={`閱讀：${title}`}>閱讀文章 →</a></article>)}</div></div></section>
 </BaseLayout>
-
-<style>
-  .filter-button {
-    min-height: 2.75rem;
-    border-radius: .2rem;
-    padding: .55rem .85rem;
-    font-size: .8rem;
-    font-weight: 800;
-    transition: .2s ease;
-  }
-</style>
-
 <script>
-  const buttons = [...document.querySelectorAll<HTMLButtonElement>('.filter-button')];
-  const cards = [...document.querySelectorAll<HTMLElement>('[data-post]')];
-  const count = document.querySelector('#post-count');
-  const empty = document.querySelector('#empty-state');
-
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const filter = button.dataset.filter;
-      let visible = 0;
-      buttons.forEach((item) => {
-        const active = item === button;
-        item.classList.toggle('bg-signal-orange', active);
-        item.classList.toggle('text-ink-900', active);
-        item.classList.toggle('border', !active);
-        item.classList.toggle('border-white/15', !active);
-        item.classList.toggle('text-steel-300', !active);
-      });
-      cards.forEach((card) => {
-        const show = filter === 'all' || card.dataset.category === filter;
-        card.classList.toggle('hidden', !show);
-        if (show) visible += 1;
-      });
-      if (count) count.textContent = `共 ${visible} 篇文章`;
-      empty?.classList.toggle('hidden', visible > 0);
-    });
-  });
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+  const posts = document.querySelectorAll<HTMLElement>("[data-category]");
+  buttons.forEach((button) => button.addEventListener("click", () => {
+    buttons.forEach((item) => item.classList.remove("active")); button.classList.add("active");
+    posts.forEach((post) => post.hidden = button.dataset.filter !== "all" && post.dataset.category !== button.dataset.filter);
+  }));
 </script>
+<style>
+  .filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
+  .filters button { min-height:40px; padding:0 15px; border:1px solid var(--line); border-radius:5px; color:var(--body); background:white; font-weight:700; cursor:pointer; }
+  .filters button:hover,.filters button.active { color:white; border-color:var(--orange); background:var(--orange); }
+  .posts { border-top:1px solid var(--line); }
+  .post { display:grid; grid-template-columns:74px 1fr auto; gap:28px; align-items:start; padding:38px 0; border-bottom:1px solid var(--line); }
+  .post-number { color:var(--orange); font-size:1.5rem; font-weight:800; }
+  .category { color:var(--orange-dark); font-size:.82rem; font-weight:800; }
+  .post h2 { margin:8px 0; font-size:clamp(1.3rem,3vw,2rem); line-height:1.3; }
+  .post p { max-width:700px; margin:0; color:var(--body); }
+  .post time { display:block; margin-top:14px; color:var(--muted); font-size:.8rem; }
+  .post > a { margin-top:32px; color:var(--orange-dark); font-weight:800; white-space:nowrap; }
+  @media(max-width:640px){.post{grid-template-columns:42px 1fr}.post>a{grid-column:2;margin-top:0}.post-number{font-size:1.1rem}}
+</style>

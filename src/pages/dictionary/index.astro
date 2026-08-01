@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const terms = [
+  ["EOT", "Extension of Time", "工期延長。當合約認可的延誤事件影響完工日期，承建商按程序申請延長工期。"],
+  ["VO", "Variation Order", "工程變更指令，可能涉及工作範圍、價款及工期影響。"],
+  ["RFI", "Request for Information", "當圖則、規格或現場資料不清楚時，正式提出資料要求及留下記錄。"],
+  ["CE", "Compensation Event", "NEC 合約下可能改變價款、工期或 Key Date 的事件。"],
+  ["Tender", "投標", "承建商按招標文件提交技術、商務及價格建議的過程。"],
+  ["Practical Completion", "實質完工", "工程已達到可按合約目的使用的階段，但可能仍有輕微未完成項目。"],
+  ["Claim", "索償／申索", "根據合約或法律權利，就額外時間、費用或其他補償提出要求。"],
+  ["LAD", "Liquidated and Ascertained Damages", "合約預先訂明的延誤賠償，一般按每日或每週計算。"],
+];
+---
+<BaseLayout title="工程白話字典｜工程白話文 BuildScope">
+  <header class="page-hero"><div class="container"><h1>工程白話<span>字典</span></h1><p>搜尋工程、合約、QS、PM、BS 及地盤常見術語，用白話快速掌握意思及使用情境。</p></div></header>
+  <section class="section"><div class="container"><form class="dictionary-search"><label for="dictionary-input">搜尋工程字眼</label><div><input id="dictionary-input" type="search" placeholder="例如：EOT、VO、RFI、Tender…" autocomplete="off" /><button type="submit">搜尋</button></div><small id="result-count" aria-live="polite">共 {terms.length} 個示範詞彙</small></form><div class="term-list">{terms.map(([term,full,meaning]) => <article data-search={`${term} ${full} ${meaning}`.toLowerCase()}><div><strong>{term}</strong><span>{full}</span></div><p>{meaning}</p><a href="#">查看詳細解說 →</a></article>)}</div><div class="empty" hidden>暫時找不到相關詞彙。你可以嘗試其他字眼。</div></div></section>
+</BaseLayout>
+<script>
+  const input = document.querySelector<HTMLInputElement>("#dictionary-input"); const form = document.querySelector<HTMLFormElement>(".dictionary-search"); const terms = [...document.querySelectorAll<HTMLElement>("[data-search]")]; const count = document.querySelector<HTMLElement>("#result-count"); const empty = document.querySelector<HTMLElement>(".empty");
+  const run = () => { const q=(input?.value||"").trim().toLowerCase(); let shown=0; terms.forEach((term)=>{term.hidden=!!q&&!term.dataset.search?.includes(q); if(!term.hidden)shown++;}); if(count)count.textContent=`找到 ${shown} 個詞彙`; if(empty)empty.hidden=shown!==0; };
+  form?.addEventListener("submit",(e)=>{e.preventDefault();run();}); input?.addEventListener("input",run); const q=new URLSearchParams(location.search).get("q"); if(q&&input){input.value=q;run();}
+</script>
+<style>
+  .dictionary-search{max-width:760px;margin:0 auto 50px}.dictionary-search>label{display:block;margin-bottom:10px;font-size:1.1rem;font-weight:800}.dictionary-search>div{display:flex}.dictionary-search input{min-width:0;flex:1;height:58px;padding:0 18px;border:2px solid var(--ink);border-right:0;border-radius:6px 0 0 6px;outline:0}.dictionary-search input:focus{border-color:var(--orange)}.dictionary-search button{width:100px;border:0;border-radius:0 6px 6px 0;color:white;background:var(--orange);font-weight:800;cursor:pointer}.dictionary-search small{display:block;margin-top:10px;color:var(--muted)}.term-list{border-top:1px solid var(--line)}article{display:grid;grid-template-columns:220px 1fr auto;gap:28px;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}article>div{display:grid}article strong{font-size:1.5rem}article span{color:var(--orange-dark);font-size:.78rem;font-weight:800}article p{margin:0;color:var(--body)}article a{color:var(--orange-dark);font-size:.85rem;font-weight:800}.empty{padding:40px;text-align:center;background:var(--soft)}
+  @media(max-width:700px){article{grid-template-columns:1fr;gap:10px}article a{margin-top:4px}}
+</style>
