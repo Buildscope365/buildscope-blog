@@ -62,9 +62,9 @@ const nav = [
   .header-cta:hover { background: var(--orange-dark); }
   .menu-button { display: none; width: 44px; height: 44px; margin-left: auto; padding: 10px; border: 1px solid var(--line); background: white; cursor: pointer; }
   .menu-button span { display: block; height: 2px; margin: 5px 0; background: var(--ink); }
-  .mobile-nav { position: fixed; inset: 86px 0 0; overflow-y: auto; background: white; }
+  .mobile-nav { position: absolute; top: 100%; right: 0; left: 0; height: calc(100dvh - 86px); overflow-y: auto; overscroll-behavior: contain; background: white; box-shadow: 0 18px 35px rgba(17, 17, 17, .1); }
   .mobile-nav a { display: flex; align-items: center; justify-content: space-between; min-height: 60px; border-bottom: 1px solid var(--line); font-size: 1.08rem; font-weight: 800; }
   .mobile-nav span { color: var(--orange); }
   @media (max-width: 1120px) { .desktop-nav, .header-cta { display: none; } .menu-button { display: block; } }
-  @media (max-width: 500px) { .header-inner { min-height: 74px; } .brand img { width: 54px; height: 54px; } .mobile-nav { inset-top: 74px; } }
+  @media (max-width: 500px) { .header-inner { min-height: 74px; } .brand img { width: 54px; height: 54px; } .mobile-nav { height: calc(100dvh - 74px); } }
 </style>
