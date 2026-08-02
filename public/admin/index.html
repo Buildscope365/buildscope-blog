@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>BuildScope CMS Admin</title>
+    <title>BuildScope 網站後台</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
@@ -15,7 +15,7 @@
     >
       <section style="display: grid; justify-items: center; gap: 2rem;">
         <img src="/favicon.svg" alt="BuildScope" style="width: min(42vw, 300px); height: auto;" />
-        <p style="color: #526173; margin: 0;">Loading BuildScope CMS...</p>
+        <p style="color: #526173; margin: 0;">正在載入 BuildScope 網站後台…</p>
       </section>
     </main>
 
@@ -38,11 +38,11 @@
         function showError(message) {
           root.innerHTML = [
             '<section style="max-width: 42rem; padding: 2rem; line-height: 1.6; color: #17212b;">',
-            "<h1>Unable to load BuildScope CMS login</h1>",
+            "<h1>未能載入 BuildScope 網站後台</h1>",
             "<p>",
             message,
             "</p>",
-            '<p><a href="/" style="color: #7a86a1;">Go back to site</a></p>',
+            '<p><a href="/" style="color: #7a86a1;">返回網站</a></p>',
             "</section>",
           ].join("");
         }
@@ -50,7 +50,7 @@
         function openIdentityLogin() {
           if (!window.netlifyIdentity || !window.netlifyIdentity.open) {
             showError(
-              "Netlify Identity widget is not ready. Please refresh the page, or check whether identity.netlify.com is blocked by the browser/network.",
+              "登入服務尚未準備好，請重新整理頁面後再試。",
             );
             return;
           }
@@ -64,8 +64,10 @@
           root.innerHTML = [
             '<section style="display: grid; justify-items: center; gap: 2rem;">',
             '<img src="/favicon.svg" alt="BuildScope" style="width: min(42vw, 300px); height: auto;" />',
-            '<button id="buildscope-admin-login" type="button" style="border: 0; border-radius: 4px; background: #2f4147; color: white; padding: 0.7rem 1rem; box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18); cursor: pointer; font: inherit;">Login with Netlify Identity</button>',
-            '<a href="/" style="color: #7a86a1; text-decoration: none;">← Go back to site</a>',
+            '<h1 style="margin:0;font-size:1.35rem;color:#17212b;">BuildScope 網站內容管理</h1>',
+            '<button id="buildscope-admin-login" type="button" style="border: 0; border-radius: 4px; background: #f97316; color: white; padding: 0.8rem 1.2rem; box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18); cursor: pointer; font: inherit;font-weight:700;">登入網站後台</button>',
+            '<p style="max-width:32rem;margin:0;color:#657080;text-align:center;font-size:.9rem;">登入後可以新增及修改工程 Blog、工程新聞、文件範本及電子書。</p>',
+            '<a href="/" style="color: #7a86a1; text-decoration: none;">← 返回網站</a>',
             "</section>",
           ].join("");
 
@@ -95,7 +97,7 @@
         function initIdentity() {
           if (!window.netlifyIdentity) {
             showError(
-              "Netlify Identity widget did not load. Please refresh the page, or check whether identity.netlify.com is blocked by the browser/network.",
+              "登入服務未能載入，請重新整理頁面後再試。",
             );
             return;
           }

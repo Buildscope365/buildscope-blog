@@ -1,0 +1,38 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { categoryLabel, formatDate } from "../../data/categories";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+interface Props { post: CollectionEntry<"blog"> }
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout title={`${post.data.title}｜工程白話文 BuildScope`} description={post.data.description}>
+  <article>
+    <header class="article-hero">
+      <div class="container article-head">
+        <a class="back" href="/blog/">← 返回工程 Blog</a>
+        <span class="category">{categoryLabel(post.data.category)}</span>
+        <h1>{post.data.title}</h1>
+        <p>{post.data.description}</p>
+        <div class="meta"><span>{post.data.author}</span><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time><span>{post.data.readingTime}</span><span>{post.data.difficulty}</span></div>
+      </div>
+    </header>
+    <div class="container article-shell">
+      {post.data.coverImage && <img class="cover" src={post.data.coverImage} alt={post.data.title} />}
+      <div class="article-body"><Content /></div>
+      {post.data.tags.length > 0 && <footer class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</footer>}
+      <a class="button" href="/blog/">返回全部文章</a>
+    </div>
+  </article>
+</BaseLayout>
+<style>
+  .article-hero{padding:68px 0 58px;border-bottom:1px solid var(--line);background:var(--soft)}
+  .article-head{max-width:900px}.back{display:inline-block;margin-bottom:34px;color:var(--body);font-size:.85rem;font-weight:800}.back:hover{color:var(--orange-dark)}
+  .category{color:var(--orange-dark);font-size:.85rem;font-weight:900}.article-head h1{max-width:880px;margin:12px 0 20px;font-size:clamp(2.35rem,6vw,4.8rem);line-height:1.08;letter-spacing:-.055em}.article-head>p{max-width:760px;margin:0;color:var(--body);font-size:1.15rem}.meta{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:28px;color:var(--muted);font-size:.82rem}.article-shell{max-width:900px;padding-top:56px;padding-bottom:86px}.cover{width:100%;max-height:520px;margin-bottom:44px;object-fit:cover}.article-body{max-width:760px;font-size:1.05rem;line-height:1.9}.article-body :global(h2){margin:2.5em 0 .65em;font-size:1.75rem;line-height:1.35}.article-body :global(h3){margin:2em 0 .55em;font-size:1.3rem}.article-body :global(p){margin:0 0 1.35em;color:var(--body)}.article-body :global(li){margin:.45em 0;color:var(--body)}.article-body :global(blockquote){margin:2em 0;padding:18px 22px;border-left:4px solid var(--orange);background:var(--soft)}.article-body :global(blockquote p){margin:0}.tags{display:flex;flex-wrap:wrap;gap:8px;margin:44px 0 30px;padding-top:24px;border-top:1px solid var(--line)}.tags span{padding:5px 10px;border:1px solid var(--line);border-radius:4px;color:var(--body);font-size:.78rem}
+</style>

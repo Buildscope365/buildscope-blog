@@ -1,17 +1,16 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-const books = [
-  ["合約管理白話指南", "由條款到實務的 12 堂課", "128 頁", "即將推出"],
-  ["QS／PM 新人避坑手冊", "由 Meeting、RFI、VO 到 Delay Record", "156 頁", "編輯中"],
-  ["NEC4 合約條文解讀", "Early Warning、Programme 及 CE 白話拆解", "180 頁", "編輯中"],
-];
+
+const books = (await getCollection("ebooks", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.sortOrder - b.data.sortOrder,
+);
 ---
 <BaseLayout title="工程電子書｜工程白話文 BuildScope">
   <header class="page-hero"><div class="container"><h1>工程<span>電子書</span></h1><p>將零散的工程知識整理成有系統、可重複查閱的實務指南。</p></div></header>
-  <section class="section"><div class="container"><div class="books">{books.map(([title,subtitle,pages,status],i) => <article><div class="cover"><span>工程白話文</span><strong>{title}</strong><small>{subtitle}</small><b>{String(i+1).padStart(2,"0")}</b></div><div class="book-copy"><span>{status}</span><h2>{title}</h2><p>{subtitle}</p><div>{pages} · PDF · 繁體中文</div><button type="button">查看詳情</button></div></article>)}</div></div></section>
+  <section class="section"><div class="container"><div class="books">{books.map((book, i) => <article>{book.data.coverImage ? <img class="cover-image" src={book.data.coverImage} alt={`${book.data.title}封面`} /> : <div class="cover"><span>工程白話文</span><strong>{book.data.title}</strong><small>{book.data.subtitle}</small><b>{String(i+1).padStart(2,"0")}</b></div>}<div class="book-copy"><span>{book.data.status}</span><h2>{book.data.title}</h2><p>{book.data.description}</p><div>{book.data.pages} · {book.data.format} · {book.data.language}</div>{book.data.purchaseUrl ? <a class="book-action" href={book.data.purchaseUrl} target={book.data.purchaseUrl.startsWith("http") ? "_blank" : undefined} rel={book.data.purchaseUrl.startsWith("http") ? "noreferrer" : undefined}>{book.data.actionLabel}</a> : <span class="book-action disabled">{book.data.actionLabel}</span>}</div></article>)}</div></div></section>
 </BaseLayout>
-<script>document.querySelectorAll(".books button").forEach((button)=>button.addEventListener("click",()=>{button.textContent="上架後通知我";}));</script>
 <style>
-  .books{display:grid;gap:28px}article{display:grid;grid-template-columns:210px 1fr;gap:46px;align-items:center;padding:38px;border:1px solid var(--line);background:var(--soft)}.cover{position:relative;display:flex;width:180px;height:250px;flex-direction:column;padding:24px 20px;border-left:9px solid #ddd;background:white;box-shadow:var(--shadow)}.cover>span,.book-copy>span{color:var(--orange);font-size:.75rem;font-weight:800}.cover strong{margin-top:32px;font-size:1.45rem;line-height:1.3}.cover small{margin-top:10px;color:var(--body)}.cover b{margin-top:auto;color:var(--orange);font-size:1.5rem}.book-copy h2{margin:10px 0;font-size:2rem}.book-copy p{color:var(--body)}.book-copy div{margin:18px 0;color:var(--muted);font-size:.85rem}.book-copy button{min-height:44px;padding:0 18px;border:0;border-radius:5px;color:white;background:var(--orange);font-weight:800;cursor:pointer}
-  @media(max-width:620px){article{grid-template-columns:1fr;padding:26px}.cover{margin:auto}.book-copy h2{font-size:1.6rem}}
+  .books{display:grid;gap:28px}article{display:grid;grid-template-columns:210px 1fr;gap:46px;align-items:center;padding:38px;border:1px solid var(--line);background:var(--soft)}.cover,.cover-image{width:180px;height:250px}.cover-image{object-fit:cover;box-shadow:var(--shadow)}.cover{position:relative;display:flex;flex-direction:column;padding:24px 20px;border-left:9px solid #ddd;background:white;box-shadow:var(--shadow)}.cover>span,.book-copy>span{color:var(--orange);font-size:.75rem;font-weight:800}.cover strong{margin-top:32px;font-size:1.45rem;line-height:1.3}.cover small{margin-top:10px;color:var(--body)}.cover b{margin-top:auto;color:var(--orange);font-size:1.5rem}.book-copy h2{margin:10px 0;font-size:2rem}.book-copy p{color:var(--body)}.book-copy>div{margin:18px 0;color:var(--muted);font-size:.85rem}.book-action{display:inline-flex;min-height:44px;align-items:center;padding:0 18px;border-radius:5px;color:white;background:var(--orange);font-size:.88rem;font-weight:800}.book-action:hover{background:var(--orange-dark)}.book-action.disabled{background:var(--muted);cursor:not-allowed}
+  @media(max-width:620px){article{grid-template-columns:1fr;padding:26px}.cover,.cover-image{margin:auto}.book-copy h2{font-size:1.6rem}}
 </style>

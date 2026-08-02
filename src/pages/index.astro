@@ -1,28 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { categoryLabel, formatDate } from "../data/categories";
 const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-const articles = [
-  { category: "合約管理", title: "EOT 索償點樣先站得住腳？五個關鍵要素拆解", copy: "由合約通知到同期記錄，逐步建立完整延誤證據鏈。", date: "2026.08.01", time: "8 分鐘閱讀" },
-  { category: "施工管理", title: "混凝土澆築流程懶人包：由準備到養護", copy: "將現場最容易遺漏的檢查點，整理成清晰實務步驟。", date: "2026.07.28", time: "6 分鐘閱讀" },
-  { category: "AI × 工程", title: "AI 幫到工程人的五個實用應用場景", copy: "從文件整理到風險識別，AI 如何真正融入工程流程。", date: "2026.07.25", time: "5 分鐘閱讀" },
-];
+const articles = (await getCollection("blog", ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 const cardArt = [
   '<svg viewBox="0 0 120 90" aria-hidden="true"><path d="M44 8h32M44 82h32M48 10c0 18 5 24 18 35-13 11-18 17-18 35M72 10c0 18-5 24-18 35 13 11 18 17 18 35M35 8h50M35 82h50" fill="none" stroke="currentColor" stroke-width="2"/><path d="M30 78 88 60l22 11-59 16zM48 70l20 8M59 66l20 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
   '<svg viewBox="0 0 120 90" aria-hidden="true"><path d="M12 77h98M22 77V34l25-12v55M47 77V12h31v65M78 77V39l24 13v25M55 25h7M55 37h7M55 49h7M29 45h7M29 57h7M86 55h7M86 66h7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 77h92" stroke="#f97316" stroke-width="3"/></svg>',
   '<svg viewBox="0 0 120 90" aria-hidden="true"><rect x="9" y="17" width="65" height="49" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 55V43l11-8 10 5 14-16 10 8v23M29 75h25M42 66v9" fill="none" stroke="currentColor" stroke-width="2"/><rect x="79" y="33" width="33" height="34" rx="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M95 33v-7M91 25h8M87 48h3M101 48h3M88 58h15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="95" cy="22" r="3" fill="#f97316"/></svg>'
 ];
-const news = [
-  ["2026.08.01", "香港建築新聞", "北部都會區工程進入新一輪招標及交付階段"],
-  ["2026.07.30", "政策及法例", "工程付款、合約通知及記錄管理最新觀察"],
-  ["2026.07.28", "建築科技與 AI", "CIC 推動 AI 由個人工具走向企業級工程流程"],
-  ["2026.07.26", "安全消息", "惡劣天氣後復工檢查：棚架、機械及臨時工程"],
-];
-const templates = [
-  ["EOT Notice", "延誤通知格式、事件描述及保留權利用語", "DOCX"],
-  ["VO Submission", "變更估值、指示來源及時間成本影響", "DOCX"],
-  ["RFI Log", "問題、責任人、回覆期限及延誤追蹤", "XLSX"],
-  ["Site Daily Report", "工程進度、人手、天氣、相片及異常記錄", "DOCX"],
-];
+const news = (await getCollection("news", ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 4);
+const templates = (await getCollection("templates", ({ data }) => !data.draft)).sort((a, b) => a.data.sortOrder - b.data.sortOrder).slice(0, 4);
+const featuredBook = (await getCollection("ebooks", ({ data }) => !data.draft)).sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.sortOrder - b.data.sortOrder)[0];
 ---
 <BaseLayout>
   <section class="hero">
@@ -39,28 +28,28 @@ const templates = [
   <section class="section">
     <div class="container">
       <div class="section-heading"><div class="section-title-wrap"><span class="section-number">01</span><h2 class="section-title">最新內容</h2></div><a class="section-link" href="/blog/"><span>查看全部文章</span><span set:html={arrow}></span></a></div>
-      <div class="content-grid">{articles.map((article, index) => <a class="content-card" href="/blog/"><span class="category">{article.category}</span><h3>{article.title}</h3><p>{article.copy}</p><div class="card-art" set:html={cardArt[index]}></div><footer><span>{article.date}</span><span>{article.time}</span></footer></a>)}</div>
+      <div class="content-grid">{articles.map((article, index) => <a class="content-card" href={`/blog/${article.id}/`}><span class="category">{categoryLabel(article.data.category)}</span><h3>{article.data.title}</h3><p>{article.data.description}</p><div class="card-art" set:html={cardArt[index]}></div><footer><span>{formatDate(article.data.date)}</span><span>{article.data.readingTime}</span></footer></a>)}</div>
     </div>
   </section>
 
   <section class="section section-soft">
     <div class="container">
       <div class="section-heading"><div class="section-title-wrap"><span class="section-number">02</span><h2 class="section-title">工程新聞</h2></div><a class="section-link" href="/news/"><span>查看全部新聞</span><span set:html={arrow}></span></a></div>
-      <div class="listing news-list">{news.map(([date,type,title]) => <a class="listing-row" href="/news/"><time>{date}</time><span class="listing-type">{type}</span><strong>{title}</strong><span set:html={arrow}></span></a>)}</div>
+      <div class="listing news-list">{news.map((item) => <a class="listing-row" href={`/news/${item.id}/`}><time datetime={item.data.date.toISOString()}>{formatDate(item.data.date)}</time><span class="listing-type">{item.data.category}</span><strong>{item.data.title}</strong><span set:html={arrow}></span></a>)}</div>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
       <div class="section-heading"><div class="section-title-wrap"><span class="section-number">03</span><h2 class="section-title">實用文件範本</h2></div><a class="section-link" href="/templates/"><span>查看全部範本</span><span set:html={arrow}></span></a></div>
-      <div class="template-rail">{templates.map(([name,desc,type]) => <a class="template-item" href="/templates/"><svg viewBox="0 0 48 56" aria-hidden="true"><path d="M8 2h21l11 11v41H8zM29 2v12h11M15 24h18M15 32h18M15 40h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><div><h3>{name}</h3><p>{desc}</p><span>下載 {type}</span></div></a>)}</div>
+      <div class="template-rail">{templates.map((item) => <a class="template-item" href="/templates/"><svg viewBox="0 0 48 56" aria-hidden="true"><path d="M8 2h21l11 11v41H8zM29 2v12h11M15 24h18M15 32h18M15 40h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><div><h3>{item.data.title}</h3><p>{item.data.description}</p><span>{item.data.access} · {item.data.fileType}</span></div></a>)}</div>
     </div>
   </section>
 
   <section class="section section-soft">
     <div class="container">
       <div class="section-heading"><div class="section-title-wrap"><span class="section-number">04</span><h2 class="section-title">電子書</h2></div><a class="section-link" href="/ebooks/"><span>查看全部電子書</span><span set:html={arrow}></span></a></div>
-      <div class="ebook-band"><div class="book"><span>工程白話文</span><strong>合約管理<br />白話指南</strong><small>由條款到實務的 12 堂課</small></div><div class="ebook-copy"><span class="orange-label">最新上架</span><h3>合約管理白話指南：由條款到實務的 12 堂課</h3><p>用白話拆解常見合約條款及實務應用，讓工程人知道風險、記錄做得更好、索償更完整。</p><div class="book-meta"><span>128 頁</span><span>PDF</span><span>繁體中文</span></div></div><a class="button button-primary" href="/ebooks/">查看電子書 <span set:html={arrow}></span></a></div>
+      {featuredBook && <div class="ebook-band"><div class="book"><span>工程白話文</span><strong>{featuredBook.data.title}</strong><small>{featuredBook.data.subtitle}</small></div><div class="ebook-copy"><span class="orange-label">{featuredBook.data.status}</span><h3>{featuredBook.data.title}：{featuredBook.data.subtitle}</h3><p>{featuredBook.data.description}</p><div class="book-meta"><span>{featuredBook.data.pages}</span><span>{featuredBook.data.format}</span><span>{featuredBook.data.language}</span></div></div><a class="button button-primary" href="/ebooks/">查看電子書 <span set:html={arrow}></span></a></div>}
     </div>
   </section>
 

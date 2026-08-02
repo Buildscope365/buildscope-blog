@@ -1,22 +1,16 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-const templates = [
-  ["EOT Notice", "DOCX", "合約管理", "延誤事件描述、合約依據、可能影響及保留權利用語。"],
-  ["VO Submission", "DOCX", "商務管理", "指示來源、工作範圍、估值細項及時間成本影響。"],
-  ["RFI Log", "XLSX", "工程管理", "問題、責任人、要求回覆日期、實際回覆及延誤追蹤。"],
-  ["Site Daily Report", "DOCX", "地盤管理", "工程進度、人手、機械、天氣、相片及異常事件記錄。"],
-  ["Payment Claim Checklist", "XLSX", "付款管理", "提交文件、估值依據、證明文件及跟進狀態。"],
-  ["Meeting Minutes", "DOCX", "項目管理", "決定事項、責任人、完成日期及逾期跟進。"],
-];
+
+const templates = (await getCollection("templates", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.sortOrder - b.data.sortOrder,
+);
 ---
 <BaseLayout title="工程文件範本｜工程白話文 BuildScope">
   <header class="page-hero"><div class="container"><h1>實用文件<span>範本</span></h1><p>由合約通知到地盤日報，提供可直接修改、清晰易用的工程文件框架。</p></div></header>
-  <section class="section"><div class="container"><div class="notice">目前展示的是網站首版範本目錄；收款系統啟用後，可提供免費、單次購買及會員專享下載。</div><div class="template-list">{templates.map(([name,type,category,desc]) => <article><svg viewBox="0 0 48 56" aria-hidden="true"><path d="M8 2h21l11 11v41H8zM29 2v12h11M15 24h18M15 32h18M15 40h13" fill="none" stroke="currentColor" stroke-width="2"/></svg><div><span>{category}</span><h2>{name}</h2><p>{desc}</p></div><b>{type}</b><button type="button">預覽範本</button></article>)}</div></div></section>
+  <section class="section"><div class="container"><div class="notice">範本狀態、下載連結及分類均可在網站後台更新；設定為「免費」或「付費」並加入連結後，按鈕會自動啟用。</div><div class="template-list">{templates.map((item) => <article><svg viewBox="0 0 48 56" aria-hidden="true"><path d="M8 2h21l11 11v41H8zM29 2v12h11M15 24h18M15 32h18M15 40h13" fill="none" stroke="currentColor" stroke-width="2"/></svg><div><span>{item.data.category}</span><h2>{item.data.title}</h2><p>{item.data.description}</p></div><b>{item.data.fileType}<small>{item.data.access}</small></b>{item.data.downloadUrl ? <a class="template-action" href={item.data.downloadUrl} target={item.data.downloadUrl.startsWith("http") ? "_blank" : undefined} rel={item.data.downloadUrl.startsWith("http") ? "noreferrer" : undefined}>{item.data.actionLabel}</a> : <span class="template-action disabled">{item.data.actionLabel}</span>}</article>)}</div></div></section>
 </BaseLayout>
-<script>
-  document.querySelectorAll(".template-list button").forEach((button) => button.addEventListener("click", () => { button.textContent = "即將推出"; }));
-</script>
 <style>
-  .template-list{margin-top:32px;border-top:1px solid var(--line)}article{display:grid;grid-template-columns:56px 1fr 70px auto;gap:22px;align-items:center;padding:26px 0;border-bottom:1px solid var(--line)}svg{width:46px;color:var(--orange)}article span{color:var(--orange-dark);font-size:.8rem;font-weight:800}h2{margin:2px 0;font-size:1.25rem}p{margin:0;color:var(--body);font-size:.9rem}article>b{color:var(--muted);font-size:.82rem}button{min-height:40px;padding:0 15px;border:1px solid var(--ink);border-radius:5px;background:white;font-weight:800;cursor:pointer}button:hover{color:var(--orange-dark);border-color:var(--orange)}
-  @media(max-width:680px){article{grid-template-columns:48px 1fr}article>b,article>button{grid-column:2;justify-self:start}}
+  .template-list{margin-top:32px;border-top:1px solid var(--line)}article{display:grid;grid-template-columns:56px 1fr 90px auto;gap:22px;align-items:center;padding:26px 0;border-bottom:1px solid var(--line)}svg{width:46px;color:var(--orange)}article>div>span{color:var(--orange-dark);font-size:.8rem;font-weight:800}h2{margin:2px 0;font-size:1.25rem}p{margin:0;color:var(--body);font-size:.9rem}article>b{display:grid;color:var(--muted);font-size:.82rem}article>b small{margin-top:3px;color:var(--orange-dark);font-size:.68rem}.template-action{display:inline-flex;min-height:40px;align-items:center;padding:0 15px;border:1px solid var(--ink);border-radius:5px;background:white;font-size:.85rem;font-weight:800}.template-action:hover{color:var(--orange-dark);border-color:var(--orange)}.template-action.disabled{color:var(--muted);border-color:var(--line);cursor:not-allowed}
+  @media(max-width:680px){article{grid-template-columns:48px 1fr}article>b,.template-action{grid-column:2;justify-self:start}}
 </style>

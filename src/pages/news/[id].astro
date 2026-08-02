@@ -1,0 +1,27 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatDate } from "../../data/categories";
+
+export async function getStaticPaths() {
+  const items = await getCollection("news", ({ data }) => !data.draft);
+  return items.map((item) => ({ params: { id: item.id }, props: { item } }));
+}
+
+interface Props { item: CollectionEntry<"news"> }
+const { item } = Astro.props;
+const { Content } = await render(item);
+---
+<BaseLayout title={`${item.data.title}｜工程新聞｜BuildScope`} description={item.data.summary}>
+  <article>
+    <header class="news-hero"><div class="container"><a href="/news/">← 返回工程新聞</a><span>{item.data.category}</span><h1>{item.data.title}</h1><p>{item.data.summary}</p><time datetime={item.data.date.toISOString()}>{formatDate(item.data.date)}</time></div></header>
+    <div class="container news-body">
+      {item.data.coverImage && <img src={item.data.coverImage} alt={item.data.title} />}
+      <Content />
+      {item.data.sourceUrl && <p class="source"><a href={item.data.sourceUrl} target="_blank" rel="noreferrer">查看{item.data.sourceName ? `：${item.data.sourceName}` : "資料來源"} →</a></p>}
+    </div>
+  </article>
+</BaseLayout>
+<style>
+  .news-hero{padding:64px 0;background:var(--soft);border-bottom:1px solid var(--line)}.news-hero .container,.news-body{max-width:880px}.news-hero a{display:block;margin-bottom:30px;color:var(--body);font-size:.85rem;font-weight:800}.news-hero>div>span{color:var(--orange-dark);font-size:.85rem;font-weight:900}.news-hero h1{margin:12px 0 18px;font-size:clamp(2.2rem,5.5vw,4.3rem);line-height:1.1;letter-spacing:-.05em}.news-hero p{max-width:760px;color:var(--body);font-size:1.1rem}.news-hero time{color:var(--muted);font-size:.83rem}.news-body{padding-top:56px;padding-bottom:86px;font-size:1.05rem}.news-body :global(h2){margin:2.3em 0 .65em;font-size:1.7rem}.news-body :global(p){color:var(--body);line-height:1.9}.news-body :global(li){margin:.45em 0;color:var(--body)}.news-body>img{width:100%;max-height:500px;margin-bottom:40px;object-fit:cover}.source{margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}.source a{color:var(--orange-dark);font-weight:800}
+</style>

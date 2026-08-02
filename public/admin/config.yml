@@ -1,11 +1,12 @@
 backend:
   name: git-gateway
   branch: main
+  identity_url: "https://buildscope-blog.netlify.app/.netlify/identity"
+  gateway_url: "https://buildscope-blog.netlify.app/.netlify/git/github"
 
-site_url: "https://buildscope-blog.netlify.app"
-display_url: "https://buildscope-blog.netlify.app"
-
-logo_url: "/favicon.svg"
+site_url: "https://buildscope-blog.buildscope365.workers.dev"
+display_url: "https://buildscope-blog.buildscope365.workers.dev"
+logo_url: "/images/buildscope-logo.webp"
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -20,8 +21,8 @@ slug:
 
 collections:
   - name: "blog"
-    label: "Blog posts"
-    label_singular: "Blog post"
+    label: "工程 Blog"
+    label_singular: "文章"
     folder: "src/content/blog"
     create: true
     delete: true
@@ -29,110 +30,117 @@ collections:
     format: "yaml-frontmatter"
     slug: "{{slug}}"
     preview_path: "blog/{{slug}}/"
-    summary: "{{date}} - {{title}}"
-    sortable_fields:
-      - "date"
-      - "title"
-      - "author"
-      - "category"
-    view_groups:
-      - label: "Category"
-        field: "category"
-      - label: "Difficulty"
-        field: "difficulty"
+    summary: "{{date}} — {{title}}"
+    sortable_fields: ["date", "title", "author", "category"]
+    editor:
+      preview: false
     fields:
-      - label: "Title"
-        name: "title"
-        widget: "string"
-
-      - label: "Description"
-        name: "description"
-        widget: "text"
-        hint: "Short SEO description for listing pages and social previews."
-
-      - label: "Date"
-        name: "date"
-        widget: "datetime"
-        date_format: "YYYY-MM-DD"
-        time_format: false
-        format: "YYYY-MM-DD"
-
-      - label: "Category"
+      - { label: "文章標題", name: "title", widget: "string" }
+      - { label: "SEO／列表簡介", name: "description", widget: "text", hint: "建議 60–150 字，會顯示在首頁、文章列表及搜尋結果。" }
+      - { label: "發布日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - label: "分類"
         name: "category"
         widget: "select"
         options:
           - { label: "QS 白話文", value: "quantity-surveying" }
-          - { label: "合約與 Claim", value: "contract-management" }
+          - { label: "合約管理", value: "contract-management" }
           - { label: "NEC 合約", value: "nec" }
           - { label: "SOP Ordinance", value: "sop" }
           - { label: "RFI / TQ", value: "rfi-tq" }
           - { label: "EOT / LAD", value: "eot-lad" }
           - { label: "VO / Payment Claim", value: "vo-payment" }
-          - { label: "地盤管理", value: "site-management" }
+          - { label: "施工管理", value: "site-management" }
           - { label: "工程技術", value: "construction-technology" }
-          - { label: "AI 工程工具", value: "ai-tools" }
+          - { label: "AI × 工程", value: "ai-tools" }
           - { label: "工程案例", value: "case-studies" }
-          - { label: "Project Management", value: "project-management" }
+          - { label: "工程管理", value: "project-management" }
+          - { label: "Tender", value: "tender" }
+      - { label: "標籤", name: "tags", widget: "list", required: false, allow_add: true, collapsed: false }
+      - { label: "封面圖片", name: "coverImage", widget: "image", required: false }
+      - { label: "作者", name: "author", widget: "string", default: "BuildScope 編輯部" }
+      - { label: "難度", name: "difficulty", widget: "select", default: "入門", options: ["入門", "中階", "進階"] }
+      - { label: "閱讀時間", name: "readingTime", widget: "string", default: "5 分鐘" }
+      - { label: "首頁精選", name: "featured", widget: "boolean", default: false }
+      - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: false }
+      - { label: "文章內容", name: "body", widget: "markdown" }
 
-      - label: "Tags"
-        name: "tags"
-        widget: "list"
-        required: false
-        allow_add: true
-        collapsed: false
-        field:
-          label: "Tag"
-          name: "tag"
-          widget: "string"
+  - name: "news"
+    label: "工程新聞"
+    label_singular: "新聞"
+    folder: "src/content/news"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    preview_path: "news/{{slug}}/"
+    summary: "{{date}} — {{title}}"
+    sortable_fields: ["date", "title", "category"]
+    editor:
+      preview: false
+    fields:
+      - { label: "新聞標題", name: "title", widget: "string" }
+      - { label: "摘要", name: "summary", widget: "text" }
+      - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "分類", name: "category", widget: "select", options: ["香港建築新聞", "政策及法例", "建築科技與 AI", "安全消息", "大型工程"] }
+      - { label: "來源名稱", name: "sourceName", widget: "string", required: false }
+      - { label: "來源網址", name: "sourceUrl", widget: "string", required: false }
+      - { label: "封面圖片", name: "coverImage", widget: "image", required: false }
+      - { label: "首頁精選", name: "featured", widget: "boolean", default: false }
+      - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: false }
+      - { label: "新聞內容／編輯摘要", name: "body", widget: "markdown" }
 
-      - label: "Cover image"
-        name: "coverImage"
-        widget: "image"
-        required: false
-        hint: "Uploaded images are stored in public/images/uploads."
+  - name: "templates"
+    label: "文件範本"
+    label_singular: "範本"
+    folder: "src/content/templates"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    summary: "{{sortOrder}} — {{title}} — {{access}}"
+    sortable_fields: ["sortOrder", "title", "category", "access"]
+    editor:
+      preview: false
+    fields:
+      - { label: "範本名稱", name: "title", widget: "string" }
+      - { label: "簡介", name: "description", widget: "text" }
+      - { label: "分類", name: "category", widget: "string" }
+      - { label: "檔案格式", name: "fileType", widget: "select", options: ["DOCX", "XLSX", "PDF", "ZIP", "ONLINE"] }
+      - { label: "發布狀態", name: "access", widget: "select", default: "即將推出", options: ["免費", "付費", "會員專享", "即將推出"] }
+      - { label: "按鈕文字", name: "actionLabel", widget: "string", default: "預覽範本" }
+      - { label: "下載／購買網址", name: "downloadUrl", widget: "string", required: false, hint: "可填網站內路徑或完整 https:// 網址；留空時按鈕不會啟用。" }
+      - { label: "首頁精選", name: "featured", widget: "boolean", default: false }
+      - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: false }
+      - { label: "排列次序", name: "sortOrder", widget: "number", value_type: "int", default: 100, min: 1 }
+      - { label: "補充說明", name: "body", widget: "markdown", required: false }
 
-      - label: "Author"
-        name: "author"
-        widget: "string"
-        default: "BuildScope 編輯部"
-
-      - label: "Difficulty"
-        name: "difficulty"
-        widget: "select"
-        default: "入門"
-        options:
-          - "入門"
-          - "中階"
-          - "進階"
-
-      - label: "Reading time"
-        name: "readingTime"
-        widget: "string"
-        required: false
-        default: "5 分鐘"
-
-      - label: "Featured"
-        name: "featured"
-        widget: "boolean"
-        required: false
-        default: false
-
-      - label: "Draft"
-        name: "draft"
-        widget: "boolean"
-        required: false
-        default: false
-
-      - label: "Hero accent"
-        name: "heroAccent"
-        widget: "select"
-        required: false
-        default: "orange"
-        options:
-          - { label: "Orange", value: "orange" }
-          - { label: "Red", value: "red" }
-          - { label: "Blue", value: "blue" }
-
-      - label: "Body"
-        name: "body"
-        widget: "markdown"
+  - name: "ebooks"
+    label: "電子書"
+    label_singular: "電子書"
+    folder: "src/content/ebooks"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    summary: "{{sortOrder}} — {{title}} — {{status}}"
+    sortable_fields: ["sortOrder", "title", "status"]
+    editor:
+      preview: false
+    fields:
+      - { label: "書名", name: "title", widget: "string" }
+      - { label: "副標題", name: "subtitle", widget: "string" }
+      - { label: "簡介", name: "description", widget: "text" }
+      - { label: "頁數", name: "pages", widget: "string", default: "100 頁" }
+      - { label: "狀態", name: "status", widget: "select", default: "編輯中", options: ["現已發售", "即將推出", "編輯中", "免費下載"] }
+      - { label: "格式", name: "format", widget: "string", default: "PDF" }
+      - { label: "語言", name: "language", widget: "string", default: "繁體中文" }
+      - { label: "封面圖片", name: "coverImage", widget: "image", required: false }
+      - { label: "購買／下載網址", name: "purchaseUrl", widget: "string", required: false }
+      - { label: "按鈕文字", name: "actionLabel", widget: "string", default: "查看詳情" }
+      - { label: "首頁精選", name: "featured", widget: "boolean", default: false }
+      - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: false }
+      - { label: "排列次序", name: "sortOrder", widget: "number", value_type: "int", default: 100, min: 1 }
+      - { label: "詳細內容", name: "body", widget: "markdown", required: false }
