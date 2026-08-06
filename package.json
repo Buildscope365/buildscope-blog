@@ -17,5 +17,8 @@
     "astro": "latest",
     "typescript": "latest",
     "wrangler": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260804.1"
   }
 }
