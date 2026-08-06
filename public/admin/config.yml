@@ -1,11 +1,13 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Buildscope365/buildscope-blog
   branch: main
-  identity_url: "https://buildscope-blog.netlify.app/.netlify/identity"
-  gateway_url: "https://buildscope-blog.netlify.app/.netlify/git/github"
+  base_url: "https://buildscope-blog.com"
+  auth_endpoint: "/auth"
+  site_domain: "buildscope-blog.com"
 
-site_url: "https://buildscope-blog.buildscope365.workers.dev"
-display_url: "https://buildscope-blog.buildscope365.workers.dev"
+site_url: "https://buildscope-blog.com"
+display_url: "https://buildscope-blog.com"
 logo_url: "/images/buildscope-logo.webp"
 
 media_folder: "public/images/uploads"
