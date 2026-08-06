@@ -1,12 +1,19 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "buildscope-blog",
-  "compatibility_date": "2026-08-01",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-08-06",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./dist/",
+    "binding": "ASSETS",
+    "run_worker_first": ["/admin*", "/auth*", "/callback*"],
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
+  },
+  "vars": {
+    "CMS_ORIGIN": "https://buildscope-blog.com",
+    "GITHUB_REPOSITORY": "Buildscope365/buildscope-blog"
   },
   "observability": {
     "enabled": true,
