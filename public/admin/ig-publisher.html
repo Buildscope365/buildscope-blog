@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BuildScope Instagram Publisher</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans TC", sans-serif;
+        background: #fff7ed;
+        color: #1f2937;
+      }
+      body {
+        margin: 0;
+        padding: 32px 16px;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid #fed7aa;
+        border-radius: 24px;
+        box-shadow: 0 18px 55px rgba(124, 45, 18, 0.12);
+        padding: 28px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 42px);
+        letter-spacing: -0.04em;
+      }
+      p {
+        line-height: 1.7;
+      }
+      label {
+        display: block;
+        font-weight: 700;
+        margin: 20px 0 8px;
+      }
+      input,
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #fdba74;
+        border-radius: 14px;
+        padding: 12px 14px;
+        font: inherit;
+      }
+      textarea {
+        min-height: 170px;
+        resize: vertical;
+      }
+      button {
+        margin-top: 22px;
+        appearance: none;
+        border: 0;
+        border-radius: 999px;
+        background: #ea580c;
+        color: #ffffff;
+        font-weight: 800;
+        padding: 14px 22px;
+        cursor: pointer;
+      }
+      button:disabled {
+        cursor: wait;
+        opacity: 0.65;
+      }
+      .hint {
+        color: #7c2d12;
+        background: #ffedd5;
+        border-radius: 16px;
+        padding: 12px 14px;
+      }
+      .status {
+        margin-top: 20px;
+        padding: 14px;
+        border-radius: 16px;
+        white-space: pre-wrap;
+        background: #f3f4f6;
+      }
+      .ok {
+        background: #ecfdf5;
+        color: #065f46;
+      }
+      .error {
+        background: #fef2f2;
+        color: #991b1b;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+      }
+      a {
+        color: #c2410c;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p><a href="/admin/">← 返回 CMS 後台</a></p>
+      <h1>Instagram 發佈工具</h1>
+      <p class="hint">
+        第一版適合發佈工程白話文 Carousel：先把 1–10 張圖片放到網站或其他公開 HTTPS 圖片位置，然後貼上圖片 URL 及 Caption。IG 密碼不會放入網站；正式 access token 只放在 Cloudflare Secret。
+      </p>
+
+      <form id="publisher-form">
+        <div class="grid">
+          <div>
+            <label for="admin-token">管理員發佈 Token</label>
+            <input id="admin-token" name="admin-token" type="password" autocomplete="off" required />
+          </div>
+          <div>
+            <label for="image-urls">圖片 URLs，每行一張</label>
+            <textarea id="image-urls" name="image-urls" placeholder="https://buildscope-blog.com/images/ig/example-01.jpg&#10;https://buildscope-blog.com/images/ig/example-02.jpg" required></textarea>
+          </div>
+        </div>
+
+        <label for="caption">Caption</label>
+        <textarea id="caption" name="caption" placeholder="輸入 Instagram caption，例如：&#10;&#10;《BIM 顯示 Latest，係咪就可以直接開工？》&#10;...&#10;&#10;#工程白話文 #香港建築 #AI工程" required></textarea>
+
+        <button type="submit">發佈到 Instagram</button>
+      </form>
+
+      <div id="status" class="status" hidden></div>
+    </main>
+
+    <script>
+      const form = document.querySelector("#publisher-form");
+      const statusBox = document.querySelector("#status");
+      const button = form.querySelector("button");
+
+      function setStatus(message, type = "") {
+        statusBox.hidden = false;
+        statusBox.className = `status ${type}`.trim();
+        statusBox.textContent = message;
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        button.disabled = true;
+        setStatus("正在提交到 Instagram…");
+
+        const adminToken = document.querySelector("#admin-token").value.trim();
+        const caption = document.querySelector("#caption").value.trim();
+        const imageUrls = document
+          .querySelector("#image-urls")
+          .value.split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+        try {
+          const response = await fetch("/api/instagram/publish", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({ caption, imageUrls }),
+          });
+
+          const result = await response.json();
+          if (!response.ok || !result.ok) {
+            throw new Error(result.error || "Instagram publish failed");
+          }
+
+          setStatus(`已成功發佈到 Instagram。\nMedia ID: ${result.mediaId}\nContainer ID: ${result.creationId}`, "ok");
+        } catch (error) {
+          setStatus(error instanceof Error ? error.message : String(error), "error");
+        } finally {
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
