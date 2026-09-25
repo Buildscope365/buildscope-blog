@@ -1,0 +1,79 @@
+---
+import type { LibrarySlide } from "../data/library";
+
+interface Props { slides: LibrarySlide[]; title: string; }
+const { slides, title } = Astro.props;
+---
+
+<section class="carousel-shell" data-carousel aria-label={`${title} Carousel`} tabindex="0">
+  <div class="carousel-topline">
+    <p>Visual explainer</p>
+    <p class="carousel-counter" aria-live="polite"><span data-current>01</span><span aria-hidden="true"> / </span><span class="visually-hidden">，共</span><span>{String(slides.length).padStart(2, "0")}</span></p>
+  </div>
+  <div class="carousel-stage" data-stage>
+    {slides.map((slide, index) => (
+      <figure class:list={["carousel-slide", index !== 0 && "is-hidden"]} data-slide aria-hidden={index !== 0 ? "true" : "false"}>
+        <img src={slide.src} alt={`${String(index + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")} — ${slide.alt}`} width="1080" height="1350" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} draggable="false" />
+        <figcaption class="visually-hidden">{slide.label}</figcaption>
+      </figure>
+    ))}
+    <button class="carousel-arrow previous" type="button" data-previous aria-label="上一張" disabled><span aria-hidden="true">←</span></button>
+    <button class="carousel-arrow next" type="button" data-next aria-label="下一張"><span aria-hidden="true">→</span></button>
+  </div>
+  <div class="carousel-controls">
+    <div class="carousel-dots" aria-label="選擇 Carousel 頁面">
+      {slides.map((slide, index) => <button class:list={["carousel-dot", index === 0 && "is-active"]} type="button" data-dot data-index={index} aria-label={`前往第 ${index + 1} 張：${slide.label}`} aria-current={index === 0 ? "true" : undefined}></button>)}
+    </div>
+    <p class="swipe-hint"><span aria-hidden="true">←</span> 手機左右 Swipe <span aria-hidden="true">→</span></p>
+  </div>
+</section>
+
+<style>
+  .carousel-shell { width: min(100%, 46rem); margin-inline: auto; outline: none; }
+  .carousel-topline { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; color: var(--muted); font-size: .72rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+  .carousel-topline p { margin: 0; }
+  .carousel-counter { color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; }
+  .carousel-stage { position: relative; overflow: hidden; border: 1px solid var(--line); background: #082544; box-shadow: var(--shadow); touch-action: pan-y; user-select: none; }
+  .carousel-slide { margin: 0; }
+  .carousel-slide.is-hidden { display: none; }
+  .carousel-slide img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+  .carousel-arrow { position: absolute; top: 50%; display: none; width: 52px; height: 52px; transform: translateY(-50%); place-items: center; border: 1px solid rgba(255,255,255,.42); border-radius: 50%; color: white; background: rgba(17,17,17,.78); box-shadow: 0 8px 28px rgba(0,0,0,.2); cursor: pointer; transition: .2s ease; }
+  .carousel-arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.06); background: var(--orange); }
+  .carousel-arrow:disabled { cursor: not-allowed; opacity: .22; }
+  .carousel-arrow.previous { left: 16px; }
+  .carousel-arrow.next { right: 16px; }
+  .carousel-controls { display: grid; justify-items: center; gap: 10px; padding-top: 18px; }
+  .carousel-dots { display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .carousel-dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: #d1d5db; cursor: pointer; transition: .2s ease; }
+  .carousel-dot.is-active { width: 26px; border-radius: 999px; background: var(--orange); }
+  .swipe-hint { margin: 0; color: var(--muted); font-size: .78rem; font-weight: 700; }
+  @media (min-width: 768px) { .carousel-arrow { display: grid; } .swipe-hint { display: none; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((carousel) => {
+    const slides = [...carousel.querySelectorAll<HTMLElement>("[data-slide]")];
+    const dots = [...carousel.querySelectorAll<HTMLButtonElement>("[data-dot]")];
+    const current = carousel.querySelector<HTMLElement>("[data-current]");
+    const previous = carousel.querySelector<HTMLButtonElement>("[data-previous]");
+    const next = carousel.querySelector<HTMLButtonElement>("[data-next]");
+    const stage = carousel.querySelector<HTMLElement>("[data-stage]");
+    let activeIndex = 0;
+    let pointerStartX = 0;
+    let pointerStartY = 0;
+    const showSlide = (requestedIndex: number) => {
+      activeIndex = Math.max(0, Math.min(requestedIndex, slides.length - 1));
+      slides.forEach((slide, index) => { const active = index === activeIndex; slide.classList.toggle("is-hidden", !active); slide.setAttribute("aria-hidden", String(!active)); });
+      dots.forEach((dot, index) => { const active = index === activeIndex; dot.classList.toggle("is-active", active); active ? dot.setAttribute("aria-current", "true") : dot.removeAttribute("aria-current"); });
+      if (current) current.textContent = String(activeIndex + 1).padStart(2, "0");
+      if (previous) previous.disabled = activeIndex === 0;
+      if (next) next.disabled = activeIndex === slides.length - 1;
+    };
+    previous?.addEventListener("click", () => showSlide(activeIndex - 1));
+    next?.addEventListener("click", () => showSlide(activeIndex + 1));
+    dots.forEach((dot) => dot.addEventListener("click", () => showSlide(Number(dot.dataset.index))));
+    carousel.addEventListener("keydown", (event) => { if (event.key === "ArrowLeft") { event.preventDefault(); showSlide(activeIndex - 1); } if (event.key === "ArrowRight") { event.preventDefault(); showSlide(activeIndex + 1); } });
+    stage?.addEventListener("pointerdown", (event) => { pointerStartX = event.clientX; pointerStartY = event.clientY; });
+    stage?.addEventListener("pointerup", (event) => { const deltaX = event.clientX - pointerStartX; const deltaY = event.clientY - pointerStartY; if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return; showSlide(activeIndex + (deltaX < 0 ? 1 : -1)); });
+  });
+</script>

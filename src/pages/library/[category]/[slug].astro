@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import CarouselViewer from "../../../components/CarouselViewer.astro";
+import { LIBRARY_ITEMS } from "../../../data/library";
+export function getStaticPaths() { return LIBRARY_ITEMS.filter((item) => item.status === "published").map((item) => ({ params: { category: item.categorySlug, slug: item.slug }, props: { item } })); }
+const { item } = Astro.props;
+---
+<BaseLayout title={`${item.title} | 工程白話文 BuildScope`} description={`${item.introduction} ${item.quickTakeaway}`} image={item.slides[0].src} type="article" publishedTime={`${item.publishedDate}T00:00:00+08:00`}>
+  <article class="library-item">
+    <header class="item-hero"><div class="container"><nav class="crumbs" aria-label="Breadcrumb"><a href="/library/">Engineering Plain Talk Library</a><span>/</span><a href={`/library/${item.categorySlug}/`}>{item.category}</a><span>/</span><strong>Pilot #001</strong></nav><div class="hero-grid"><div><p class="eyebrow">{item.series}</p><p class="category-line">{item.category.toUpperCase()} × QS</p><h1>{item.title}</h1><div class="introduction">{item.introduction}</div></div><dl>{[["Series",item.series],["Category",item.category],["Topic",item.topic],["For",item.audience.join(" / ")],["Format",item.format],["Status","Published"]].map(([term,value]) => <div><dt>{term}</dt><dd class:list={{ published: term === "Status" }}>{value}</dd></div>)}</dl></div></div></header>
+    <section class="carousel-section container" aria-label="完整 Carousel"><CarouselViewer slides={item.slides} title={item.title} /></section>
+    <section class="takeaway"><div class="container takeaway-grid"><p>QUICK TAKEAWAY</p><div>{item.quickTakeaway}</div></div></section>
+    <section class="section"><div class="container"><p class="section-label">GO DEEPER</p><h2>You’ve got the idea.<br />Now go deeper.</h2><div class="related-grid">{item.related.map((related,index) => <article><header><p>{related.type.toUpperCase()}</p><span>0{index + 1}</span></header><h3>{related.title}</h3><footer>{related.status === "published" && related.href ? <a href={related.href}>立即閱讀 →</a> : <span>COMING SOON</span>}</footer></article>)}</div></div></section>
+    <section class="discussion"><div class="container discussion-grid"><div><p>JOIN THE DISCUSSION</p><h2>{item.discussionQuestion}</h2><div>唔同項目嘅 specification、contract responsibility 同 site condition 都可能唔同。返到 BuildScope Learning Lab 分享你嘅做法。</div></div>{item.skoolDiscussionUrl ? <a href={item.skoolDiscussionUrl} target="_blank" rel="noreferrer">DISCUSS IN BUILDSCOPE →</a> : <span class="cta-disabled" aria-disabled="true" data-config-field="skoolDiscussionUrl" title="在 src/data/library.ts 加入確實的 Skool discussion URL 後啟用">SKOOL 討論連結準備中</span>}</div></section>
+  </article>
+</BaseLayout>
+<style>
+  .item-hero { padding: 58px 0 64px; border-bottom: 1px solid var(--line); background: var(--soft); }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; color: var(--muted); font-size: .78rem; }
+  .crumbs strong { color: var(--orange-dark); }
+  .hero-grid { display: grid; grid-template-columns: 1fr 330px; gap: 48px; align-items: end; }
+  .eyebrow, .section-label, .discussion p, .takeaway p { margin: 0; color: var(--orange-dark); font-size: .75rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+  .eyebrow::before { content: ""; display: inline-block; width: 28px; height: 2px; margin-right: 10px; background: var(--orange); vertical-align: middle; }
+  .category-line { margin: 24px 0 0; color: var(--body); font-size: .84rem; font-weight: 900; letter-spacing: .12em; }
+  .item-hero h1 { max-width: 760px; margin: 14px 0 22px; font-size: clamp(2.8rem, 7vw, 6rem); line-height: .94; letter-spacing: -.07em; }
+  .introduction { color: var(--body); font-size: 1.18rem; font-weight: 700; }
+  dl { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 0; padding: 24px; border-left: 4px solid var(--orange); background: white; box-shadow: var(--shadow); }
+  dt { color: var(--muted); font-size: .63rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+  dd { margin: 4px 0 0; font-size: .84rem; font-weight: 900; line-height: 1.35; }
+  dd.published { color: var(--success); }
+  .carousel-section { padding-block: 70px; }
+  .takeaway { border-block: 1px solid var(--line); background: white; }
+  .takeaway-grid { display: grid; grid-template-columns: 180px 1fr; gap: 36px; padding-block: 54px; }
+  .takeaway-grid div { max-width: 850px; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 900; line-height: 1.5; letter-spacing: -.03em; }
+  .library-item .section h2, .discussion h2 { margin: 16px 0 0; font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: 1.05; letter-spacing: -.06em; }
+  .related-grid { display: grid; grid-template-columns: 1fr 1fr; margin-top: 34px; border: 1px solid var(--line); }
+  .related-grid article { display: flex; min-height: 235px; flex-direction: column; padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .related-grid article:nth-child(2n) { border-right: 0; }
+  .related-grid article:nth-last-child(-n+2) { border-bottom: 0; }
+  .related-grid header { display: flex; justify-content: space-between; gap: 20px; }
+  .related-grid header p { margin: 0; color: var(--orange-dark); font-size: .72rem; font-weight: 900; letter-spacing: .12em; }
+  .related-grid header span { color: var(--muted); font-family: ui-monospace, monospace; font-size: .75rem; }
+  .related-grid h3 { margin: 34px 0; font-size: 1.35rem; line-height: 1.4; }
+  .related-grid footer { margin-top: auto; }
+  .related-grid footer span { display: inline-block; padding: 6px 9px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); font-size: .66rem; font-weight: 900; letter-spacing: .12em; }
+  .discussion { padding: 70px 0; color: white; background: #111; }
+  .discussion-grid { display: grid; grid-template-columns: 1fr auto; gap: 42px; align-items: end; }
+  .discussion p { color: #fb923c; }
+  .discussion h2 { max-width: 800px; }
+  .discussion div div div { max-width: 680px; margin-top: 20px; color: #d4d4d8; }
+  .discussion a, .cta-disabled { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 20px; border-radius: 5px; font-size: .82rem; font-weight: 900; }
+  .discussion a { color: white; background: var(--orange); }
+  .cta-disabled { border: 1px solid #52525b; color: #a1a1aa; cursor: not-allowed; }
+  @media (max-width: 800px) { .hero-grid, .discussion-grid { grid-template-columns: 1fr; } .hero-grid { gap: 34px; } .takeaway-grid { grid-template-columns: 1fr; gap: 18px; } }
+  @media (max-width: 640px) { .item-hero { padding: 40px 0 46px; } .crumbs { margin-bottom: 28px; } .carousel-section { padding-block: 44px; } .related-grid { grid-template-columns: 1fr; } .related-grid article, .related-grid article:nth-child(2n), .related-grid article:nth-last-child(-n+2) { border-right: 0; border-bottom: 1px solid var(--line); } .related-grid article:last-child { border-bottom: 0; } }
+</style>

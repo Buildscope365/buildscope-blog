@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LibraryCard from "../../components/LibraryCard.astro";
+import { LIBRARY_CATEGORIES, LIBRARY_ITEMS } from "../../data/library";
+const items = LIBRARY_ITEMS.filter((item) => item.status === "published");
+---
+<BaseLayout title="Engineering Plain Talk Library | 工程白話文 BuildScope" description="香港建築行內知識，用 9 張圖講清楚。瀏覽 BuildScope Engineering Plain Talk 圖文知識庫。">
+  <header class="library-hero"><div class="container"><p>ENGINEERING PLAIN TALK</p><h1>香港建築行內知識，<br /><span>用圖講清楚。</span></h1><div>由現場問題開始，用可 Swipe 的圖文拆解 QS、合約、施工與管理重點。</div></div></header>
+  <section class="section"><div class="container"><nav class="library-filters" aria-label="圖文庫分類"><span>ALL</span>{LIBRARY_CATEGORIES.map((category) => <a href={`/library/${category.slug}/`}>{category.name.toUpperCase()}</a>)}</nav><div class="library-grid">{items.map((item) => <LibraryCard item={item} />)}</div></div></section>
+</BaseLayout>
+<style>
+  .library-hero { padding: 76px 0 66px; border-bottom: 1px solid var(--line); background: var(--soft); }
+  .library-hero p { margin: 0; color: var(--orange-dark); font-size: .78rem; font-weight: 900; letter-spacing: .16em; }
+  .library-hero h1 { max-width: 860px; margin: 22px 0; font-size: clamp(2.7rem, 7vw, 5.8rem); line-height: .98; letter-spacing: -.07em; }
+  .library-hero h1 span { color: var(--orange); }
+  .library-hero div div { max-width: 680px; color: var(--body); font-size: 1.12rem; }
+  .library-filters { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .library-filters span, .library-filters a { padding: 7px 12px; border: 1px solid var(--line); border-radius: 4px; font-size: .75rem; font-weight: 900; letter-spacing: .08em; }
+  .library-filters span { color: white; border-color: var(--orange); background: var(--orange); }
+  .library-filters a:hover { border-color: var(--orange); color: var(--orange-dark); }
+  .library-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 34px; }
+  @media (max-width: 900px) { .library-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .library-hero { padding: 52px 0 44px; } .library-grid { grid-template-columns: 1fr; } }
+</style>
