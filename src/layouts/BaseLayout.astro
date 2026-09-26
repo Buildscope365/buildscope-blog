@@ -12,6 +12,8 @@ interface Props {
   image?: string;
   type?: "website" | "article";
   publishedTime?: string;
+  noindex?: boolean;
+  showChrome?: boolean;
 }
 const {
   title = "工程白話文 BuildScope",
@@ -19,6 +21,8 @@ const {
   image = "/og-default.svg",
   type = "website",
   publishedTime,
+  noindex = false,
+  showChrome = true,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
@@ -29,6 +33,7 @@ const socialImage = new URL(image, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href="/images/buildscope-icon.png" />
@@ -47,8 +52,8 @@ const socialImage = new URL(image, Astro.site);
     <title>{title}</title>
   </head>
   <body>
-    <Header />
+    {showChrome && <Header />}
     <main><slot /></main>
-    <Footer />
+    {showChrome && <Footer />}
   </body>
 </html>

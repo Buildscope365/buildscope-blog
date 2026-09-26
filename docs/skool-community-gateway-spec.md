@@ -1,10 +1,11 @@
-# Skool Community Gateway Cover Spec
+# Skool Community → BuildScope Visual Reader Gateway Spec
 
 ## Pilot and route
 
-- Library item: `一棵樹個價，到底包啲乜？`
-- Website route: `/library/landscape/tree-price-scope/`
-- Purpose: one Community gateway image leads readers to the complete nine-slide website viewer.
+- Pilot Reader: `一棵樹個價，到底包啲乜？`
+- Website route: `/read/tree-price-scope/`
+- Product model: `Skool = Home；BuildScope Visual Reader = Reading Room`.
+- Purpose: one Community gateway image leads readers to the complete nine-slide reader. There is no public Reader library index.
 
 ## Cover copy
 
@@ -37,7 +38,7 @@ READ FULL CAROUSEL →
 Supply、delivery、planting、support、maintenance、replacement responsibility，任何一項 scope 唔同，都可能令三份 quotation 根本唔係比較緊同一樣嘢。
 
 👉 完整 9 張 Engineering Plain Talk：
-https://buildscope-blog.com/library/landscape/tree-price-scope/
+https://buildscope-blog.com/read/tree-price-scope/
 
 Discussion：你收到三份 Landscape quotation，第一樣通常會比較乜？
 ```
@@ -45,5 +46,7 @@ Discussion：你收到三份 Landscape quotation，第一樣通常會比較乜�
 ## Link configuration
 
 - Put the clickable website URL in the Skool post text.
-- When the real Skool discussion post exists, set `skoolDiscussionUrl` in `src/data/library.ts` to that exact URL.
-- Until that field is set, the website intentionally shows a disabled `SKOOL 討論連結準備中` CTA.
+- When the real Skool discussion post exists, set `skoolDiscussionUrl` in `src/data/readers.ts` to that exact URL.
+- Optionally set `skoolCommunityUrl` to the confirmed public Learning Lab URL for readers who receive a shared link.
+- Until those fields are set, the website intentionally keeps the primary CTA disabled and omits the secondary CTA.
+- Reader pages use `noindex, follow`. Existing site pages keep their current indexing behaviour.

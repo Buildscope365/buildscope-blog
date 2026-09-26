@@ -1,11 +1,11 @@
 ---
-import type { LibrarySlide } from "../data/library";
+import type { ReaderSlide } from "../data/readers";
 
-interface Props { slides: LibrarySlide[]; title: string; }
+interface Props { slides: ReaderSlide[]; title: string; }
 const { slides, title } = Astro.props;
 ---
 
-<section class="carousel-shell" data-carousel aria-label={`${title} Carousel`} tabindex="0">
+<section class="carousel-shell" data-carousel data-active-index="0" data-is-complete="false" aria-label={`${title}，9 張圖解`} aria-roledescription="carousel" tabindex="0">
   <div class="carousel-topline">
     <p>Visual explainer</p>
     <p class="carousel-counter" aria-live="polite"><span data-current>01</span><span aria-hidden="true"> / </span><span class="visually-hidden">，共</span><span>{String(slides.length).padStart(2, "0")}</span></p>
@@ -33,10 +33,10 @@ const { slides, title } = Astro.props;
   .carousel-topline { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; color: var(--muted); font-size: .72rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
   .carousel-topline p { margin: 0; }
   .carousel-counter { color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; }
-  .carousel-stage { position: relative; overflow: hidden; border: 1px solid var(--line); background: #082544; box-shadow: var(--shadow); touch-action: pan-y; user-select: none; }
+  .carousel-stage { position: relative; overflow: hidden; aspect-ratio: 4 / 5; border: 1px solid var(--line); background: #082544; box-shadow: var(--shadow); touch-action: pan-y; user-select: none; }
   .carousel-slide { margin: 0; }
   .carousel-slide.is-hidden { display: none; }
-  .carousel-slide img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+  .carousel-slide img { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 5; object-fit: contain; }
   .carousel-arrow { position: absolute; top: 50%; display: none; width: 52px; height: 52px; transform: translateY(-50%); place-items: center; border: 1px solid rgba(255,255,255,.42); border-radius: 50%; color: white; background: rgba(17,17,17,.78); box-shadow: 0 8px 28px rgba(0,0,0,.2); cursor: pointer; transition: .2s ease; }
   .carousel-arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.06); background: var(--orange); }
   .carousel-arrow:disabled { cursor: not-allowed; opacity: .22; }
@@ -68,6 +68,9 @@ const { slides, title } = Astro.props;
       if (current) current.textContent = String(activeIndex + 1).padStart(2, "0");
       if (previous) previous.disabled = activeIndex === 0;
       if (next) next.disabled = activeIndex === slides.length - 1;
+      carousel.dataset.activeIndex = String(activeIndex);
+      carousel.dataset.isComplete = String(activeIndex === slides.length - 1);
+      carousel.dispatchEvent(new CustomEvent("reader:slidechange", { bubbles: true, detail: { activeIndex, isComplete: activeIndex === slides.length - 1 } }));
     };
     previous?.addEventListener("click", () => showSlide(activeIndex - 1));
     next?.addEventListener("click", () => showSlide(activeIndex + 1));

@@ -1,0 +1,118 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CarouselViewer from "../../components/CarouselViewer.astro";
+import { READERS } from "../../data/readers";
+
+export function getStaticPaths() {
+  return READERS.filter((reader) => reader.status === "published").map((reader) => ({
+    params: { slug: reader.slug },
+    props: { reader },
+  }));
+}
+
+const { reader } = Astro.props;
+---
+
+<BaseLayout
+  title={`${reader.title} | BuildScope Visual Reader`}
+  description={`${reader.introduction} ${reader.quickTakeaway}`}
+  image={reader.slides[0].src}
+  type="article"
+  publishedTime={`${reader.publishedDate}T00:00:00+08:00`}
+  noindex={true}
+  showChrome={false}
+>
+  <article class="reader-page">
+    <header class="reader-header">
+      <div class="reader-brand" aria-label="BuildScope Engineering Plain Talk">
+        <span>BUILDSCOPE</span>
+        <strong>ENGINEERING PLAIN TALK</strong>
+      </div>
+      <p class="reading-room">VISUAL READER · READING ROOM</p>
+      <p class="category-line">{reader.categoryLine}</p>
+      <h1>{reader.title}</h1>
+      <p class="introduction">{reader.introduction}</p>
+    </header>
+
+    <section class="reader-viewer" aria-label="9 張 Carousel 圖解">
+      <CarouselViewer slides={reader.slides} title={reader.title} />
+    </section>
+
+    <section class="reader-note" aria-labelledby="reader-note-title">
+      <p id="reader-note-title">讀圖重點</p>
+      <div>{reader.quickTakeaway}</div>
+    </section>
+
+    <section class="return-panel" data-reader-completion aria-labelledby="return-title">
+      <p class="completion-label" data-completion-label>睇完 9 張之後</p>
+      <h2 id="return-title">返回 BuildScope Learning Lab 繼續討論</h2>
+      <p>{reader.discussionQuestion}</p>
+      <div class="cta-row">
+        {reader.skoolDiscussionUrl ? (
+          <a class="primary-cta" href={reader.skoolDiscussionUrl} target="_blank" rel="noreferrer">返回 BuildScope Learning Lab 繼續討論 →</a>
+        ) : (
+          <span class="primary-cta is-disabled" aria-disabled="true" data-config-field="skoolDiscussionUrl" title="在 src/data/readers.ts 填入確實的 Skool discussion URL 後啟用">
+            返回 BuildScope Learning Lab 繼續討論
+          </span>
+        )}
+        {reader.skoolCommunityUrl && (
+          <a class="secondary-cta" href={reader.skoolCommunityUrl} target="_blank" rel="noreferrer">未係會員？了解 BuildScope Learning Lab →</a>
+        )}
+      </div>
+      {!reader.skoolDiscussionUrl && <small>Skool 討論連結尚待確認；目前按鈕不會導向未核實網址。</small>}
+    </section>
+
+    <footer class="reader-footer">
+      <strong>Skool = Home</strong>
+      <span aria-hidden="true">·</span>
+      <span>Visual Reader = Reading Room</span>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  :global(body) { background: #f4f1eb; }
+  .reader-page { width: min(calc(100% - 28px), 52rem); margin-inline: auto; padding: 32px 0 46px; }
+  .reader-header { max-width: 46rem; margin: 0 auto 30px; }
+  .reader-brand { display: flex; align-items: baseline; gap: 10px; color: #0b1b2f; }
+  .reader-brand span { color: #f97316; font-size: .8rem; font-weight: 900; letter-spacing: .13em; }
+  .reader-brand strong { font-size: .72rem; letter-spacing: .08em; }
+  .reading-room { margin: 38px 0 0; color: #657486; font-size: .68rem; font-weight: 900; letter-spacing: .16em; }
+  .category-line { margin: 16px 0 0; color: #c4510b; font-size: .75rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+  h1 { max-width: 12ch; margin: 12px 0 16px; color: #0b1b2f; font-size: clamp(2.5rem, 9vw, 5.2rem); line-height: .98; letter-spacing: -.065em; }
+  .introduction { margin: 0; color: #425367; font-size: clamp(1rem, 2.5vw, 1.18rem); font-weight: 700; }
+  .reader-viewer { width: 100%; }
+  .reader-note { display: grid; grid-template-columns: 8.5rem 1fr; gap: 24px; width: min(100%, 46rem); margin: 30px auto 0; padding: 24px 0; border-block: 1px solid rgba(11, 27, 47, .16); }
+  .reader-note p { margin: 0; color: #c4510b; font-size: .7rem; font-weight: 900; letter-spacing: .13em; }
+  .reader-note div { color: #26384c; font-size: 1rem; font-weight: 700; line-height: 1.75; }
+  .return-panel { width: min(100%, 46rem); margin: 30px auto 0; padding: clamp(28px, 7vw, 46px); border-radius: 12px; color: white; background: #0b1b2f; box-shadow: 0 24px 60px rgba(8, 21, 38, .18); transition: box-shadow .25s ease, transform .25s ease; }
+  .return-panel.is-complete { transform: translateY(-2px); box-shadow: 0 24px 60px rgba(249, 115, 22, .2); }
+  .completion-label { margin: 0; color: #fb923c; font-size: .7rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+  .return-panel h2 { max-width: 16ch; margin: 14px 0; font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.045em; }
+  .return-panel > p:not(.completion-label) { margin: 0; color: #d9e0e8; line-height: 1.65; }
+  .cta-row { display: grid; gap: 12px; margin-top: 24px; }
+  .primary-cta, .secondary-cta { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 18px; border-radius: 6px; text-align: center; font-size: .86rem; font-weight: 900; }
+  .primary-cta { color: #0b1b2f; background: #fb923c; }
+  .primary-cta.is-disabled { color: #a9b4c1; background: #23364b; cursor: not-allowed; }
+  .secondary-cta { border: 1px solid #52647a; color: white; }
+  .return-panel small { display: block; margin-top: 14px; color: #a9b4c1; line-height: 1.55; }
+  .reader-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 28px; color: #657486; font-size: .72rem; letter-spacing: .04em; }
+  .reader-footer strong { color: #0b1b2f; }
+  @media (max-width: 560px) {
+    .reader-page { padding-top: 22px; }
+    .reader-header { margin-bottom: 24px; }
+    .reading-room { margin-top: 28px; }
+    .reader-note { grid-template-columns: 1fr; gap: 10px; }
+    .return-panel { border-radius: 8px; }
+  }
+</style>
+
+<script>
+  document.addEventListener("reader:slidechange", (event) => {
+    const detail = (event as CustomEvent<{ isComplete: boolean }>).detail;
+    const panel = document.querySelector<HTMLElement>("[data-reader-completion]");
+    const label = panel?.querySelector<HTMLElement>("[data-completion-label]");
+    panel?.classList.toggle("is-complete", detail.isComplete);
+    if (label) label.textContent = detail.isComplete ? "9 張已睇完" : "睇完 9 張之後";
+  });
+</script>
