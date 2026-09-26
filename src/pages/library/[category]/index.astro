@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import LibraryCard from "../../../components/LibraryCard.astro";
+import { LIBRARY_CATEGORIES, getLibraryItemsByCategory } from "../../../data/library";
+export function getStaticPaths() { return LIBRARY_CATEGORIES.map((category) => ({ params: { category: category.slug }, props: { category } })); }
+const { category } = Astro.props;
+const items = getLibraryItemsByCategory(category.slug);
+---
+<BaseLayout title={`${category.label}圖文庫 | 工程白話文 BuildScope`} description={`瀏覽 BuildScope ${category.label} Engineering Plain Talk 圖文內容。`}>
+  <header class="page-hero"><div class="container"><nav class="crumbs" aria-label="Breadcrumb"><a href="/library/">Engineering Plain Talk Library</a><span>/</span><strong>{category.name}</strong></nav><h1>{category.label}<span>圖文庫</span></h1><p>由實際工作問題開始，一張一張拆開範圍、責任與風險。</p></div></header>
+  <section class="section"><div class="container category-grid">{items.map((item) => <LibraryCard item={item} />)}</div></section>
+</BaseLayout>
+<style>
+  .crumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; color: var(--muted); font-size: .78rem; }
+  .crumbs strong { color: var(--orange-dark); }
+  .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 900px) { .category-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .category-grid { grid-template-columns: 1fr; } }
+</style>
