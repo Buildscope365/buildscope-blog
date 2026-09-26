@@ -49,8 +49,7 @@ export const READERS: ReaderItem[] = [
       alt,
     })),
     discussionQuestion: "你收到三份 Tree Quotation，第一樣會比較乜？",
-    // Set only after the exact Skool Community discussion post URL is confirmed.
-    skoolDiscussionUrl: null,
+    skoolDiscussionUrl: "https://www.skool.com/buildscope-learning-lab-1916/breakdown?p=6b4b6eb7",
     // Optional secondary CTA for shared links. Keep null until the exact public Learning Lab URL is confirmed.
     skoolCommunityUrl: null,
   },
