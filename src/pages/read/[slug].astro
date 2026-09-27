@@ -45,21 +45,24 @@ const { reader } = Astro.props;
 
     <section class="return-panel" data-reader-completion aria-labelledby="return-title">
       <p class="completion-label" data-completion-label>睇完 9 張之後</p>
-      <h2 id="return-title">返回 BuildScope Learning Lab 繼續討論</h2>
-      <p>{reader.discussionQuestion}</p>
+      <h2 id="return-title">返回 Engineering Plain Talk Library</h2>
+      <p>返到 QS-001 整理工作重點，再按主題逐層進入 Pocket Guide、Tool Library 同 Community 討論。</p>
       <div class="cta-row">
-        {reader.skoolDiscussionUrl ? (
-          <a class="primary-cta" href={reader.skoolDiscussionUrl} target="_blank" rel="noreferrer">返回 BuildScope Learning Lab 繼續討論 →</a>
+        {reader.skoolClassroomLessonUrl ? (
+          <a class="primary-cta" href={reader.skoolClassroomLessonUrl} target="_blank" rel="noreferrer">返回 QS-001｜Engineering Plain Talk Library →</a>
         ) : (
-          <span class="primary-cta is-disabled" aria-disabled="true" data-config-field="skoolDiscussionUrl" title="在 src/data/readers.ts 填入確實的 Skool discussion URL 後啟用">
-            返回 BuildScope Learning Lab 繼續討論
+          <span class="primary-cta is-disabled" aria-disabled="true" data-config-field="skoolClassroomLessonUrl" title="在 src/data/readers.ts 填入確實的 Skool Classroom lesson URL 後啟用">
+            返回 Engineering Plain Talk Library
           </span>
+        )}
+        {reader.skoolDiscussionUrl && (
+          <a class="secondary-cta" href={reader.skoolDiscussionUrl} target="_blank" rel="noreferrer">到 Community 繼續討論：{reader.discussionQuestion} →</a>
         )}
         {reader.skoolCommunityUrl && (
           <a class="secondary-cta" href={reader.skoolCommunityUrl} target="_blank" rel="noreferrer">未係會員？了解 BuildScope Learning Lab →</a>
         )}
       </div>
-      {!reader.skoolDiscussionUrl && <small>Skool 討論連結尚待確認；目前按鈕不會導向未核實網址。</small>}
+      {!reader.skoolClassroomLessonUrl && <small>Skool Classroom 課堂連結尚待確認；目前按鈕不會導向未核實網址。</small>}
     </section>
 
     <footer class="reader-footer">
