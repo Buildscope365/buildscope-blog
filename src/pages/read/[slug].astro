@@ -11,6 +11,7 @@ export function getStaticPaths() {
 }
 
 const { reader } = Astro.props;
+const returnUrl = reader.skoolClassroomLessonUrl ?? reader.skoolClassroomLandingUrl;
 ---
 
 <BaseLayout
@@ -48,8 +49,8 @@ const { reader } = Astro.props;
       <h2 id="return-title">{reader.returnTitle}</h2>
       <p>{reader.returnDescription}</p>
       <div class="cta-row">
-        {reader.skoolClassroomLessonUrl ? (
-          <a class:list={["primary-cta", reader.slug === "tower-crane-priority" && "tower-cta"]} href={reader.skoolClassroomLessonUrl} target="_blank" rel="noreferrer">{reader.returnCtaLabel}</a>
+        {returnUrl ? (
+          <a class="primary-cta" href={returnUrl} target="_blank" rel="noreferrer">{reader.returnCtaLabel}</a>
         ) : reader.skoolCommunityUrl ? (
           <a class="primary-cta" href={reader.skoolCommunityUrl} target="_blank" rel="noreferrer">{reader.returnCtaLabel}</a>
         ) : (
@@ -64,7 +65,7 @@ const { reader } = Astro.props;
           <a class="secondary-cta" href={reader.skoolCommunityUrl} target="_blank" rel="noreferrer">未係會員？了解 BuildScope Learning Lab →</a>
         )}
       </div>
-      {!reader.skoolClassroomLessonUrl && !reader.skoolCommunityUrl && <small>Skool 連結尚待確認；目前按鈕不會導向未核實網址。</small>}
+      {!returnUrl && !reader.skoolCommunityUrl && <small>Skool 連結尚待確認；目前按鈕不會導向未核實網址。</small>}
     </section>
 
     <footer class="reader-footer">
@@ -97,8 +98,7 @@ const { reader } = Astro.props;
   .return-panel > p:not(.completion-label) { margin: 0; color: #d9e0e8; line-height: 1.65; }
   .cta-row { display: grid; gap: 12px; margin-top: 24px; }
   .primary-cta, .secondary-cta { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 18px; border-radius: 6px; text-align: center; font-size: .86rem; font-weight: 900; }
-  .primary-cta { color: #0b1b2f; background: #fb923c; }
-  .primary-cta.tower-cta { color: #000; }
+  .primary-cta { color: #000; background: #fb923c; }
   .primary-cta.is-disabled { color: #a9b4c1; background: #23364b; cursor: not-allowed; }
   .secondary-cta { border: 1px solid #52647a; color: white; }
   .return-panel small { display: block; margin-top: 14px; color: #a9b4c1; line-height: 1.55; }

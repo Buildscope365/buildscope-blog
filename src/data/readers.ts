@@ -21,6 +21,7 @@ export interface ReaderItem {
   returnDescription: string;
   returnCtaLabel: string;
   skoolClassroomLessonUrl: string | null;
+  skoolClassroomLandingUrl?: string;
   skoolDiscussionUrl: string | null;
   skoolCommunityUrl: string | null;
 }
@@ -47,6 +48,18 @@ const towerCraneSlides = [
   ["07-safety-first.webp", "安全先決", "Programme 再急，都不能凌駕 Safe Lifting Plan"],
   ["08-24-hour-lifting-plan.webp", "24-Hour Lifting Plan", "按 Critical Path、後續 Trade、時間窗口、吊運時間及安全限制排次序"],
   ["09-priority-summary.webp", "總結", "管理 Tower Crane 要保護整個施工流程，不只是填滿吊運 Booking"],
+] as const;
+
+const rockheadSlides = [
+  ["01-rockhead-cover.webp", "Rockhead 點樣確認？", "Rockhead 點樣確認？唔係見到石就算；由地質調查、基礎工程和現場紀錄一齊判斷"],
+  ["02-why-it-matters.webp", "點解要確認 Rockhead", "Rockhead 確認會影響樁長、造價、工期及爭拗"],
+  ["03-boulder-vs-rockhead.webp", "石塊不等於岩面", "遇到孤石或石塊，未必代表已到設計岩面"],
+  ["04-evidence-checks.webp", "確認所需證據", "比對地質調查、風化程度、岩芯、標高及工程師判斷"],
+  ["05-site-verification.webp", "現場逐步核對", "施工時比對 GI、鑽挖反應、樣本、實際標高及見證確認"],
+  ["06-dispute-sources.webp", "爭拗從何而來", "GI 點位、岩面起伏、孤石、合約定義和紀錄都可能影響判斷"],
+  ["07-record-checklist.webp", "現場紀錄清單", "記低樁號位置、日期、depth 和 RL、bore log、樣本、照片及確認紀錄"],
+  ["08-commercial-questions.webp", "QS 與 Contracts 要問", "先問清定義、量度基準、Tender GI、實際差異及同期紀錄"],
+  ["09-summary.webp", "Rockhead 確認總結", "先釐清定義，再做調查、現場核對和完整紀錄"],
 ] as const;
 
 export const READERS: ReaderItem[] = [
@@ -92,6 +105,29 @@ export const READERS: ReaderItem[] = [
     returnDescription: "返到 STR-001 整理工作重點，再按主題逐層進入 Pocket Guide、Tool Library 同 Community 討論。",
     returnCtaLabel: "返回 STR-001｜Engineering Plain Talk Library →",
     skoolClassroomLessonUrl: "https://www.skool.com/buildscope-learning-lab-1916/classroom/6907ec30?md=28c1b45a2b5d4a058a6a385996e62dc9",
+    skoolDiscussionUrl: null,
+    skoolCommunityUrl: null,
+  },
+  {
+    slug: "rockhead-confirmation",
+    title: "Rockhead 點樣確認？唔係見到石就算",
+    series: "Engineering Plain Talk",
+    categoryLine: "Foundation × Ground Investigation",
+    introduction: "鑽到石塊，未必代表到咗設計岩面；判斷要睇定義、證據同現場紀錄。",
+    quickTakeaway: "先釐清合約及設計對 Rockhead 的定義，再比對 GI、bore log、rock core、實際 depth／RL 與現場見證；完整記錄差異，方便之後核對工程、量度及合約影響。",
+    publishedDate: "2026-09-29",
+    status: "published",
+    slides: rockheadSlides.map(([filename, label, alt]) => ({
+      src: `/images/readers/rockhead-confirmation/${filename}`,
+      label,
+      alt,
+    })),
+    discussionQuestion: "你個地盤通常用邊啲證據確認 Rockhead？",
+    returnTitle: "返回 Engineering Plain Talk Library",
+    returnDescription: "去 Skool Classroom 開啟 Engineering Plain Talk Library，按主題繼續睇工作重點、Pocket Guide、Tool Library 同 Community 討論。",
+    returnCtaLabel: "前往 Skool Classroom →",
+    skoolClassroomLessonUrl: null,
+    skoolClassroomLandingUrl: "https://www.skool.com/buildscope-learning-lab-1916/classroom",
     skoolDiscussionUrl: null,
     skoolCommunityUrl: null,
   },
