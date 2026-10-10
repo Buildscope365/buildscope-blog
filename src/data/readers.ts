@@ -10,13 +10,18 @@ export interface ReaderItem {
   slug: string;
   title: string;
   series: string;
+  category: string;
+  categoryLabel: string;
   categoryLine: string;
+  tags: string[];
   introduction: string;
   quickTakeaway: string;
   publishedDate: string;
   status: ReaderStatus;
   slides: ReaderSlide[];
   discussionQuestion: string;
+  skoolCourseUrl: string | null;
+  skoolResourceUrl: string | null;
   skoolDiscussionUrl: string | null;
   skoolCommunityUrl: string | null;
 }
@@ -38,7 +43,10 @@ export const READERS: ReaderItem[] = [
     slug: "tree-price-scope",
     title: "一棵樹個價，到底包啲乜？",
     series: "Engineering Plain Talk",
+    category: "contracts-qs",
+    categoryLabel: "Contracts & QS",
     categoryLine: "Landscape × QS",
+    tags: ["Tree Rate", "Landscape", "Quotation", "QS"],
     introduction: "報價寫一棵樹 $X，唔代表你比較緊同一樣嘢。",
     quickTakeaway: "比較 Tree Quotation，要逐項核對 Supply、Delivery、Planting、Support、Maintenance 同 Replacement Responsibility。",
     publishedDate: "2026-09-24",
@@ -49,6 +57,9 @@ export const READERS: ReaderItem[] = [
       alt,
     })),
     discussionQuestion: "你收到三份 Tree Quotation，第一樣會比較乜？",
+    // Keep these disabled until the exact topic-specific Skool destinations are verified.
+    skoolCourseUrl: null,
+    skoolResourceUrl: null,
     skoolDiscussionUrl: "https://www.skool.com/buildscope-learning-lab-1916/breakdown?p=6b4b6eb7",
     // Optional secondary CTA for shared links. Keep null until the exact public Learning Lab URL is confirmed.
     skoolCommunityUrl: null,

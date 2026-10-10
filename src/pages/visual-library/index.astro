@@ -1,0 +1,131 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { READERS } from "../../data/readers";
+
+const readers = READERS.filter((reader) => reader.status === "published").sort(
+  (a, b) => Date.parse(b.publishedDate) - Date.parse(a.publishedDate),
+);
+const categories = [...new Map(readers.map((reader) => [reader.category, reader.categoryLabel])).entries()];
+---
+
+<BaseLayout
+  title="工程圖解庫 Visual Library｜工程白話文 BuildScope"
+  description="免費搜尋及閱讀 BuildScope 工程圖解。用手機滑動 IG Carousel，再到 Skool 繼續 Micro Course、Resources 及工程討論。"
+  image={readers[0]?.slides[0]?.src}
+>
+  <div class="visual-library">
+    <section class="library-hero">
+      <div class="library-shell">
+        <div class="library-hero-copy">
+          <p class="library-brand">BUILDSCOPE</p>
+          <h1>工程圖解庫<br /><span>Visual Library</span></h1>
+          <p>免費閱讀 · 主題搜尋 · 手機滑動</p>
+        </div>
+        <div class="library-search-card">
+          <label for="visual-search">搵一個工程 Topic</label>
+          <div class="search-control">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+            <input id="visual-search" type="search" placeholder="例如：Tree Rate、QS、Landscape" autocomplete="off" data-visual-search />
+          </div>
+          <small>搜尋標題、分類或 Tag</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="library-content" aria-labelledby="library-results-title">
+      <div class="library-shell">
+        <div class="library-toolbar">
+          <div>
+            <p class="section-label">EXPLORE TOPICS</p>
+            <h2 id="library-results-title">揀一個 Topic，逐張睇明。</h2>
+          </div>
+          <p class="result-count" role="status" aria-live="polite"><strong data-result-count>{readers.length}</strong> 個圖解</p>
+        </div>
+
+        <div class="category-filters" aria-label="圖解分類">
+          <button class="is-active" type="button" data-visual-category="all" aria-pressed="true">全部圖解</button>
+          {categories.map(([slug, label]) => (
+            <button type="button" data-visual-category={slug} aria-pressed="false">{label}</button>
+          ))}
+        </div>
+
+        <div class="visual-grid" data-visual-grid>
+          {readers.map((reader) => (
+            <article
+              class="visual-card"
+              data-visual-card
+              data-category={reader.category}
+              data-search={`${reader.title} ${reader.categoryLabel} ${reader.categoryLine} ${reader.tags.join(" ")} ${reader.introduction}`.toLocaleLowerCase("zh-HK")}
+            >
+              <a class="visual-cover" href={`/read/${reader.slug}/`} aria-label={`閱讀圖解：${reader.title}`}>
+                <img src={reader.slides[0].src} alt={`${reader.title} 圖解封面`} width="1080" height="1350" loading="eager" />
+                <span>{reader.slides.length} 張圖解</span>
+              </a>
+              <div class="visual-copy">
+                <div class="visual-meta"><span>{reader.categoryLabel}</span><time datetime={reader.publishedDate}>{reader.publishedDate}</time></div>
+                <h3><a href={`/read/${reader.slug}/`}>{reader.title}</a></h3>
+                <p>{reader.introduction}</p>
+                <div class="tag-list" aria-label="Tags">{reader.tags.map((tag) => <span>#{tag}</span>)}</div>
+                <a class="read-cta" href={`/read/${reader.slug}/`}>開始閱讀 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div class="empty-state" data-empty-state hidden>
+          <strong>暫時搵唔到相關圖解</strong>
+          <p>試下搜尋另一個工程字眼，或者選擇「全部圖解」。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="skool-bridge">
+      <div class="library-shell skool-bridge-inner">
+        <div><p class="section-label">FROM VISUAL TO PRACTICAL</p><h2>睇完圖解，再到 Skool 落地應用。</h2></div>
+        <p>Visual Library 幫你快速理解 Topic；Micro Course、Resources 同會員討論會放喺 BuildScope Learning Lab。</p>
+        <a href="https://www.skool.com/buildscope-learning-lab-1916?utm_source=buildscope-blog&amp;utm_medium=visual-library&amp;utm_campaign=visual-library-pilot" target="_blank" rel="noopener noreferrer">前往 BuildScope Learning Lab <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .visual-library{--navy:#0a1931;--panel:#172d4d;--yellow:#ffc107;--muted:#aebbd0;background:var(--navy);color:white;min-height:100vh;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:44px 44px}.library-shell{width:min(calc(100% - 40px),1180px);margin-inline:auto}.library-hero{padding:clamp(58px,9vw,110px) 0 72px;border-bottom:1px solid rgba(255,255,255,.14)}.library-hero .library-shell{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);align-items:end;gap:70px}.library-brand,.section-label{margin:0;color:var(--yellow);font-size:.76rem;font-weight:900;letter-spacing:.15em}.library-hero h1{margin:16px 0 22px;font-size:clamp(3.3rem,7vw,6.8rem);line-height:.95;letter-spacing:-.07em}.library-hero h1 span{color:var(--yellow)}.library-hero-copy>p:last-child{margin:0;color:#dce5f1;font-size:clamp(1rem,2vw,1.25rem);font-weight:700;word-spacing:.55em}.library-search-card{padding:28px;background:var(--panel);border:1px solid rgba(255,255,255,.16);box-shadow:18px 18px 0 rgba(255,193,7,.08)}.library-search-card label{display:block;margin-bottom:12px;font-size:1.05rem;font-weight:900}.search-control{display:flex;align-items:center;gap:12px;padding:0 15px;background:white;border:2px solid transparent}.search-control:focus-within{border-color:var(--yellow)}.search-control svg{width:21px;fill:none;stroke:#52647a;stroke-width:2}.search-control input{width:100%;height:52px;border:0;outline:0;color:#0a1931;background:transparent;font-size:1rem}.library-search-card small{display:block;margin-top:10px;color:var(--muted)}.library-content{padding:70px 0 90px;background:rgba(7,21,42,.78)}.library-toolbar{display:flex;align-items:end;justify-content:space-between;gap:30px}.library-toolbar h2,.skool-bridge h2{margin:10px 0 0;font-size:clamp(2rem,4vw,3.5rem);line-height:1.15;letter-spacing:-.05em}.result-count{margin:0;color:var(--muted)}.result-count strong{color:var(--yellow);font-size:2rem}.category-filters{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0}.category-filters button{min-height:42px;padding:0 17px;border:1px solid rgba(255,255,255,.2);border-radius:99px;color:var(--muted);background:var(--panel);cursor:pointer;font-weight:800}.category-filters button:hover,.category-filters button.is-active{border-color:var(--yellow);color:var(--navy);background:var(--yellow)}.visual-grid{display:grid;gap:24px}.visual-card{display:grid;grid-template-columns:minmax(260px,360px) 1fr;background:var(--panel);border:1px solid rgba(255,255,255,.14);transition:transform .2s,border-color .2s}.visual-card:hover{transform:translateY(-3px);border-color:var(--yellow)}.visual-cover{position:relative;min-height:430px;overflow:hidden;background:#08152a}.visual-cover img{width:100%;height:100%;object-fit:cover}.visual-cover>span{position:absolute;right:14px;bottom:14px;padding:6px 10px;color:var(--navy);background:var(--yellow);font-size:.72rem;font-weight:900}.visual-copy{display:flex;flex-direction:column;padding:clamp(28px,5vw,54px)}.visual-meta{display:flex;justify-content:space-between;gap:20px;color:var(--yellow);font-size:.74rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase}.visual-meta time{color:var(--muted)}.visual-copy h3{max-width:16ch;margin:22px 0 14px;font-size:clamp(2rem,4vw,3.6rem);line-height:1.08;letter-spacing:-.05em}.visual-copy>p{max-width:590px;margin:0;color:#c9d4e3;font-size:1.02rem}.tag-list{display:flex;flex-wrap:wrap;gap:8px;margin:25px 0}.tag-list span{padding:5px 9px;border:1px solid rgba(255,255,255,.14);color:var(--muted);font-size:.75rem}.read-cta{display:inline-flex;align-items:center;gap:16px;margin-top:auto;color:var(--yellow);font-weight:900}.read-cta svg{width:22px;fill:none;stroke:currentColor;stroke-width:2;transition:transform .2s}.read-cta:hover svg{transform:translateX(5px)}.empty-state{padding:45px;border:1px dashed rgba(255,255,255,.25);text-align:center;color:var(--muted)}.empty-state strong{color:white;font-size:1.25rem}.empty-state p{margin:8px 0 0}.skool-bridge{padding:70px 0;background:var(--yellow);color:var(--navy)}.skool-bridge .section-label{color:#6f5500}.skool-bridge-inner{display:grid;grid-template-columns:1.2fr .8fr auto;align-items:center;gap:45px}.skool-bridge p{margin:0;max-width:550px}.skool-bridge a{display:inline-flex;align-items:center;gap:16px;min-height:52px;padding:0 20px;border:2px solid var(--navy);font-weight:900;white-space:nowrap}.skool-bridge a:hover{color:var(--yellow);background:var(--navy)}
+  @media(max-width:850px){.library-hero .library-shell,.skool-bridge-inner{grid-template-columns:1fr;gap:35px}.visual-card{grid-template-columns:280px 1fr}.skool-bridge a{justify-self:start}}
+  @media(max-width:650px){.library-shell{width:min(calc(100% - 28px),1180px)}.library-hero{padding:48px 0}.library-hero h1{font-size:3.25rem}.library-search-card{padding:20px;box-shadow:none}.library-content{padding:50px 0 60px}.library-toolbar{align-items:flex-start;flex-direction:column;gap:15px}.category-filters{margin:26px 0}.visual-card{grid-template-columns:1fr}.visual-cover{min-height:0;aspect-ratio:4/5}.visual-copy{min-height:390px;padding:26px}.visual-copy h3{font-size:2.15rem}.skool-bridge{padding:52px 0}}
+  @media(prefers-reduced-motion:reduce){.visual-card,.read-cta svg{transition:none}}
+</style>
+
+<script>
+  const search = document.querySelector<HTMLInputElement>("[data-visual-search]");
+  const cards = [...document.querySelectorAll<HTMLElement>("[data-visual-card]")];
+  const filters = [...document.querySelectorAll<HTMLButtonElement>("[data-visual-category]")];
+  const count = document.querySelector<HTMLElement>("[data-result-count]");
+  const empty = document.querySelector<HTMLElement>("[data-empty-state]");
+  let selectedCategory = "all";
+
+  const updateResults = () => {
+    const query = search?.value.trim().toLocaleLowerCase("zh-HK") ?? "";
+    let visibleCount = 0;
+    cards.forEach((card) => {
+      const categoryMatch = selectedCategory === "all" || card.dataset.category === selectedCategory;
+      const searchMatch = !query || card.dataset.search?.includes(query);
+      const visible = Boolean(categoryMatch && searchMatch);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    if (count) count.textContent = String(visibleCount);
+    if (empty) empty.hidden = visibleCount !== 0;
+  };
+
+  search?.addEventListener("input", updateResults);
+  filters.forEach((filter) => filter.addEventListener("click", () => {
+    selectedCategory = filter.dataset.visualCategory ?? "all";
+    filters.forEach((button) => {
+      const active = button === filter;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    updateResults();
+  }));
+</script>

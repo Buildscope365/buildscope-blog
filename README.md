@@ -13,6 +13,17 @@
 - AI 工程工具（EOT Timeline Assistant 流程示範）
 - 關於我們
 - 自訂 404 頁面
+## Visual Library Pilot
+
+- Library：`/visual-library/`
+- Reader：`/read/<slug>/`
+- Pilot Topic：`tree-price-scope`，使用 9 張已驗證 Carousel 圖
+- 資料：`src/data/readers.ts`
+- 圖片：`public/images/readers/<slug>/`
+
+Library 支援標題／分類／Tag 即時搜尋及分類 filter。Reader 支援頁碼、dots、桌面方向鍵、鍵盤方向鍵及手機 swipe。完成最後一張後會顯示 Skool Micro Course、Resources 及討論入口。
+
+Topic-specific Course／Resource URL 未核實時必須保持 `null`；畫面會顯示 disabled CTA，不能以 Skool 首頁或其他 Topic 連結冒充。新增更多 Topic 前，先由網站擁有者 Review 呢個單一 Pilot。
 
 ## 本機預覽
 
