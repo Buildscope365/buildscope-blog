@@ -18,12 +18,12 @@
 - Library：`/visual-library/`
 - Reader：`/read/<slug>/`
 - Pilot Topic：`tree-price-scope`，使用 9 張已驗證 Carousel 圖
-- 資料：`src/data/readers.ts`
+- 資料：`src/content/readers/*.md`（可在 `/admin` 的 Visual Library 管理）
 - 圖片：`public/images/readers/<slug>/`
 
 Library 支援標題／分類／Tag 即時搜尋及分類 filter。Reader 支援頁碼、dots、桌面方向鍵、鍵盤方向鍵及手機 swipe。完成最後一張後會顯示 Skool Micro Course、Resources 及討論入口。
 
-Topic-specific Course／Resource URL 未核實時必須保持 `null`；畫面會顯示 disabled CTA，不能以 Skool 首頁或其他 Topic 連結冒充。新增更多 Topic 前，先由網站擁有者 Review 呢個單一 Pilot。
+Topic-specific Course／Resource URL 未核實時留空；畫面會顯示 disabled CTA，不能以 Skool 首頁或其他 Topic 連結冒充。新增 Topic 時，首張圖會用作 Library cover 及 Open Graph 圖片；圖片順序可在 CMS 拖放調整。
 
 ## 本機預覽
 

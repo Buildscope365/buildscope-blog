@@ -69,4 +69,39 @@ const ebooks = defineCollection({
   }),
 });
 
-export const collections = { blog, news, templates, ebooks };
+const optionalUrl = z.union([z.url(), z.literal("")]).optional();
+
+const readers = defineCollection({
+  loader: glob({ base: "./src/content/readers", pattern: "**/*.md" }),
+  schema: z.object({
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    title: z.string(),
+    category: z.enum([
+      "site-works",
+      "contracts-qs",
+      "building-services",
+      "site-management",
+      "design-statutory",
+      "safety-environment",
+      "ai-construction",
+      "engineering-cases",
+    ]),
+    categoryLine: z.string(),
+    tags: z.array(z.string()).default([]),
+    introduction: z.string(),
+    quickTakeaway: z.string(),
+    publishedDate: z.coerce.date(),
+    draft: z.boolean().default(true),
+    slides: z.array(z.object({
+      src: z.string(),
+      label: z.string(),
+      alt: z.string(),
+    })).min(1).max(20),
+    discussionQuestion: z.string(),
+    skoolCourseUrl: optionalUrl,
+    skoolResourceUrl: optionalUrl,
+    skoolDiscussionUrl: optionalUrl,
+  }),
+});
+
+export const collections = { blog, news, templates, ebooks, readers };

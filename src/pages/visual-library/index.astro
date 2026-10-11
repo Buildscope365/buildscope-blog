@@ -1,10 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { READERS } from "../../data/readers";
+import { getReaders } from "../../data/readers";
 
-const readers = READERS.filter((reader) => reader.status === "published").sort(
-  (a, b) => Date.parse(b.publishedDate) - Date.parse(a.publishedDate),
-);
+const readers = await getReaders();
 const categories = [...new Map(readers.map((reader) => [reader.category, reader.categoryLabel])).entries()];
 ---
 

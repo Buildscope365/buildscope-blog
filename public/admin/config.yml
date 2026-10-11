@@ -22,6 +22,64 @@ slug:
   sanitize_replacement: "-"
 
 collections:
+  - name: "readers"
+    label: "Visual Library"
+    label_singular: "圖解 Topic"
+    description: "管理工程圖解、Carousel 圖片次序及 Topic-specific Skool 連結。"
+    folder: "src/content/readers"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    identifier_field: "slug"
+    slug: "{{slug}}"
+    preview_path: "read/{{slug}}/"
+    summary: "{{publishedDate}} — {{title}}"
+    sortable_fields: ["publishedDate", "title", "category", "draft"]
+    editor:
+      preview: false
+    fields:
+      - label: "網址 Slug"
+        name: "slug"
+        widget: "string"
+        hint: "只用小寫英文字母、數字及連字號，例如 bored-pile。發布後不建議修改，否則舊連結會失效。"
+        pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "只可使用小寫英文字母、數字及連字號。"]
+      - { label: "Topic 標題", name: "title", widget: "string" }
+      - label: "分類"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "地盤施工", value: "site-works" }
+          - { label: "Contracts & QS", value: "contracts-qs" }
+          - { label: "Building Services", value: "building-services" }
+          - { label: "Site Management", value: "site-management" }
+          - { label: "Design / Statutory", value: "design-statutory" }
+          - { label: "Safety & Environment", value: "safety-environment" }
+          - { label: "AI for Construction", value: "ai-construction" }
+          - { label: "工程案例", value: "engineering-cases" }
+      - { label: "分類副題", name: "categoryLine", widget: "string", hint: "例如 Landscape × QS 或 Foundation × Site Works。" }
+      - { label: "搜尋 Tags", name: "tags", widget: "list", allow_add: true, collapsed: false, default: [] }
+      - { label: "卡片簡介", name: "introduction", widget: "text", hint: "顯示在 Visual Library 卡片及 Reader 頁首。" }
+      - { label: "讀圖重點", name: "quickTakeaway", widget: "text" }
+      - { label: "發布日期", name: "publishedDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: true }
+      - label: "Carousel 圖片"
+        name: "slides"
+        widget: "list"
+        min: 1
+        max: 20
+        collapsed: true
+        summary: "{{fields.label}}"
+        hint: "第一張會成為 Library cover 及 Open Graph 圖片；可拖放調整次序。建議全部使用相同比例，例如 1080 × 1350。"
+        fields:
+          - { label: "圖片", name: "src", widget: "image" }
+          - { label: "短標籤", name: "label", widget: "string", hint: "例如 封面、植物材料、總結。" }
+          - { label: "圖片替代文字", name: "alt", widget: "string", hint: "簡短描述圖片重點，供 SEO 及無障礙閱讀使用。" }
+      - { label: "討論問題", name: "discussionQuestion", widget: "text", hint: "顯示在 Skool Discussion 按鈕。" }
+      - { label: "Skool Micro Course 網址", name: "skoolCourseUrl", widget: "string", required: false, hint: "請貼 Topic-specific 完整 https:// 網址；未準備好請留空。" }
+      - { label: "Skool Resources 網址", name: "skoolResourceUrl", widget: "string", required: false, hint: "請貼 Topic-specific 完整 https:// 網址；未準備好請留空。" }
+      - { label: "Skool Discussion 網址", name: "skoolDiscussionUrl", widget: "string", required: false, hint: "請貼 Topic-specific 討論帖網址；未準備好請留空。" }
+
   - name: "blog"
     label: "工程 Blog"
     label_singular: "文章"

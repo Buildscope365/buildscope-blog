@@ -1,10 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CarouselViewer from "../../components/CarouselViewer.astro";
-import { READERS } from "../../data/readers";
+import { getReaders } from "../../data/readers";
 
-export function getStaticPaths() {
-  return READERS.filter((reader) => reader.status === "published").map((reader) => ({
+export async function getStaticPaths() {
+  const readers = await getReaders();
+  return readers.map((reader) => ({
     params: { slug: reader.slug },
     props: { reader },
   }));
@@ -33,7 +34,7 @@ const { reader } = Astro.props;
       <p class="introduction">{reader.introduction}</p>
     </header>
 
-    <section class="reader-viewer" aria-label="9 張 Carousel 圖解">
+    <section class="reader-viewer" aria-label={`${reader.slides.length} 張 Carousel 圖解`}>
       <CarouselViewer slides={reader.slides} title={reader.title} />
     </section>
 
@@ -43,7 +44,7 @@ const { reader } = Astro.props;
     </section>
 
     <section class="return-panel" data-reader-completion aria-labelledby="return-title">
-      <p class="completion-label" data-completion-label>睇完 9 張之後</p>
+      <p class="completion-label" data-completion-label data-slide-count={reader.slides.length}>睇完 {reader.slides.length} 張之後</p>
       <h2 id="return-title">想再行前一步？</h2>
       <p>去 Skool 睇完整 Micro Course、下載實用 Resources，或者同其他工程人繼續討論。</p>
       <div class="cta-row">
@@ -119,6 +120,7 @@ const { reader } = Astro.props;
     const panel = document.querySelector<HTMLElement>("[data-reader-completion]");
     const label = panel?.querySelector<HTMLElement>("[data-completion-label]");
     panel?.classList.toggle("is-complete", detail.isComplete);
-    if (label) label.textContent = detail.isComplete ? "9 張已睇完" : "睇完 9 張之後";
+    const slideCount = label?.dataset.slideCount ?? "全部";
+    if (label) label.textContent = detail.isComplete ? `${slideCount} 張已睇完` : `睇完 ${slideCount} 張之後`;
   });
 </script>
