@@ -5,7 +5,7 @@ interface Props { slides: ReaderSlide[]; title: string; }
 const { slides, title } = Astro.props;
 ---
 
-<section class="carousel-shell" data-carousel data-active-index="0" data-is-complete="false" aria-label={`${title}，9 張圖解`} aria-roledescription="carousel" tabindex="0">
+<section class="carousel-shell" data-carousel data-active-index="0" data-is-complete="false" aria-label={`${title}，${slides.length} 張圖解`} aria-roledescription="carousel" tabindex="0">
   <div class="carousel-topline">
     <p>Visual explainer</p>
     <p class="carousel-counter" aria-live="polite"><span data-current>01</span><span aria-hidden="true"> / </span><span class="visually-hidden">，共</span><span>{String(slides.length).padStart(2, "0")}</span></p>
