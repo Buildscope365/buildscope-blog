@@ -2,7 +2,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getReaders } from "../data/readers";
 
-const readers = (await getReaders()).slice(0, 3);
+const allReaders = await getReaders();
+const readers = allReaders.slice(0, 3);
 const skoolUrl = "https://www.skool.com/buildscope-learning-lab-1916";
 ---
 
@@ -25,7 +26,7 @@ const skoolUrl = "https://www.skool.com/buildscope-learning-lab-1916";
       </div>
       <div class="home-hero-media">
         <img src={readers[0]?.slides[0]?.src ?? "/images/hero-construction.webp"} alt="BuildScope 最新工程圖解" width="1080" height="1350" />
-        <div class="media-note"><strong>{readers.length}</strong><span>個精選圖解<br />持續更新</span></div>
+        <div class="media-note"><strong>{allReaders.length}</strong><span>個圖解主題<br />更多圖解持續更新</span></div>
       </div>
     </div>
   </section>

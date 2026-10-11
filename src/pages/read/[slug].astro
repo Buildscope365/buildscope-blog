@@ -66,9 +66,13 @@ const { reader } = Astro.props;
     </section>
 
     <footer class="reader-footer">
-      <strong>Skool = Home</strong>
-      <span aria-hidden="true">·</span>
-      <span>Visual Reader = Reading Room</span>
+      <nav aria-label="Reader 快捷連結">
+        <a href="/">BuildScope 首頁</a>
+        <a href="/visual-library/">Visual Library</a>
+        <a href="https://buildscope-dictionary.com/">工程字典 <span aria-hidden="true">↗</span></a>
+        <a href="https://www.skool.com/buildscope-learning-lab-1916" target="_blank" rel="noopener noreferrer">Community <span aria-hidden="true">↗</span></a>
+      </nav>
+      <p><strong>Skool = Home</strong><span aria-hidden="true"> · </span>Visual Reader = Reading Room</p>
     </footer>
   </article>
 </BaseLayout>
@@ -103,7 +107,11 @@ const { reader } = Astro.props;
   .discussion-cta { padding-top: 8px; color: #fb923c; font-size: .84rem; font-weight: 800; line-height: 1.6; }
   .discussion-cta:hover { color: white; }
   .return-panel small { display: block; margin-top: 14px; color: #a9b4c1; line-height: 1.55; }
-  .reader-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 28px; color: #657486; font-size: .72rem; letter-spacing: .04em; }
+  .reader-footer { margin-top: 28px; color: #657486; font-size: .72rem; letter-spacing: .04em; text-align: center; }
+  .reader-footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 18px; }
+  .reader-footer nav a { display: inline-flex; min-height: 38px; align-items: center; padding: 0 12px; border: 1px solid rgba(11,27,47,.18); border-radius: 999px; color: #26384c; background: rgba(255,255,255,.55); font-weight: 800; }
+  .reader-footer nav a:hover { border-color: #f97316; color: #c4510b; background: white; }
+  .reader-footer p { margin: 0; }
   .reader-footer strong { color: #0b1b2f; }
   @media (max-width: 560px) {
     .reader-page { padding-top: 22px; }
