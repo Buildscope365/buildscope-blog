@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
-    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
-    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy",
     "cf-types": "wrangler types"
   },
@@ -14,9 +17,9 @@
     "@astrojs/check": "latest",
     "@fontsource/noto-sans-tc": "latest",
     "@types/node": "latest",
-    "astro": "latest",
+    "astro": "7.3.8",
     "typescript": "latest",
-    "wrangler": "latest"
+    "wrangler": "4.149.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260804.1"

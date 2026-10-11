@@ -27,7 +27,7 @@ const news = defineCollection({
     date: z.coerce.date(),
     category: z.string(),
     sourceName: z.string().optional(),
-    sourceUrl: z.string().url().optional().or(z.literal("")),
+    sourceUrl: z.url().optional().or(z.literal("")),
     coverImage: z.string().optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),

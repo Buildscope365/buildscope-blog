@@ -27,6 +27,8 @@ Topic-specific Course／Resource URL 未核實時必須保持 `null`；畫面會
 
 ## 本機預覽
 
+請使用 Node.js 22 LTS（專案同時提供 `.nvmrc` 及 `package.json` engines 設定）。
+
 ```bash
 npm install
 npm run dev
