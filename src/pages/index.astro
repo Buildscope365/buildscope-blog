@@ -1,144 +1,88 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
-import { categoryLabel, formatDate } from "../data/categories";
-const arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-const articles = (await getCollection("blog", ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
-const cardArt = [
-  '<svg viewBox="0 0 120 90" aria-hidden="true"><path d="M44 8h32M44 82h32M48 10c0 18 5 24 18 35-13 11-18 17-18 35M72 10c0 18-5 24-18 35 13 11 18 17 18 35M35 8h50M35 82h50" fill="none" stroke="currentColor" stroke-width="2"/><path d="M30 78 88 60l22 11-59 16zM48 70l20 8M59 66l20 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
-  '<svg viewBox="0 0 120 90" aria-hidden="true"><path d="M12 77h98M22 77V34l25-12v55M47 77V12h31v65M78 77V39l24 13v25M55 25h7M55 37h7M55 49h7M29 45h7M29 57h7M86 55h7M86 66h7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 77h92" stroke="#f97316" stroke-width="3"/></svg>',
-  '<svg viewBox="0 0 120 90" aria-hidden="true"><rect x="9" y="17" width="65" height="49" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 55V43l11-8 10 5 14-16 10 8v23M29 75h25M42 66v9" fill="none" stroke="currentColor" stroke-width="2"/><rect x="79" y="33" width="33" height="34" rx="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M95 33v-7M91 25h8M87 48h3M101 48h3M88 58h15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="95" cy="22" r="3" fill="#f97316"/></svg>'
-];
-const news = (await getCollection("news", ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 4);
-const templates = (await getCollection("templates", ({ data }) => !data.draft)).sort((a, b) => a.data.sortOrder - b.data.sortOrder).slice(0, 4);
-const featuredBook = (await getCollection("ebooks", ({ data }) => !data.draft)).sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.sortOrder - b.data.sortOrder)[0];
+import { getReaders } from "../data/readers";
+
+const readers = (await getReaders()).slice(0, 3);
+const skoolUrl = "https://www.skool.com/buildscope-learning-lab-1916";
 ---
-<BaseLayout>
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <h1>工程知識，<br />唔需要講到咁<span>複雜。</span></h1>
-        <p>用白話拆解合約、施工、管理及建築科技，讓每個工程人都可以即學即用。</p>
-        <div class="hero-actions"><a class="button button-primary" href="/blog/">瀏覽最新文章 <span set:html={arrow}></span></a><a class="button" href="/ai-tools/">探索工程工具</a></div>
+
+<BaseLayout
+  title="工程白話文 BuildScope｜香港工程圖解知識庫"
+  description="用工程圖解，15 分鐘睇明一個香港建築工程 Topic；再到 BuildScope Learning Lab 學習 Micro Course、Resources 及案例。"
+  image={readers[0]?.slides[0]?.src}
+>
+  <section class="home-hero">
+    <div class="container home-hero-grid">
+      <div class="home-hero-copy">
+        <p class="eyebrow">BUILDSCOPE ENGINEERING KNOWLEDGE LIBRARY</p>
+        <h1>15分鐘，<br />睇明一個<span>工程 Topic。</span></h1>
+        <p>免費用圖解掌握工程概念，再到 Skool 學習 Micro Course、下載 Resources，同其他工程人交流。</p>
+        <div class="hero-actions">
+          <a class="primary-action" href="/visual-library/">瀏覽工程圖解 <span aria-hidden="true">→</span></a>
+          <a class="secondary-action" href={skoolUrl} target="_blank" rel="noopener noreferrer">Join Community <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-points" aria-label="平台特色"><span>免費閱讀</span><span>手機滑動</span><span>實用工程 Topics</span></div>
       </div>
-      <div class="hero-media"><img src="/images/hero-construction.webp" alt="完整建築物、塔式起重機及工程文件技術線稿" /></div>
+      <div class="home-hero-media">
+        <img src={readers[0]?.slides[0]?.src ?? "/images/hero-construction.webp"} alt="BuildScope 最新工程圖解" width="1080" height="1350" />
+        <div class="media-note"><strong>{readers.length}</strong><span>個精選圖解<br />持續更新</span></div>
+      </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="visual-section" aria-labelledby="featured-visuals">
     <div class="container">
-      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">01</span><h2 class="section-title">最新內容</h2></div><a class="section-link" href="/blog/"><span>查看全部文章</span><span set:html={arrow}></span></a></div>
-      <div class="content-grid">{articles.map((article, index) => <a class="content-card" href={`/blog/${article.id}/`}><span class="category">{categoryLabel(article.data.category)}</span><h3>{article.data.title}</h3><p>{article.data.description}</p><div class="card-art" set:html={cardArt[index]}></div><footer><span>{formatDate(article.data.date)}</span><span>{article.data.readingTime}</span></footer></a>)}</div>
+      <div class="section-heading">
+        <div><p class="eyebrow">VISUAL LIBRARY</p><h2 id="featured-visuals">由一張圖開始，逐張睇明。</h2></div>
+        <a href="/visual-library/">查看全部圖解 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="reader-grid">
+        {readers.map((reader) => (
+          <article class="reader-card">
+            <a class="reader-cover" href={`/read/${reader.slug}/`} aria-label={`閱讀圖解：${reader.title}`}>
+              <img src={reader.slides[0].src} alt={`${reader.title} 圖解封面`} width="1080" height="1350" loading="lazy" />
+              <span>{reader.slides.length} 張圖解</span>
+            </a>
+            <div class="reader-copy">
+              <p>{reader.categoryLabel}</p>
+              <h3><a href={`/read/${reader.slug}/`}>{reader.title}</a></h3>
+              <a class="reader-link" href={`/read/${reader.slug}/`}>開始閱讀 <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
-  <section class="section section-soft">
-    <div class="container">
-      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">02</span><h2 class="section-title">工程新聞</h2></div><a class="section-link" href="/news/"><span>查看全部新聞</span><span set:html={arrow}></span></a></div>
-      <div class="listing news-list">{news.map((item) => <a class="listing-row" href={`/news/${item.id}/`}><time datetime={item.data.date.toISOString()}>{formatDate(item.data.date)}</time><span class="listing-type">{item.data.category}</span><strong>{item.data.title}</strong><span set:html={arrow}></span></a>)}</div>
+  <section class="path-section">
+    <div class="container path-grid">
+      <div><p class="eyebrow">HOW BUILDSCOPE WORKS</p><h2>圖解先理解，Skool 再落地。</h2></div>
+      <ol>
+        <li><span>01</span><div><strong>揀一個 Topic</strong><p>按分類或關鍵字搜尋你想理解嘅工程題目。</p></div></li>
+        <li><span>02</span><div><strong>逐張睇圖解</strong><p>用手機滑動 Carousel，快速建立基本概念。</p></div></li>
+        <li><span>03</span><div><strong>去 Skool 實踐</strong><p>繼續 Micro Course、Resources、案例及會員討論。</p></div></li>
+      </ol>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">03</span><h2 class="section-title">實用文件範本</h2></div><a class="section-link" href="/templates/"><span>查看全部範本</span><span set:html={arrow}></span></a></div>
-      <div class="template-rail">{templates.map((item) => <a class="template-item" href="/templates/"><svg viewBox="0 0 48 56" aria-hidden="true"><path d="M8 2h21l11 11v41H8zM29 2v12h11M15 24h18M15 32h18M15 40h13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><div><h3>{item.data.title}</h3><p>{item.data.description}</p><span>{item.data.access} · {item.data.fileType}</span></div></a>)}</div>
+  <section class="utility-section">
+    <div class="container utility-grid">
+      <div><p class="eyebrow">QUICK TOOL</p><h2>遇到工程術語唔明？</h2><p>去工程白話字典快速搜尋 EOT、VO、RFI、Claim 等常見工程字眼。</p></div>
+      <a href="https://buildscope-dictionary.com/">開啟工程字典 <span aria-hidden="true">↗</span></a>
     </div>
   </section>
 
-  <section class="section section-soft">
-    <div class="container">
-      <div class="section-heading"><div class="section-title-wrap"><span class="section-number">04</span><h2 class="section-title">電子書</h2></div><a class="section-link" href="/ebooks/"><span>查看全部電子書</span><span set:html={arrow}></span></a></div>
-      {featuredBook && <div class="ebook-band"><div class="book"><span>工程白話文</span><strong>{featuredBook.data.title}</strong><small>{featuredBook.data.subtitle}</small></div><div class="ebook-copy"><span class="orange-label">{featuredBook.data.status}</span><h3>{featuredBook.data.title}：{featuredBook.data.subtitle}</h3><p>{featuredBook.data.description}</p><div class="book-meta"><span>{featuredBook.data.pages}</span><span>{featuredBook.data.format}</span><span>{featuredBook.data.language}</span></div></div><a class="button button-primary" href="/ebooks/">查看電子書 <span set:html={arrow}></span></a></div>}
-    </div>
-  </section>
-
-  <section class="section tools-section">
-    <div class="container split-tools">
-      <div class="dictionary-panel"><div class="section-title-wrap"><span class="section-number">05</span><h2 class="section-title">工程白話字典</h2></div><p>搜尋常見工程字眼，白話解釋專業術語。</p><form class="home-search" action="https://buildscope-dictionary.com/"><label class="visually-hidden" for="term">搜尋工程字眼</label><input id="term" name="q" placeholder="搜尋工程字眼，例如：EOT、Tender、PC…" /><button aria-label="搜尋"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg></button></form><div class="quick-terms"><a href="https://buildscope-dictionary.com/terms/eot">EOT</a><a href="https://buildscope-dictionary.com/terms/vo">VO</a><a href="https://buildscope-dictionary.com/terms/rfi">RFI</a><a href="https://buildscope-dictionary.com/?q=Claim">Claim</a></div></div>
-      <div class="ai-panel"><div class="section-title-wrap"><span class="section-number">06</span><h2 class="section-title">AI 工程工具</h2></div><p>善用 AI 提升效率，解決日常工程難題。</p><a class="ai-demo" href="/ai-tools/"><div class="robot"><svg viewBox="0 0 48 48"><rect x="8" y="12" width="32" height="28" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M24 12V6M20 6h8M15 24h3M30 24h3M17 33h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div><strong>EOT Timeline Assistant</strong><span>輸入延誤事件日期，自動整理時間線及證據清單。</span></div><b>立即使用 →</b></a></div>
+  <section class="community-section">
+    <div class="container community-inner">
+      <div><p class="eyebrow">BUILDSCOPE LEARNING LAB</p><h2>由「睇明」去到「用得到」。</h2><p>加入 Skool Community，繼續 Micro Course、Resources、案例分享及工程討論。</p></div>
+      <a href={skoolUrl} target="_blank" rel="noopener noreferrer">Join BuildScope Community <span aria-hidden="true">↗</span></a>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .hero { padding: 48px 0 34px; overflow: hidden; }
-  .hero-grid { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; min-height: 450px; }
-  .hero h1 { margin: 0; font-size: clamp(3.2rem, 6.5vw, 6.3rem); line-height: .98; letter-spacing: -.075em; }
-  .hero h1 span { color: var(--orange); }
-  .hero-copy p { max-width: 570px; margin: 28px 0 0; color: var(--body); font-size: 1.17rem; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
-  .hero-actions :global(svg), .ebook-band :global(svg) { width: 18px; }
-  .hero-media { min-width: 0; padding-left: clamp(0px, 2vw, 28px); }
-  .hero-media img { width: 100%; height: auto; max-height: 540px; object-fit: contain; object-position: center; mix-blend-mode: multiply; }
-  .content-card { position: relative; overflow: hidden; }
-  .content-card h3, .content-card p, .content-card footer { position: relative; z-index: 1; max-width: 74%; }
-  .card-art { position: absolute; right: 18px; bottom: 58px; width: 105px; color: #b7b7b7; opacity: .9; }
-  .card-art :global(svg) { width: 100%; height: auto; }
-  .template-rail { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); }
-  .template-item { display: grid; grid-template-columns: 48px 1fr; gap: 18px; min-height: 190px; padding: 28px; border-right: 1px solid var(--line); }
-  .template-item:last-child { border-right: 0; }
-  .template-item svg { width: 44px; color: var(--orange); }
-  .template-item h3 { margin: 0 0 8px; font-size: 1rem; }
-  .template-item p { margin: 0 0 14px; color: var(--body); font-size: .84rem; }
-  .template-item span { padding-bottom: 3px; border-bottom: 1px solid var(--orange); color: var(--orange-dark); font-size: .78rem; font-weight: 800; }
-  .ebook-band { display: grid; grid-template-columns: 180px 1fr auto; align-items: center; gap: 44px; padding: 34px 44px; border: 1px solid var(--line); background: white; }
-  .book { position: relative; display: flex; width: 150px; height: 202px; flex-direction: column; padding: 20px 18px; border-left: 8px solid #ddd; background: white; box-shadow: var(--shadow); }
-  .book::after { content: ""; position: absolute; inset: auto 15px 14px auto; width: 70px; height: 72px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transform: skewY(-20deg); }
-  .book span { color: var(--orange); font-size: .63rem; font-weight: 800; }
-  .book strong { margin-top: 22px; font-size: 1.2rem; line-height: 1.35; }
-  .book small { margin-top: auto; color: var(--muted); font-size: .58rem; }
-  .orange-label { color: var(--orange); font-size: .85rem; font-weight: 800; }
-  .ebook-copy h3 { margin: 10px 0; font-size: 1.55rem; }
-  .ebook-copy p { max-width: 620px; margin: 0; color: var(--body); }
-  .book-meta { display: flex; gap: 22px; margin-top: 20px; color: var(--muted); font-size: .83rem; }
-  .split-tools { display: grid; grid-template-columns: 1fr 1fr; }
-  .dictionary-panel, .ai-panel { padding-right: 46px; }
-  .ai-panel { padding-right: 0; padding-left: 46px; border-left: 1px solid var(--line); }
-  .split-tools p { color: var(--body); }
-  .home-search { display: flex; margin-top: 26px; }
-  .home-search input { min-width: 0; flex: 1; height: 52px; padding: 0 16px; border: 1px solid var(--line); border-right: 0; border-radius: 6px 0 0 6px; outline: 0; }
-  .home-search input:focus { border-color: var(--orange); }
-  .home-search button { width: 54px; border: 0; border-radius: 0 6px 6px 0; color: white; background: var(--orange); cursor: pointer; }
-  .home-search button svg { width: 22px; }
-  .quick-terms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-  .quick-terms a { padding: 3px 9px; border: 1px solid var(--line); border-radius: 4px; color: var(--body); font-size: .75rem; }
-  .ai-demo { display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 16px; margin-top: 26px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); }
-  .ai-demo:hover { border-color: var(--orange); }
-  .robot { display: grid; width: 50px; height: 50px; place-items: center; border: 1px solid var(--line); border-radius: 8px; }
-  .robot svg { width: 32px; }
-  .ai-demo div:nth-child(2) { display: grid; }
-  .ai-demo span { color: var(--body); font-size: .82rem; }
-  .ai-demo b { color: var(--orange-dark); font-size: .82rem; }
-  @media (max-width: 980px) {
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-media { order: -1; width: min(100%, 650px); margin: -20px auto 20px; padding-left: 0; }
-    .hero-copy { max-width: 760px; }
-    .template-rail { grid-template-columns: 1fr 1fr; }
-    .template-item:nth-child(2) { border-right: 0; }
-    .template-item:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
-    .ebook-band { grid-template-columns: 150px 1fr; }
-    .ebook-band > .button { grid-column: 2; justify-self: start; }
-    .split-tools { gap: 50px; }
-    .dictionary-panel { padding-right: 0; }
-    .ai-panel { padding-left: 30px; }
-  }
-  @media (max-width: 700px) {
-    .hero { padding-top: 40px; }
-    .hero-grid { min-height: auto; }
-    .hero h1 { font-size: clamp(3rem, 14vw, 4.8rem); }
-    .hero-media { margin-top: -12px; }
-    .content-card h3, .content-card p, .content-card footer { max-width: none; }
-    .card-art { display: none; }
-    .template-rail { grid-template-columns: 1fr; }
-    .template-item, .template-item:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); }
-    .template-item:last-child { border-bottom: 0; }
-    .ebook-band { grid-template-columns: 1fr; padding: 28px; }
-    .ebook-band > .button { grid-column: auto; }
-    .split-tools { grid-template-columns: 1fr; }
-    .ai-panel { padding: 44px 0 0; border-top: 1px solid var(--line); border-left: 0; }
-    .dictionary-panel { padding-bottom: 44px; }
-    .ai-demo { grid-template-columns: 48px 1fr; }
-    .ai-demo b { grid-column: 2; }
-  }
+  .eyebrow{margin:0;color:var(--orange);font-size:.74rem;font-weight:900;letter-spacing:.14em}.home-hero{overflow:hidden;padding:clamp(52px,8vw,96px) 0;background:#f6f3ed}.home-hero-grid{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:clamp(40px,7vw,100px)}.home-hero-copy h1{margin:20px 0 24px;font-size:clamp(3.3rem,6.5vw,6.6rem);line-height:.95;letter-spacing:-.075em}.home-hero-copy h1 span{color:var(--orange)}.home-hero-copy>p:not(.eyebrow){max-width:640px;margin:0;color:var(--body);font-size:1.12rem;line-height:1.8}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}.hero-actions a{display:inline-flex;min-height:52px;align-items:center;justify-content:center;gap:16px;padding:0 20px;border:2px solid var(--ink);font-weight:900}.primary-action{color:white;background:var(--ink)}.primary-action:hover{border-color:var(--orange);background:var(--orange)}.secondary-action:hover{color:white;background:var(--ink)}.hero-points{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.hero-points span{padding:6px 10px;border:1px solid var(--line);color:var(--body);background:white;font-size:.75rem;font-weight:800}.home-hero-media{position:relative;width:min(100%,480px);justify-self:end}.home-hero-media img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;box-shadow:24px 24px 0 #0a1931}.media-note{position:absolute;right:-26px;bottom:34px;display:flex;align-items:center;gap:10px;padding:14px 18px;color:#0a1931;background:#ffc107;box-shadow:var(--shadow)}.media-note strong{font-size:2rem}.media-note span{font-size:.72rem;font-weight:900;line-height:1.3}.visual-section{padding:clamp(64px,8vw,110px) 0;background:white}.section-heading{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:38px}.section-heading h2,.path-grid h2,.utility-grid h2,.community-inner h2{margin:10px 0 0;font-size:clamp(2.1rem,4.2vw,4rem);line-height:1.08;letter-spacing:-.055em}.section-heading>a{color:var(--orange-dark);font-weight:900}.reader-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.reader-card{border:1px solid var(--line);background:white;transition:transform .2s,border-color .2s}.reader-card:hover{transform:translateY(-4px);border-color:var(--orange)}.reader-cover{position:relative;display:block;overflow:hidden;aspect-ratio:4/5;background:#0a1931}.reader-cover img{width:100%;height:100%;object-fit:cover}.reader-cover>span{position:absolute;right:12px;bottom:12px;padding:6px 9px;color:#0a1931;background:#ffc107;font-size:.7rem;font-weight:900}.reader-copy{padding:22px}.reader-copy p{margin:0;color:var(--orange-dark);font-size:.72rem;font-weight:900;text-transform:uppercase}.reader-copy h3{margin:10px 0 22px;font-size:1.45rem;line-height:1.28}.reader-link{display:inline-flex;align-items:center;gap:12px;color:var(--orange-dark);font-weight:900}.path-section{padding:clamp(64px,8vw,100px) 0;color:white;background:#0a1931}.path-section .eyebrow{color:#ffc107}.path-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(40px,8vw,110px)}.path-grid ol{display:grid;gap:0;margin:0;padding:0;list-style:none}.path-grid li{display:grid;grid-template-columns:58px 1fr;gap:20px;padding:24px 0;border-bottom:1px solid rgba(255,255,255,.16)}.path-grid li:first-child{padding-top:0}.path-grid li>span{color:#ffc107;font-family:ui-monospace,monospace;font-weight:900}.path-grid strong{font-size:1.15rem}.path-grid li p{margin:6px 0 0;color:#bdc9d9}.utility-section{padding:62px 0;background:#f6f3ed}.utility-grid{display:grid;grid-template-columns:1fr auto;align-items:center;gap:40px}.utility-grid>div>p:last-child{max-width:660px;margin:18px 0 0;color:var(--body)}.utility-grid>a{display:inline-flex;min-height:52px;align-items:center;gap:16px;padding:0 20px;color:white;background:var(--ink);font-weight:900}.community-section{padding:70px 0;color:#0a1931;background:#ffc107}.community-section .eyebrow{color:#6f5500}.community-inner{display:grid;grid-template-columns:1fr auto;align-items:center;gap:50px}.community-inner p:last-child{max-width:680px;margin:18px 0 0}.community-inner>a{display:inline-flex;min-height:54px;align-items:center;gap:16px;padding:0 22px;border:2px solid #0a1931;font-weight:900}.community-inner>a:hover{color:#ffc107;background:#0a1931}
+  @media(max-width:900px){.home-hero-grid,.path-grid{grid-template-columns:1fr}.home-hero-media{width:min(82%,480px);justify-self:center;order:-1}.reader-grid{grid-template-columns:repeat(2,1fr)}.community-inner{grid-template-columns:1fr}.community-inner>a{justify-self:start}}
+  @media(max-width:620px){.home-hero{padding-top:38px}.home-hero-media{width:calc(100% - 28px)}.home-hero-media img{box-shadow:14px 14px 0 #0a1931}.media-note{right:-14px;bottom:20px}.home-hero-copy h1{font-size:clamp(3rem,14vw,4.5rem)}.hero-actions a{width:100%}.section-heading{align-items:flex-start;flex-direction:column}.reader-grid{grid-template-columns:1fr}.utility-grid{grid-template-columns:1fr}.utility-grid>a{justify-self:start}.community-inner>a{width:100%;justify-content:center}}
+  @media(prefers-reduced-motion:reduce){.reader-card{transition:none}}
 </style>

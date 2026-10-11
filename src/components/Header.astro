@@ -2,13 +2,7 @@
 const pathname = Astro.url.pathname;
 const nav = [
   ["首頁", "/"],
-  ["工程 Blog", "/blog/"],
   ["圖解庫", "/visual-library/"],
-  ["工程新聞", "/news/"],
-  ["文件範本", "/templates/"],
-  ["電子書", "/ebooks/"],
-  ["工程字典", "https://buildscope-dictionary.com/"],
-  ["AI 工具", "/ai-tools/"],
   ["關於我們", "/about/"],
 ];
 ---
@@ -22,7 +16,7 @@ const nav = [
     <nav class="desktop-nav" aria-label="主要導覽">
       {nav.map(([label, href]) => <a href={href} class:list={{ active: href === "/" ? pathname === "/" : pathname.startsWith(href) }}>{label}</a>)}
     </nav>
-    <a class="header-cta" href="/blog/">瀏覽最新文章</a>
+    <a class="header-cta" href="https://www.skool.com/buildscope-learning-lab-1916" target="_blank" rel="noopener noreferrer">Join Community</a>
     <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="開啟選單">
       <span></span><span></span><span></span>
     </button>
