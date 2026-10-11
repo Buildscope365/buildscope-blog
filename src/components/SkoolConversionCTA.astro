@@ -1,0 +1,134 @@
+---
+interface Props {
+  contentId: string;
+  contentTitle: string;
+  contentCategory: string;
+  slideCount: number;
+  heading: string;
+  description: string;
+  courseTitle?: string | null;
+  courseUrl?: string | null;
+  resourceTitle?: string | null;
+  resourcePreview?: string | null;
+  resourceUrl?: string | null;
+  discussionQuestion: string;
+  discussionUrl?: string | null;
+  isProCourseAvailable?: boolean;
+}
+
+const {
+  contentId,
+  contentTitle,
+  contentCategory,
+  slideCount,
+  heading,
+  description,
+  courseTitle,
+  courseUrl,
+  resourceTitle,
+  resourcePreview,
+  resourceUrl,
+  discussionQuestion,
+  discussionUrl,
+  isProCourseAvailable = false,
+} = Astro.props;
+
+const verifiedCourseUrl = isProCourseAvailable && courseUrl ? courseUrl : null;
+const secondaryUrl = verifiedCourseUrl ?? discussionUrl ?? "https://www.skool.com/buildscope-learning-lab-1916";
+const secondaryLabel = verifiedCourseUrl
+  ? `已是會員？前往 ${courseTitle ?? "Skool Classroom"} →`
+  : discussionUrl
+    ? `在 Skool 繼續討論：${discussionQuestion} ↗`
+    : "免費加入工程 Community →";
+const destinationType = verifiedCourseUrl ? "skool_course" : discussionUrl ? "skool_discussion" : "skool_community";
+---
+
+<section
+  class="skool-conversion"
+  data-skool-conversion
+  data-reader-completion
+  data-content-id={contentId}
+  data-content-title={contentTitle}
+  data-content-category={contentCategory}
+  aria-labelledby={`skool-conversion-${contentId}`}
+>
+  <div class="conversion-copy">
+    <p class="completion-label" data-completion-label data-slide-count={slideCount}>睇完 {slideCount} 張之後</p>
+    <p class="conversion-eyebrow">BUILDSCOPE LEARNING LAB</p>
+    <h2 id={`skool-conversion-${contentId}`}>{heading}</h2>
+    <p class="conversion-description">{description}</p>
+  </div>
+
+  {(courseTitle || resourceTitle || resourcePreview) && (
+    <div class="conversion-preview" aria-label="PRO 內容預覽">
+      {courseTitle && <p><span>MICRO COURSE</span><strong>{courseTitle}</strong></p>}
+      {(resourceTitle || resourcePreview) && (
+        <div class="resource-preview">
+          <span>PRACTICAL RESOURCE</span>
+          {resourceTitle && <strong>{resourceTitle}</strong>}
+          {resourcePreview && <small>{resourcePreview}</small>}
+          {resourceUrl && (
+            <a
+              href={resourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track-event="skool_cta_click"
+              data-cta-location="reader_resource_preview"
+              data-destination-type="skool_resource"
+            >已是會員？查看 Resources ↗</a>
+          )}
+        </div>
+      )}
+    </div>
+  )}
+
+  <div class="conversion-actions">
+    <a
+      class="primary-action"
+      href="/pro/"
+      data-track-event="pro_upgrade_click"
+      data-cta-location="reader_conversion_panel"
+      data-destination-type="pro_information"
+    >了解 PRO Membership · US$8/月 →</a>
+    <a
+      class="secondary-action"
+      href={secondaryUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-track-event="skool_cta_click"
+      data-cta-location="reader_conversion_panel"
+      data-destination-type={destinationType}
+    >{secondaryLabel}</a>
+  </div>
+
+  <p class="conversion-note">會籍登記、付款及內容存取均由 Skool 處理；BuildScope 網站不處理付款。</p>
+</section>
+
+<style>
+  .skool-conversion { width: min(100%, 46rem); margin: 30px auto 0; padding: clamp(28px, 7vw, 46px); border-radius: 12px; color: white; background: #0b1b2f; box-shadow: 0 24px 60px rgba(8, 21, 38, .18); transition: box-shadow .25s ease, transform .25s ease; }
+  .skool-conversion.is-complete { transform: translateY(-2px); box-shadow: 0 24px 60px rgba(255, 193, 7, .2); }
+  .completion-label { margin: 0 0 7px; color: #ffc107; font-size: .7rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+  .conversion-eyebrow { margin: 0; color: #9fb0c4; font-size: .64rem; font-weight: 900; letter-spacing: .15em; }
+  h2 { max-width: 17ch; margin: 14px 0; font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.045em; }
+  .conversion-description { margin: 0; color: #d9e0e8; line-height: 1.7; }
+  .conversion-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+  .conversion-preview > p, .resource-preview { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 16px; border: 1px solid #35485e; border-radius: 7px; background: #12253b; }
+  .conversion-preview span { color: #ffc107; font-size: .62rem; font-weight: 900; letter-spacing: .12em; }
+  .conversion-preview strong { font-size: .92rem; line-height: 1.45; }
+  .conversion-preview small { color: #aebbd0; line-height: 1.55; }
+  .conversion-preview a { margin-top: 5px; color: #ffc107; font-size: .78rem; font-weight: 900; }
+  .conversion-actions { display: grid; gap: 12px; margin-top: 24px; }
+  .conversion-actions a { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 10px 18px; border-radius: 6px; text-align: center; font-size: .86rem; font-weight: 900; line-height: 1.45; }
+  .primary-action { color: #0a1931; background: #ffc107; }
+  .primary-action:hover { background: #ffd451; }
+  .secondary-action { border: 1px solid #60738a; color: white; }
+  .secondary-action:hover { border-color: #ffc107; color: #ffc107; }
+  .conversion-note { margin: 14px 0 0; color: #93a3b6; font-size: .72rem; line-height: 1.55; }
+  @media (max-width: 560px) {
+    .skool-conversion { border-radius: 8px; }
+    .conversion-preview { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skool-conversion { transition: none; }
+  }
+</style>

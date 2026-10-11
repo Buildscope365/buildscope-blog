@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CarouselViewer from "../../components/CarouselViewer.astro";
+import SkoolConversionCTA from "../../components/SkoolConversionCTA.astro";
 import { getReaders } from "../../data/readers";
 
 export async function getStaticPaths() {
@@ -43,27 +44,26 @@ const { reader } = Astro.props;
       <div>{reader.quickTakeaway}</div>
     </section>
 
-    <section class="return-panel" data-reader-completion aria-labelledby="return-title">
-      <p class="completion-label" data-completion-label data-slide-count={reader.slides.length}>睇完 {reader.slides.length} 張之後</p>
-      <h2 id="return-title">想再行前一步？</h2>
-      <p>去 Skool 睇完整 Micro Course、下載實用 Resources，或者同其他工程人繼續討論。</p>
-      <div class="cta-row">
-        {reader.skoolCourseUrl ? (
-          <a class="primary-cta" href={reader.skoolCourseUrl} target="_blank" rel="noopener noreferrer">在 Skool 睇 Micro Course →</a>
-        ) : (
-          <span class="primary-cta is-disabled" aria-disabled="true" data-config-field="skoolCourseUrl" title="確認 Topic-specific Skool Course URL 後啟用">
-            Micro Course 即將開放
-          </span>
-        )}
-        {reader.skoolResourceUrl ? (
-          <a class="secondary-cta" href={reader.skoolResourceUrl} target="_blank" rel="noopener noreferrer">查看 Practical Resources ↗</a>
-        ) : (
-          <span class="secondary-cta is-disabled" aria-disabled="true" data-config-field="skoolResourceUrl">Resources 即將開放</span>
-        )}
-        {reader.skoolDiscussionUrl && <a class="discussion-cta" href={reader.skoolDiscussionUrl} target="_blank" rel="noopener noreferrer">在 Skool 繼續討論：{reader.discussionQuestion} ↗</a>}
-      </div>
-      {(!reader.skoolCourseUrl || !reader.skoolResourceUrl) && <small>未核實嘅 Topic-specific 連結暫時唔會啟用，避免帶你去錯誤內容。</small>}
-    </section>
+    <SkoolConversionCTA
+      contentId={reader.slug}
+      contentTitle={reader.title}
+      contentCategory={reader.category}
+      slideCount={reader.slides.length}
+      heading={reader.isProCourseAvailable && reader.courseTitle
+        ? `${reader.courseTitle}：由理解去到應用。`
+        : "睇完圖解，下一步學識點樣應用。"}
+      description={reader.isProCourseAvailable
+        ? `免費圖解幫你理解「${reader.title}」嘅基本概念。了解 BuildScope PRO，再到 Skool 繼續完整 Micro Course 同實務 Resources。`
+        : "免費圖解幫你掌握工程概念。你可以了解 BuildScope PRO，或者沿用現有 Skool Discussion 同其他工程人繼續交流。"}
+      courseTitle={reader.courseTitle}
+      courseUrl={reader.skoolCourseUrl}
+      resourceTitle={reader.resourceTitle}
+      resourcePreview={reader.resourcePreview}
+      resourceUrl={reader.skoolResourceUrl}
+      discussionQuestion={reader.discussionQuestion}
+      discussionUrl={reader.skoolDiscussionUrl}
+      isProCourseAvailable={reader.isProCourseAvailable}
+    />
 
     <footer class="reader-footer">
       <nav aria-label="Reader 快捷連結">
@@ -93,20 +93,6 @@ const { reader } = Astro.props;
   .reader-note { display: grid; grid-template-columns: 8.5rem 1fr; gap: 24px; width: min(100%, 46rem); margin: 30px auto 0; padding: 24px 0; border-block: 1px solid rgba(11, 27, 47, .16); }
   .reader-note p { margin: 0; color: #c4510b; font-size: .7rem; font-weight: 900; letter-spacing: .13em; }
   .reader-note div { color: #26384c; font-size: 1rem; font-weight: 700; line-height: 1.75; }
-  .return-panel { width: min(100%, 46rem); margin: 30px auto 0; padding: clamp(28px, 7vw, 46px); border-radius: 12px; color: white; background: #0b1b2f; box-shadow: 0 24px 60px rgba(8, 21, 38, .18); transition: box-shadow .25s ease, transform .25s ease; }
-  .return-panel.is-complete { transform: translateY(-2px); box-shadow: 0 24px 60px rgba(249, 115, 22, .2); }
-  .completion-label { margin: 0; color: #fb923c; font-size: .7rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
-  .return-panel h2 { max-width: 16ch; margin: 14px 0; font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.045em; }
-  .return-panel > p:not(.completion-label) { margin: 0; color: #d9e0e8; line-height: 1.65; }
-  .cta-row { display: grid; gap: 12px; margin-top: 24px; }
-  .primary-cta, .secondary-cta { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 18px; border-radius: 6px; text-align: center; font-size: .86rem; font-weight: 900; }
-  .primary-cta { color: #0b1b2f; background: #fb923c; }
-  .primary-cta.is-disabled { color: #a9b4c1; background: #23364b; cursor: not-allowed; }
-  .secondary-cta { border: 1px solid #52647a; color: white; }
-  .secondary-cta.is-disabled { color: #7f8fa2; cursor: not-allowed; }
-  .discussion-cta { padding-top: 8px; color: #fb923c; font-size: .84rem; font-weight: 800; line-height: 1.6; }
-  .discussion-cta:hover { color: white; }
-  .return-panel small { display: block; margin-top: 14px; color: #a9b4c1; line-height: 1.55; }
   .reader-footer { margin-top: 28px; color: #657486; font-size: .72rem; letter-spacing: .04em; text-align: center; }
   .reader-footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 18px; }
   .reader-footer nav a { display: inline-flex; min-height: 38px; align-items: center; padding: 0 12px; border: 1px solid rgba(11,27,47,.18); border-radius: 999px; color: #26384c; background: rgba(255,255,255,.55); font-weight: 800; }
@@ -118,11 +104,13 @@ const { reader } = Astro.props;
     .reader-header { margin-bottom: 24px; }
     .reading-room { margin-top: 28px; }
     .reader-note { grid-template-columns: 1fr; gap: 10px; }
-    .return-panel { border-radius: 8px; }
   }
 </style>
 
 <script>
+  import { trackConversionEvent, type ConversionEventName } from "../../scripts/conversionTracking";
+
+  let completionTracked = false;
   document.addEventListener("reader:slidechange", (event) => {
     const detail = (event as CustomEvent<{ isComplete: boolean }>).detail;
     const panel = document.querySelector<HTMLElement>("[data-reader-completion]");
@@ -130,5 +118,26 @@ const { reader } = Astro.props;
     panel?.classList.toggle("is-complete", detail.isComplete);
     const slideCount = label?.dataset.slideCount ?? "全部";
     if (label) label.textContent = detail.isComplete ? `${slideCount} 張已睇完` : `睇完 ${slideCount} 張之後`;
+    if (detail.isComplete && !completionTracked && panel) {
+      completionTracked = true;
+      trackConversionEvent("carousel_complete", {
+        content_id: panel.dataset.contentId,
+        content_title: panel.dataset.contentTitle,
+        content_category: panel.dataset.contentCategory,
+      });
+    }
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>("[data-track-event]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const panel = link.closest<HTMLElement>("[data-skool-conversion]");
+      trackConversionEvent(link.dataset.trackEvent as ConversionEventName, {
+        content_id: panel?.dataset.contentId,
+        content_title: panel?.dataset.contentTitle,
+        content_category: panel?.dataset.contentCategory,
+        cta_location: link.dataset.ctaLocation,
+        destination_type: link.dataset.destinationType,
+      });
+    });
   });
 </script>

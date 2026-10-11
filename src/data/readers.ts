@@ -18,6 +18,10 @@ export interface ReaderItem {
   publishedDate: string;
   slides: ReaderSlide[];
   discussionQuestion: string;
+  courseTitle: string | null;
+  resourceTitle: string | null;
+  resourcePreview: string | null;
+  isProCourseAvailable: boolean;
   skoolCourseUrl: string | null;
   skoolResourceUrl: string | null;
   skoolDiscussionUrl: string | null;
@@ -58,6 +62,10 @@ export async function getReaders(): Promise<ReaderItem[]> {
       publishedDate: data.publishedDate.toISOString().slice(0, 10),
       slides: data.slides,
       discussionQuestion: data.discussionQuestion,
+      courseTitle: data.courseTitle?.trim() || null,
+      resourceTitle: data.resourceTitle?.trim() || null,
+      resourcePreview: data.resourcePreview?.trim() || null,
+      isProCourseAvailable: data.isProCourseAvailable,
       skoolCourseUrl: optionalUrl(data.skoolCourseUrl),
       skoolResourceUrl: optionalUrl(data.skoolResourceUrl),
       skoolDiscussionUrl: optionalUrl(data.skoolDiscussionUrl),

@@ -47,6 +47,10 @@ slides:
     label: HVAC 安裝總結
     alt: HVAC 安裝五大重點包括設備選型、風管系統、安裝細節、常見問題及整體協調
 discussionQuestion: 你喺 HVAC 圖紙或者地盤最常遇到邊一個問題？
+courseTitle: HVAC Micro Course
+resourceTitle: HVAC Practical Resources
+resourcePreview: 已核實嘅 HVAC 學習資源可在 Skool Classroom 查看；實際內容以 Classroom 為準。
+isProCourseAvailable: true
 skoolCourseUrl: https://www.skool.com/buildscope-learning-lab-1916/classroom/b2a5e7e3?md=5dcdcc158af746c7baa491210e6f76be
 skoolResourceUrl: https://www.skool.com/buildscope-learning-lab-1916/classroom/b2a5e7e3?md=598b47484bbc4599b5683c64a2a06ebf
 skoolDiscussionUrl: ""

@@ -90,7 +90,7 @@ const categories = [...new Map(readers.map((reader) => [reader.category, reader.
       <div class="library-shell skool-bridge-inner">
         <div><p class="section-label">FROM VISUAL TO PRACTICAL</p><h2>睇完圖解，再到 Skool 落地應用。</h2></div>
         <p>Visual Library 幫你快速理解 Topic；Micro Course、Resources 同會員討論會放喺 BuildScope Learning Lab。</p>
-        <a href="https://www.skool.com/buildscope-learning-lab-1916?utm_source=buildscope-blog&amp;utm_medium=visual-library&amp;utm_campaign=visual-library-pilot" target="_blank" rel="noopener noreferrer">前往 BuildScope Learning Lab <span aria-hidden="true">↗</span></a>
+        <a href="/pro/">了解 BuildScope PRO <span aria-hidden="true">→</span></a>
       </div>
     </section>
   </div>
@@ -104,6 +104,10 @@ const categories = [...new Map(readers.map((reader) => [reader.category, reader.
 </style>
 
 <script>
+  import { trackConversionEvent } from "../../scripts/conversionTracking";
+
+  trackConversionEvent("visual_library_view", { cta_location: "visual_library" });
+
   const search = document.querySelector<HTMLInputElement>("[data-visual-search]");
   const cards = [...document.querySelectorAll<HTMLElement>("[data-visual-card]")];
   const filters = [...document.querySelectorAll<HTMLButtonElement>("[data-visual-category]")];

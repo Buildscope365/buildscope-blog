@@ -76,7 +76,11 @@ collections:
           - { label: "短標籤", name: "label", widget: "string", hint: "例如 封面、植物材料、總結。" }
           - { label: "圖片替代文字", name: "alt", widget: "string", hint: "簡短描述圖片重點，供 SEO 及無障礙閱讀使用。" }
       - { label: "討論問題", name: "discussionQuestion", widget: "text", hint: "顯示在 Skool Discussion 按鈕。" }
+      - { label: "PRO Course 已上架", name: "isProCourseAvailable", widget: "boolean", default: false, hint: "只在已核實 Course URL 及課程確實可用時開啟。" }
+      - { label: "Course 顯示名稱", name: "courseTitle", widget: "string", required: false, hint: "例如 HVAC Micro Course；沒有核實課程請留空。" }
       - { label: "Skool Micro Course 網址", name: "skoolCourseUrl", widget: "string", required: false, hint: "請貼 Topic-specific 完整 https:// 網址；未準備好請留空。" }
+      - { label: "Resource 顯示名稱", name: "resourceTitle", widget: "string", required: false, hint: "只寫已核實名稱；不要自行新增檔案名稱。" }
+      - { label: "Resource 簡介", name: "resourcePreview", widget: "text", required: false, hint: "簡短說明可在 Skool 查看甚麼；實際內容以 Classroom 為準。" }
       - { label: "Skool Resources 網址", name: "skoolResourceUrl", widget: "string", required: false, hint: "請貼 Topic-specific 完整 https:// 網址；未準備好請留空。" }
       - { label: "Skool Discussion 網址", name: "skoolDiscussionUrl", widget: "string", required: false, hint: "請貼 Topic-specific 討論帖網址；未準備好請留空。" }
 
