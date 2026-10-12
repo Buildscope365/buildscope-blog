@@ -108,36 +108,45 @@ const { reader } = Astro.props;
 </style>
 
 <script>
-  import { trackConversionEvent, type ConversionEventName } from "../../scripts/conversionTracking";
+  import { trackConversionEvent } from "../../scripts/conversionTracking";
 
   let completionTracked = false;
+  const viewedSlides = new Set<number>();
+  const panel = document.querySelector<HTMLElement>("[data-reader-completion]");
+  const carousel = document.querySelector<HTMLElement>("[data-carousel]");
+  const slideCount = carousel?.querySelectorAll("[data-slide]").length ?? 0;
+
+  const trackSlide = (activeIndex: number) => {
+    if (!panel || viewedSlides.has(activeIndex)) return;
+    viewedSlides.add(activeIndex);
+    trackConversionEvent("carousel_slide_view", {
+      content_id: panel.dataset.contentId,
+      content_title: panel.dataset.contentTitle,
+      content_category: panel.dataset.contentCategory,
+      topic_slug: panel.dataset.contentId,
+      slide_index: activeIndex + 1,
+      slide_count: slideCount,
+    });
+  };
+
+  if (slideCount > 0) trackSlide(0);
+
   document.addEventListener("reader:slidechange", (event) => {
-    const detail = (event as CustomEvent<{ isComplete: boolean }>).detail;
-    const panel = document.querySelector<HTMLElement>("[data-reader-completion]");
+    const detail = (event as CustomEvent<{ activeIndex: number; isComplete: boolean }>).detail;
     const label = panel?.querySelector<HTMLElement>("[data-completion-label]");
     panel?.classList.toggle("is-complete", detail.isComplete);
-    const slideCount = label?.dataset.slideCount ?? "全部";
-    if (label) label.textContent = detail.isComplete ? `${slideCount} 張已睇完` : `睇完 ${slideCount} 張之後`;
-    if (detail.isComplete && !completionTracked && panel) {
+    const completionSlideCount = label?.dataset.slideCount ?? "全部";
+    if (label) label.textContent = detail.isComplete ? `${completionSlideCount} 張已睇完` : `睇完 ${completionSlideCount} 張之後`;
+    trackSlide(detail.activeIndex);
+    if (detail.activeIndex === slideCount - 1 && detail.isComplete && !completionTracked && panel) {
       completionTracked = true;
       trackConversionEvent("carousel_complete", {
         content_id: panel.dataset.contentId,
         content_title: panel.dataset.contentTitle,
         content_category: panel.dataset.contentCategory,
+        topic_slug: panel.dataset.contentId,
+        slide_count: slideCount,
       });
     }
-  });
-
-  document.querySelectorAll<HTMLAnchorElement>("[data-track-event]").forEach((link) => {
-    link.addEventListener("click", () => {
-      const panel = link.closest<HTMLElement>("[data-skool-conversion]");
-      trackConversionEvent(link.dataset.trackEvent as ConversionEventName, {
-        content_id: panel?.dataset.contentId,
-        content_title: panel?.dataset.contentTitle,
-        content_category: panel?.dataset.contentCategory,
-        cta_location: link.dataset.ctaLocation,
-        destination_type: link.dataset.destinationType,
-      });
-    });
   });
 </script>

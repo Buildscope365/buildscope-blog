@@ -1,0 +1,130 @@
+---
+interface Props {
+  enabled: boolean;
+}
+
+const { enabled } = Astro.props;
+---
+
+{enabled && (
+  <>
+    <section
+      class="analytics-consent"
+      data-analytics-consent
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="analytics-consent-title"
+      aria-describedby="analytics-consent-description"
+      hidden
+    >
+      <div>
+        <p class="consent-label">網站私隱設定</p>
+        <h2 id="analytics-consent-title">幫我哋了解邊類工程內容最有用</h2>
+        <p id="analytics-consent-description">
+          BuildScope 使用 Google Analytics 了解圖解閱讀、搜尋及 Skool 連結點擊。唔會傳送姓名、電郵或你輸入嘅搜尋文字。
+        </p>
+      </div>
+      <div class="consent-actions">
+        <button type="button" class="consent-secondary" data-analytics-deny>只使用必要 Cookie</button>
+        <button type="button" class="consent-primary" data-analytics-accept>接受分析 Cookie</button>
+      </div>
+    </section>
+
+    <button class="analytics-preferences" type="button" data-analytics-preferences hidden>Cookie 設定</button>
+  </>
+)}
+
+<style>
+  .analytics-consent {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    left: 18px;
+    z-index: 1000;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 24px;
+    width: min(calc(100% - 36px), 920px);
+    margin-inline: auto;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 10px;
+    color: white;
+    background: #0a1931;
+    box-shadow: 0 22px 70px rgba(4, 13, 28, .32);
+  }
+  .analytics-consent[hidden], .analytics-preferences[hidden] { display: none; }
+  .consent-label { margin: 0 0 6px; color: #ffc107; font-size: .65rem; font-weight: 900; letter-spacing: .14em; }
+  h2 { margin: 0; font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.35; }
+  .analytics-consent div > p:last-child { max-width: 650px; margin: 8px 0 0; color: #cbd6e4; font-size: .82rem; line-height: 1.65; }
+  .consent-actions { display: flex; gap: 9px; }
+  .consent-actions button, .analytics-preferences {
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 900;
+  }
+  .consent-primary { border: 1px solid #ffc107; color: #0a1931; background: #ffc107; }
+  .consent-primary:hover { background: #ffd451; }
+  .consent-secondary { border: 1px solid #6f8196; color: white; background: transparent; }
+  .consent-secondary:hover { border-color: white; }
+  .analytics-preferences {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    z-index: 999;
+    min-height: 36px;
+    padding: 6px 10px;
+    border: 1px solid #c6cbd2;
+    color: #425367;
+    background: rgba(255,255,255,.96);
+    box-shadow: 0 6px 20px rgba(4,13,28,.12);
+  }
+  .analytics-preferences:hover { border-color: #f97316; color: #c4510b; }
+  @media (max-width: 720px) {
+    .analytics-consent { grid-template-columns: 1fr; gap: 17px; padding: 19px; }
+    .consent-actions { display: grid; grid-template-columns: 1fr; }
+    .consent-actions button { width: 100%; }
+    .consent-primary { grid-row: 1; }
+  }
+</style>
+
+<script>
+  import { initializeAnalytics } from "../scripts/conversionTracking";
+
+  initializeAnalytics();
+  const storageKey = "buildscope_analytics_consent";
+  const banner = document.querySelector<HTMLElement>("[data-analytics-consent]");
+  const preferences = document.querySelector<HTMLButtonElement>("[data-analytics-preferences]");
+  const accept = document.querySelector<HTMLButtonElement>("[data-analytics-accept]");
+  const deny = document.querySelector<HTMLButtonElement>("[data-analytics-deny]");
+
+  const storedChoice = (() => {
+    try {
+      return window.localStorage.getItem(storageKey);
+    } catch {
+      return null;
+    }
+  })();
+
+  if (banner) banner.hidden = storedChoice === "granted" || storedChoice === "denied";
+  if (preferences) preferences.hidden = storedChoice !== "granted" && storedChoice !== "denied";
+
+  const choose = (status: "granted" | "denied") => {
+    window.BuildScopeAnalytics?.setConsent(status);
+    if (banner) banner.hidden = true;
+    if (preferences) preferences.hidden = false;
+  };
+
+  accept?.addEventListener("click", () => choose("granted"));
+  deny?.addEventListener("click", () => choose("denied"));
+  preferences?.addEventListener("click", () => {
+    if (banner) banner.hidden = false;
+    preferences.hidden = true;
+    window.setTimeout(() => accept?.focus(), 0);
+  });
+</script>

@@ -306,19 +306,7 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
 </style>
 
 <script>
-  import { trackConversionEvent, type ConversionEventName } from "../../scripts/conversionTracking";
+  import { trackConversionEvent } from "../../scripts/conversionTracking";
 
   trackConversionEvent("pro_page_view", { cta_location: "pro_page" });
-
-  document.querySelectorAll<HTMLAnchorElement>("[data-track-event]").forEach((link) => {
-    link.addEventListener("click", () => {
-      trackConversionEvent(link.dataset.trackEvent as ConversionEventName, {
-        content_id: link.dataset.contentId,
-        content_title: link.dataset.contentTitle,
-        content_category: link.dataset.contentCategory,
-        cta_location: link.dataset.ctaLocation,
-        destination_type: link.dataset.destinationType,
-      });
-    });
-  });
 </script>

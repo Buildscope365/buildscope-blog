@@ -106,7 +106,7 @@ const categories = [...new Map(readers.map((reader) => [reader.category, reader.
 <script>
   import { trackConversionEvent } from "../../scripts/conversionTracking";
 
-  trackConversionEvent("visual_library_view", { cta_location: "visual_library" });
+  trackConversionEvent("visual_library_open", { cta_location: "visual_library" });
 
   const search = document.querySelector<HTMLInputElement>("[data-visual-search]");
   const cards = [...document.querySelectorAll<HTMLElement>("[data-visual-card]")];
@@ -118,6 +118,7 @@ const categories = [...new Map(readers.map((reader) => [reader.category, reader.
   const summary = document.querySelector<HTMLElement>("[data-search-summary]");
   const empty = document.querySelector<HTMLElement>("[data-empty-state]");
   let selectedCategory = "all";
+  let searchTimer: number | undefined;
 
   const normalize = (value: string) => value
     .normalize("NFKC")
@@ -159,28 +160,50 @@ const categories = [...new Map(readers.map((reader) => [reader.category, reader.
     query ? url.searchParams.set("q", search?.value.trim() ?? "") : url.searchParams.delete("q");
     selectedCategory !== "all" ? url.searchParams.set("category", selectedCategory) : url.searchParams.delete("category");
     window.history.replaceState({}, "", `${url.pathname}${url.search}`);
+    return { query, visibleCount };
   };
 
-  search?.addEventListener("input", updateResults);
+  const trackSearch = (
+    searchType: "text" | "category" | "tag" | "clear" | "reset",
+    selectedTag?: string,
+  ) => {
+    const { query, visibleCount } = updateResults();
+    trackConversionEvent("visual_library_search", {
+      search_type: searchType,
+      search_term_length: searchType === "text" ? query.length : undefined,
+      selected_category: selectedCategory,
+      selected_tag: selectedTag,
+      result_count: visibleCount,
+    });
+  };
+
+  search?.addEventListener("input", () => {
+    updateResults();
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => {
+      if (normalize(search.value)) trackSearch("text");
+    }, 500);
+  });
   filters.forEach((filter) => filter.addEventListener("click", () => {
     setActiveCategory(filter.dataset.visualCategory ?? "all");
-    updateResults();
+    trackSearch("category");
   }));
   clearSearch?.addEventListener("click", () => {
     if (search) search.value = "";
-    updateResults();
+    trackSearch("clear");
     search?.focus();
   });
   resetButtons.forEach((button) => button.addEventListener("click", () => {
     if (search) search.value = "";
     setActiveCategory("all");
-    updateResults();
+    trackSearch("reset");
     search?.focus();
   }));
   tagButtons.forEach((button) => button.addEventListener("click", () => {
-    if (search) search.value = button.dataset.searchTag ?? "";
+    const selectedTag = button.dataset.searchTag ?? "";
+    if (search) search.value = selectedTag;
     setActiveCategory("all");
-    updateResults();
+    trackSearch("tag", selectedTag.slice(0, 100));
     search?.focus();
     document.querySelector(".library-search-card")?.scrollIntoView({ behavior: "smooth", block: "center" });
   }));
