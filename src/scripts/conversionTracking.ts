@@ -199,8 +199,8 @@ function loadGoogleAnalytics(): void {
   captureCampaignAttribution();
 
   window.dataLayer = window.dataLayer ?? [];
-  const gtag = function gtag(...args: unknown[]) {
-    window.dataLayer?.push(args);
+  const gtag = function gtag() {
+    window.dataLayer?.push(arguments);
   } as GtagFunction;
   window.gtag = gtag;
 
@@ -218,19 +218,20 @@ function loadGoogleAnalytics(): void {
     debug_mode: debugMode,
   });
 
+  const pageViewParameters = {
+    page_location: sanitizedPageLocation(),
+    page_title: document.title.slice(0, 200),
+    ...campaignParameters(),
+  };
+  exposeDebugEvent("page_view", pageViewParameters);
+  gtag("event", "page_view", pageViewParameters);
+
   const script = document.createElement("script");
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
   script.addEventListener("load", () => {
     gaReady = true;
     window.__BUILDSCOPE_ANALYTICS_ENABLED__ = true;
-    const pageViewParameters = {
-      page_location: sanitizedPageLocation(),
-      page_title: document.title.slice(0, 200),
-      ...campaignParameters(),
-    };
-    exposeDebugEvent("page_view", pageViewParameters);
-    window.gtag?.("event", "page_view", pageViewParameters);
     flushQueue();
   }, { once: true });
   script.addEventListener("error", () => {
