@@ -32,6 +32,22 @@ slides:
   - src: /images/uploads/chatgpt-2026-10-15-08_28_14-4.png
     label: TBM 唔係萬能，但好啱做長段
     alt: TBM 優勢包括 continuous boring、地質穩定、對地面滋擾較低、適合較長連續段
+  - src: /images/uploads/chatgpt-2026-10-15-08_28_19-5.png
+    label: Drill & Blast常用於 rock stratum
+    alt: Drill & Blast 特別適合需要彈性處理的岩層、短段、變斷面、接口位或複雜地質段
+  - src: /images/uploads/chatgpt-2026-10-15-08_28_26-6.png
+    label: 局部、短段用 Drill & Break or Pipe Jacking
+    alt: 唔係所有地底工程都值得用TBM
+  - src: /images/uploads/chatgpt-2026-10-15-08_28_32-7.png
+    label: 最難係Interface
+    alt: 隧道最難通常係 portal、shaft、station box、cross passage、adit、TBM launch /
+      reception、temporary works 同 permanent works 之間的接口
+  - src: /images/uploads/chatgpt-2026-10-15-08_28_38-8.png
+    label: 做Tunnel, Programme睇乜？
+    alt: TBM 快慢不能只睇 daily advance rate，應睇 whole programme
+  - src: /images/uploads/chatgpt-2026-10-15-08_28_44-9.png
+    label: 有 TBM，唔代表一定由頭鑽到尾
+    alt: 一條隧道，應該按 alignment、ground condition、interface 同 programme，分段選擇最合適工法
 discussionQuestion: 如果你要決定用 TBM 定 Drill & Blast，你認為最應該優先考慮邊個因素？
 isProCourseAvailable: false
 ---
