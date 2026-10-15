@@ -26,6 +26,12 @@ slides:
   - src: /images/uploads/chatgpt-2026-10-15-08_27_43-2.png
     label: 影響 TBM 可行性
     alt: Alignment 的長度、曲線半徑、坡度、portal、shaft、station / work shaft 位置都會影響 TBM 可行性
+  - src: /images/uploads/chatgpt-2026-10-15-08_28_06-3.png
+    label: Ground Conditions先係關鍵
+    alt: 地質愈可預測、斷面愈一致，TBM planning 愈有利；地質愈多變，施工法風險同 interface planning 就愈重要
+  - src: /images/uploads/chatgpt-2026-10-15-08_28_14-4.png
+    label: TBM 唔係萬能，但好啱做長段
+    alt: TBM 優勢包括 continuous boring、地質穩定、對地面滋擾較低、適合較長連續段
 discussionQuestion: 如果你要決定用 TBM 定 Drill & Blast，你認為最應該優先考慮邊個因素？
 isProCourseAvailable: false
 ---
