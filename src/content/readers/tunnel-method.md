@@ -18,7 +18,7 @@ quickTakeaway: |-
   如果中途遇到硬岩、斷層、破碎帶、地下水、短段、曲線多、接收井密、車站／工作井接口多，
   未必係「一部 TBM 鑽晒」最合理。
 publishedDate: 2026-10-15
-draft: true
+draft: false
 slides:
   - src: /images/uploads/chatgpt-2026-10-15-08_27_31-1.png
     label: 有 TBM，點解仲要 Drill & Blast？
