@@ -27,7 +27,7 @@ const {
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
-const ga4MeasurementId = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID ?? "";
+const ga4MeasurementId = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID ?? "G-M7Q69J8X6F";
 const ga4ConsentRequired = import.meta.env.PUBLIC_GA4_CONSENT_REQUIRED !== "false";
 const ga4DebugMode = import.meta.env.PUBLIC_GA4_DEBUG_MODE === "true";
 ---
