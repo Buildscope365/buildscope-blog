@@ -15,56 +15,83 @@
       <h3>訂閱工程電子報</h3>
       <p>接收最新工程圖解、學習資源及 Community 更新。</p>
 
-      <div id="error-message" class="sib-form-message-panel newsletter-message newsletter-message--error" aria-live="polite">
-        暫時未能處理你的訂閱，請稍後再試。
-      </div>
-      <div id="success-message" class="sib-form-message-panel newsletter-message newsletter-message--success" aria-live="polite">
-        多謝登記！請查看電郵並點擊確認連結，完成訂閱。
-      </div>
-
-      <form
-        id="sib-form"
-        method="POST"
-        action="https://a7a3692a.sibforms.com/serve/MUIFAAPid5_CfzMcpIo0u1n0i9EYttWrM_NYDR85sbiAnggqtNiCs3niCZMWhYZjG1aa6gSSbPWR_V08OLc_65FtbYfRLB3RuXFGdOEtdt_OPdxvbJkiNOAI3Dcbuu8iATVGBUSvW4IrTJrek2SHQ0hZuBzJUbHn_PSJ6rvyt4_fWC5_jqiRHvaR8uzHOo_2Z6GP1zP46AJzT8hcPQ=="
-        data-type="subscription"
-      >
-        <div class="newsletter-form-row">
-          <div class="newsletter-email-field">
-            <label class="visually-hidden" for="footer-email">電郵地址</label>
-            <input
-              class="input"
-              id="footer-email"
-              name="EMAIL"
-              type="email"
-              autocomplete="email"
-              placeholder="輸入電郵地址"
-              data-required="true"
-              required
-            />
+      <div class="sib-form">
+        <div id="sib-form-container" class="sib-form-container">
+          <div id="error-message" class="sib-form-message-panel newsletter-message newsletter-message--error" aria-live="polite">
+            <div class="sib-form-message-panel__text">
+              <span class="sib-form-message-panel__inner-text">暫時未能處理你的訂閱，請稍後再試。</span>
+            </div>
           </div>
-          <button class="sib-form-block__button sib-form-block__button-with-loader" type="submit">訂閱</button>
-        </div>
-        <label class="entry__error entry__error--primary newsletter-field-error" aria-live="polite"></label>
+          <div id="success-message" class="sib-form-message-panel newsletter-message newsletter-message--success" aria-live="polite">
+            <div class="sib-form-message-panel__text">
+              <span class="sib-form-message-panel__inner-text">多謝登記！請查看電郵並點擊確認連結，完成訂閱。</span>
+            </div>
+          </div>
 
-        <div class="sib-optin" data-required="true">
-          <label class="newsletter-consent" for="footer-opt-in">
-            <input
-              class="input_replaced"
-              id="footer-opt-in"
-              name="OPT_IN"
-              type="checkbox"
-              value="1"
-              required
-            />
-            <span>我同意接收 BuildScope 工程電子報及學習資源，並可隨時取消訂閱。</span>
-          </label>
-          <label class="entry__error entry__error--primary newsletter-field-error" aria-live="polite"></label>
-          <small class="newsletter-note">你可以隨時透過電子報內的連結取消訂閱。</small>
-        </div>
+          <div id="sib-container" class="sib-container--large sib-container--vertical">
+            <form
+              id="sib-form"
+              method="POST"
+              action="https://a7a3692a.sibforms.com/serve/MUIFAAPid5_CfzMcpIo0u1n0i9EYttWrM_NYDR85sbiAnggqtNiCs3niCZMWhYZjG1aa6gSSbPWR_V08OLc_65FtbYfRLB3RuXFGdOEtdt_OPdxvbJkiNOAI3Dcbuu8iATVGBUSvW4IrTJrek2SHQ0hZuBzJUbHn_PSJ6rvyt4_fWC5_jqiRHvaR8uzHOo_2Z6GP1zP46AJzT8hcPQ=="
+              data-type="subscription"
+            >
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row newsletter-form-row">
+                    <label class="visually-hidden entry__label" for="footer-email" data-required="*">電郵地址</label>
+                    <div class="entry__field newsletter-email-field">
+                      <input
+                        class="input"
+                        id="footer-email"
+                        name="EMAIL"
+                        type="email"
+                        autocomplete="email"
+                        placeholder="輸入電郵地址"
+                        data-required="true"
+                        required
+                      />
+                    </div>
+                    <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
+                      <svg class="progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512" aria-hidden="true">
+                        <path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z" />
+                      </svg>
+                      訂閱
+                    </button>
+                  </div>
+                  <label class="entry__error entry__error--primary newsletter-field-error" aria-live="polite"></label>
+                </div>
+              </div>
 
-        <input type="text" name="email_address_check" value="" class="input--hidden" tabindex="-1" aria-hidden="true" />
-        <input type="hidden" name="locale" value="en" />
-      </form>
+              <div class="sib-optin sib-form-block" data-required="true">
+                <div class="form__entry entry_mcq">
+                  <div class="form__label-row">
+                    <label class="visually-hidden entry__label" for="footer-opt-in" data-required="*">訂閱同意</label>
+                    <div class="entry__choice">
+                      <label class="newsletter-consent" for="footer-opt-in">
+                        <input
+                          class="input_replaced"
+                          id="footer-opt-in"
+                          name="OPT_IN"
+                          type="checkbox"
+                          value="1"
+                          required
+                        />
+                        <span class="checkbox checkbox_tick_positive" aria-hidden="true"></span>
+                        <span>我同意接收 BuildScope 工程電子報及學習資源，並可隨時取消訂閱。</span>
+                      </label>
+                    </div>
+                  </div>
+                  <label class="entry__error entry__error--primary newsletter-field-error" aria-live="polite"></label>
+                  <small class="entry__specification newsletter-note">你可以隨時透過電子報內的連結取消訂閱。</small>
+                </div>
+              </div>
+
+              <input type="text" name="email_address_check" value="" class="input--hidden" tabindex="-1" aria-hidden="true" />
+              <input type="hidden" name="locale" value="en" />
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="container copyright">© 2026 工程白話文 BuildScope．保留所有權利。</div>
@@ -105,15 +132,19 @@
   .site-footer > .footer-grid > div > a { margin-bottom: 7px; color: var(--body); font-size: .88rem; }
   .site-footer > .footer-grid > div > a:hover { color: var(--orange-dark); }
   .newsletter p { margin: 0 0 12px; }
-  .newsletter form { width: 100%; }
+  .sib-form, .sib-form-container, #sib-container, .newsletter form { width: 100%; }
   .newsletter-form-row { display: flex; width: 100%; }
   .newsletter-email-field { min-width: 0; flex: 1; }
   .newsletter input[type="email"] { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-right: 0; border-radius: 5px 0 0 5px; outline: none; }
   .newsletter input[type="email"]:focus { border-color: var(--orange); }
-  .newsletter button { min-height: 44px; padding: 0 16px; border: 0; border-radius: 0 5px 5px 0; color: white; background: var(--orange); font-weight: 800; cursor: pointer; }
+  .newsletter button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 0 5px 5px 0; color: white; background: var(--orange); font-weight: 800; cursor: pointer; }
   .newsletter button:disabled { cursor: wait; opacity: .72; }
-  .newsletter-consent { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; margin-top: 10px; color: var(--body); font-size: .76rem; line-height: 1.45; cursor: pointer; }
+  .progress-indicator__icon { width: 15px; height: 15px; fill: currentColor; animation: newsletter-spin .8s linear infinite; }
+  .sib-hide-loader-icon { display: none; }
+  @keyframes newsletter-spin { to { transform: rotate(360deg); } }
+  .newsletter-consent { display: grid; grid-template-columns: 16px 1fr; gap: 8px; align-items: start; margin-top: 10px; color: var(--body); font-size: .76rem; line-height: 1.45; cursor: pointer; }
   .newsletter-consent input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--orange); }
+  .newsletter-consent .checkbox { display: none; }
   .newsletter-note { display: block; margin-top: 5px; color: var(--muted); font-size: .7rem; line-height: 1.4; }
   .newsletter-message { display: none; width: 100%; margin: 0 0 10px; padding: 9px 11px; border: 1px solid; border-radius: 5px; font-size: .78rem; line-height: 1.45; }
   .newsletter-message.sib-form-message-panel--active { display: block; }
@@ -126,7 +157,6 @@
   @media (max-width: 580px) {
     .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
     .footer-brand { grid-column: 1 / -1; }
-    .newsletter-form-row { align-items: stretch; }
     .newsletter button { padding: 0 14px; }
   }
 </style>
