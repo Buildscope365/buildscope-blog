@@ -11,20 +11,85 @@
     </div>
     <div><h3>探索</h3><a href="/visual-library/">Visual Library</a><a href="https://buildscope-dictionary.com/">工程字典</a><a href="/about/">關於我們</a></div>
     <div><h3>Community</h3><a href="https://www.skool.com/buildscope-learning-lab-1916" target="_blank" rel="noopener noreferrer">BuildScope Learning Lab</a><a href="https://www.instagram.com/build_scope/" target="_blank" rel="noopener noreferrer">Instagram</a></div>
-    <div class="newsletter"><h3>訂閱工程電子報</h3><p>接收最新工程圖解、學習資源及 Community 更新。</p><form><label class="visually-hidden" for="footer-email">電郵地址</label><input id="footer-email" type="email" placeholder="輸入電郵地址" required /><button type="submit">訂閱</button></form><small class="form-message" aria-live="polite"></small></div>
+    <div class="newsletter">
+      <h3>訂閱工程電子報</h3>
+      <p>接收最新工程圖解、學習資源及 Community 更新。</p>
+
+      <div id="error-message" class="sib-form-message-panel newsletter-message newsletter-message--error" aria-live="polite">
+        暫時未能處理你的訂閱，請稍後再試。
+      </div>
+      <div id="success-message" class="sib-form-message-panel newsletter-message newsletter-message--success" aria-live="polite">
+        多謝登記！請查看電郵並點擊確認連結，完成訂閱。
+      </div>
+
+      <form
+        id="sib-form"
+        method="POST"
+        action="https://a7a3692a.sibforms.com/serve/MUIFAAPid5_CfzMcpIo0u1n0i9EYttWrM_NYDR85sbiAnggqtNiCs3niCZMWhYZjG1aa6gSSbPWR_V08OLc_65FtbYfRLB3RuXFGdOEtdt_OPdxvbJkiNOAI3Dcbuu8iATVGBUSvW4IrTJrek2SHQ0hZuBzJUbHn_PSJ6rvyt4_fWC5_jqiRHvaR8uzHOo_2Z6GP1zP46AJzT8hcPQ=="
+        data-type="subscription"
+      >
+        <div class="newsletter-form-row">
+          <div class="newsletter-email-field">
+            <label class="visually-hidden" for="footer-email">電郵地址</label>
+            <input
+              class="input"
+              id="footer-email"
+              name="EMAIL"
+              type="email"
+              autocomplete="email"
+              placeholder="輸入電郵地址"
+              data-required="true"
+              required
+            />
+          </div>
+          <button class="sib-form-block__button sib-form-block__button-with-loader" type="submit">訂閱</button>
+        </div>
+        <label class="entry__error entry__error--primary newsletter-field-error" aria-live="polite"></label>
+
+        <div class="sib-optin" data-required="true">
+          <label class="newsletter-consent" for="footer-opt-in">
+            <input
+              class="input_replaced"
+              id="footer-opt-in"
+              name="OPT_IN"
+              type="checkbox"
+              value="1"
+              required
+            />
+            <span>我同意接收 BuildScope 工程電子報及學習資源，並可隨時取消訂閱。</span>
+          </label>
+          <label class="entry__error entry__error--primary newsletter-field-error" aria-live="polite"></label>
+          <small class="newsletter-note">你可以隨時透過電子報內的連結取消訂閱。</small>
+        </div>
+
+        <input type="text" name="email_address_check" value="" class="input--hidden" tabindex="-1" aria-hidden="true" />
+        <input type="hidden" name="locale" value="en" />
+      </form>
+    </div>
   </div>
   <div class="container copyright">© 2026 工程白話文 BuildScope．保留所有權利。</div>
 </footer>
 
-<script>
-  const form = document.querySelector<HTMLFormElement>(".newsletter form");
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const message = form.parentElement?.querySelector<HTMLElement>(".form-message");
-    if (message) message.textContent = "多謝訂閱！正式連接電郵系統後即可接收更新。";
-    form.reset();
-  });
+<script is:inline>
+  window.REQUIRED_CODE_ERROR_MESSAGE = "Please choose a country code";
+  window.LOCALE = "en";
+  window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "資料格式不正確，請檢查後再試。";
+  window.REQUIRED_ERROR_MESSAGE = "此欄不能留空。";
+  window.GENERIC_INVALID_MESSAGE = "資料格式不正確，請檢查後再試。";
+  window.INVALID_NUMBER = "資料格式不正確，請檢查後再試。";
+  window.INVALID_DATE = "請輸入有效日期。";
+  window.REQUIRED_MULTISELECT_MESSAGE = "請至少選擇一個選項。";
+  window.translation = {
+    common: {
+      selectedList: "已選擇 {quantity} 個名單",
+      selectedLists: "已選擇 {quantity} 個名單",
+      selectedOption: "已選擇 {quantity} 個選項",
+      selectedOptions: "已選擇 {quantity} 個選項",
+    },
+  };
+  window.AUTOHIDE = false;
 </script>
+<script is:inline defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 
 <style>
   .site-footer { padding-top: 56px; border-top: 1px solid var(--line); background: var(--white); }
@@ -40,12 +105,28 @@
   .site-footer > .footer-grid > div > a { margin-bottom: 7px; color: var(--body); font-size: .88rem; }
   .site-footer > .footer-grid > div > a:hover { color: var(--orange-dark); }
   .newsletter p { margin: 0 0 12px; }
-  .newsletter form { display: flex; width: 100%; }
-  .newsletter input { min-width: 0; flex: 1; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-right: 0; border-radius: 5px 0 0 5px; outline: none; }
-  .newsletter input:focus { border-color: var(--orange); }
+  .newsletter form { width: 100%; }
+  .newsletter-form-row { display: flex; width: 100%; }
+  .newsletter-email-field { min-width: 0; flex: 1; }
+  .newsletter input[type="email"] { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-right: 0; border-radius: 5px 0 0 5px; outline: none; }
+  .newsletter input[type="email"]:focus { border-color: var(--orange); }
   .newsletter button { min-height: 44px; padding: 0 16px; border: 0; border-radius: 0 5px 5px 0; color: white; background: var(--orange); font-weight: 800; cursor: pointer; }
-  .form-message { display: block; margin-top: 8px; color: var(--success); }
+  .newsletter button:disabled { cursor: wait; opacity: .72; }
+  .newsletter-consent { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; margin-top: 10px; color: var(--body); font-size: .76rem; line-height: 1.45; cursor: pointer; }
+  .newsletter-consent input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--orange); }
+  .newsletter-note { display: block; margin-top: 5px; color: var(--muted); font-size: .7rem; line-height: 1.4; }
+  .newsletter-message { display: none; width: 100%; margin: 0 0 10px; padding: 9px 11px; border: 1px solid; border-radius: 5px; font-size: .78rem; line-height: 1.45; }
+  .newsletter-message.sib-form-message-panel--active { display: block; }
+  .newsletter-message--success { color: #085229; border-color: #13ce66; background: #e7faf0; }
+  .newsletter-message--error { color: #661d1d; border-color: #ff4949; background: #ffeded; }
+  .newsletter-field-error { display: block; margin-top: 5px; color: #a12622; font-size: .72rem; line-height: 1.35; }
+  .input--hidden { position: absolute !important; left: -9999px !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important; }
   .copyright { margin-top: 42px; padding: 20px 0; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font-size: .78rem; }
   @media (max-width: 900px) { .footer-grid { grid-template-columns: 1.3fr 1fr 1fr; } .newsletter { grid-column: 1 / -1; } }
-  @media (max-width: 580px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; } .footer-brand { grid-column: 1 / -1; } }
+  @media (max-width: 580px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
+    .footer-brand { grid-column: 1 / -1; }
+    .newsletter-form-row { align-items: stretch; }
+    .newsletter button { padding: 0 14px; }
+  }
 </style>
