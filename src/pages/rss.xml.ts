@@ -18,6 +18,15 @@ const wrapCdata = (value: string) =>
 const toRfc822Date = (date: string) =>
   new Date(`${date}T00:00:00+08:00`).toUTCString();
 
+const getImageMimeType = (url: string) => {
+  const extension = new URL(url).pathname.split(".").pop()?.toLowerCase();
+  if (extension === "jpg" || extension === "jpeg") return "image/jpeg";
+  if (extension === "webp") return "image/webp";
+  if (extension === "gif") return "image/gif";
+  if (extension === "svg") return "image/svg+xml";
+  return "image/png";
+};
+
 export const GET: APIRoute = async () => {
   const readers = await getReaders();
   const latestDate = readers[0]?.publishedDate ?? "2026-01-01";
@@ -38,6 +47,7 @@ export const GET: APIRoute = async () => {
       <guid isPermaLink="true">${escapeXml(itemUrl)}</guid>
       <pubDate>${toRfc822Date(reader.publishedDate)}</pubDate>
       <category>${escapeXml(reader.categoryLabel)}</category>
+      <enclosure url="${escapeXml(coverUrl)}" length="0" type="${getImageMimeType(coverUrl)}" />
       <description>${wrapCdata(description)}</description>
     </item>`;
     })
