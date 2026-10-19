@@ -33,16 +33,14 @@ const {
   isProCourseAvailable = false,
 } = Astro.props;
 
-const courseDestinationUrl = courseUrl || null;
-const secondaryUrl = courseDestinationUrl ?? discussionUrl ?? "https://www.skool.com/buildscope-learning-lab-1916";
-const secondaryLabel = courseDestinationUrl
-  ? isProCourseAvailable
-    ? `已是會員？前往 ${courseTitle ?? "Skool Classroom"} →`
-    : "前往 Skool Course →"
+const verifiedCourseUrl = isProCourseAvailable && courseUrl ? courseUrl : null;
+const secondaryUrl = verifiedCourseUrl ?? discussionUrl ?? "https://www.skool.com/buildscope-learning-lab-1916";
+const secondaryLabel = verifiedCourseUrl
+  ? `已是會員？前往 ${courseTitle ?? "Skool Classroom"} →`
   : discussionUrl
     ? `在 Skool 繼續討論：${discussionQuestion} ↗`
     : "免費加入工程 Community →";
-const destinationType = courseDestinationUrl ? "skool_course" : discussionUrl ? "skool_discussion" : "skool_community";
+const destinationType = verifiedCourseUrl ? "skool_course" : discussionUrl ? "skool_discussion" : "skool_community";
 ---
 
 <section
