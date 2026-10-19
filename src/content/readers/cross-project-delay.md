@@ -45,7 +45,7 @@ slides:
     alt: 早期協調、設計、審批、施工條件及進度管理總結
 discussionQuestion: 你遇過邊種跨項目 Interface，最影響整體 Programme？
 isProCourseAvailable: false
-skoolCourseUrl: https://www.skool.com/buildscope-learning-lab-1916/classroom/ff4dda4c?md=77cf3f139fe34e60a3eede65d07b35c1
+skoolCourseUrl: ""
 skoolResourceUrl: ""
 skoolDiscussionUrl: ""
 ---
