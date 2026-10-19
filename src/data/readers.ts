@@ -44,7 +44,7 @@ export async function getReaders(): Promise<ReaderItem[]> {
   const entries = await getCollection("readers", ({ data }) => !data.draft);
   const slugs = new Set<string>();
 
-  const readers = entries.map(({ data }) => {
+  const readers = entries.sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime()).map(({ data }) => {
     if (slugs.has(data.slug)) {
       throw new Error(`Duplicate Visual Library slug: ${data.slug}`);
     }
@@ -72,5 +72,5 @@ export async function getReaders(): Promise<ReaderItem[]> {
     };
   });
 
-  return readers.sort((a, b) => Date.parse(b.publishedDate) - Date.parse(a.publishedDate));
+  return readers;
 }
