@@ -7,7 +7,7 @@ tags: ["Bored Pile", "Bentonite", "Slurry", "Foundation", "Borehole Stability", 
 introduction: "模擬工程案例：鑽孔樁施工至 28m，泥漿液位由 +9.5mPD 突降至 +6.0mPD。現場應如何停工、核實數據、檢查泥漿系統及評估鄰近建築物風險？"
 quickTakeaway: "泥漿液位突然下降屬警號，但不能單憑液位判斷已經塌孔。應暫停進一步鑽進，核實讀數、穩定液位，檢查設備及地層情況，並由合資格團隊評估孔壁穩定和周邊風險。本案例全部數據均為模擬假設。"
 publishedDate: 2026-10-20
-draft: true
+draft: false
 slides:
   - src: "/images/readers/bored-pile-bentonite-fluid-loss/01.webp"
     label: "1/10"
