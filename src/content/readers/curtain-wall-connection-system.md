@@ -2,7 +2,7 @@
 slug: curtain-wall-connection-system
 title: Curtain Wall 點掛上大廈？幾十層高嘅玻璃幕牆點樣固定？
 category: site-works
-categoryLine: BuildScope 100 #019 × Façade Mini-Series
+categoryLine: "BuildScope 100 #019 × Façade Mini-Series"
 tags:
   - Curtain Wall
   - Façade
@@ -47,7 +47,7 @@ slides:
     label: 到 Skool 繼續學習
     alt: 10/10 BuildScope 100 #019 Curtain Wall 課程及資源入口
 discussionQuestion: 現場檢查幕牆安裝，你會先核對 Anchor、Bracket 位置，定係結構介面同位移要求？
-courseTitle: BuildScope 100 #019｜Curtain Wall 點掛上大廈？
+courseTitle: "BuildScope 100 #019｜Curtain Wall 點掛上大廈？"
 resourceTitle: Curtain Wall 10-Point Inspection Checklist
 resourcePreview: 圖解提及的檢查清單；實際資源及存取權限以 Skool Classroom 為準。
 isProCourseAvailable: true
