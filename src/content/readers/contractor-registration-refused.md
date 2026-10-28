@@ -13,7 +13,7 @@ tags:
   - Risk Assessment
 introduction: 承建商被拒續牌，現有工程、投標資格同分判合約會點處理？用 10 張圖分清屋宇署註冊與政府投標資格，再睇合約條款、付款、分判及交接風險。
 quickTakeaway: 屋宇署註冊資格與政府工程投標資格屬不同制度。被拒續牌或失去資格，亦不應單憑一張通知就推定所有合約自動終止。先核實決定及生效狀態、適用法定要求、合約終止及通知條款、上訴或暫緩安排，再按已完成工程、付款、現場安全及分判責任制定交接方案。實際權利與程序須按個別合約及法律意見核對。
-publishedDate: 2026-10-28T18:10:00+08:00
+publishedDate: 2026-10-28T22:25:00+08:00
 draft: false
 slides:
   - src: /images/readers/contractor-registration-refused/01.webp
