@@ -39,13 +39,13 @@ slides:
     alt: 7/10 現場檢查結構介面、支架位置、錨固、對位及檢查紀錄
   - src: /images/readers/curtain-wall-connection-system/08.webp
     label: Façade Mini-Series 延伸學習
-    alt: 8/10 #020 至 #023 延伸至接駁漏水、吊裝、對位及水測試問題
+    alt: "8/10 #020 至 #023 延伸至接駁漏水、吊裝、對位及水測試問題"
   - src: /images/readers/curtain-wall-connection-system/09.webp
     label: 入到 Skool 會收到咩？
     alt: 9/10 Classroom Lessons、完整 6 課、資源及 Façade Mini-Series 延伸內容
   - src: /images/readers/curtain-wall-connection-system/10.webp
     label: 到 Skool 繼續學習
-    alt: 10/10 BuildScope 100 #019 Curtain Wall 課程及資源入口
+    alt: "10/10 BuildScope 100 #019 Curtain Wall 課程及資源入口"
 discussionQuestion: 現場檢查幕牆安裝，你會先核對 Anchor、Bracket 位置，定係結構介面同位移要求？
 courseTitle: "BuildScope 100 #019｜Curtain Wall 點掛上大廈？"
 resourceTitle: Curtain Wall 10-Point Inspection Checklist
