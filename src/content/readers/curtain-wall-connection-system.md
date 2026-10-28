@@ -15,7 +15,7 @@ tags:
 introduction: 幾十層高嘅玻璃幕牆，點樣穩妥地連接到大廈結構？透過 10 張工程圖解，理解 Structure、Anchor、Bracket、Mullion、Glass / Panel 嘅基本連接邏輯、常見安裝風險同地盤檢查重點。
 quickTakeaway: Curtain Wall 唔只係外觀玻璃，而係要按經核准設計處理荷載、位移、錨固、支架、框架及結構介面嘅外牆系統。地盤應核對設計圖則、固定及連接、安裝公差、Movement Allowance 同檢查紀錄；實際構造與荷載傳遞路徑以個別系統設計為準。
 publishedDate: 2026-10-28
-draft: false
+draft: true
 slides:
   - src: /images/readers/curtain-wall-connection-system/01-cover.webp
     label: "Curtain Wall 點掛上大廈？"
