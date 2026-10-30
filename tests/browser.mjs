@@ -29,6 +29,7 @@ try {
     await page.getByRole("button", { name: "計算保留款" }).click();
     assert.equal(await page.locator("#current").innerText(), "0.29");
     assert.equal(await page.locator("#cumulative").innerText(), "15,000.00");
+    await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: `${shots}/retention-${name}.png`, fullPage: true });
     await page.getByRole("button", { name: "複製結果" }).click();
     await page.waitForFunction(() => document.querySelector("#copy-status")?.textContent?.includes("已複製") || document.querySelector("#copy-status")?.textContent?.includes("未能複製"));
