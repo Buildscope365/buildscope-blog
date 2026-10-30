@@ -29,8 +29,8 @@ try {
     await page.getByRole("button", { name: "計算保留款" }).click();
     assert.equal(await page.locator("#current").innerText(), "0.29");
     assert.equal(await page.locator("#cumulative").innerText(), "15,000.00");
-    await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); window.scrollTo({ top: 0, behavior: "instant" }); });
-    await page.waitForFunction(() => window.scrollY === 0);
+    // A full-page capture from a scrolled form otherwise paints the sticky header over inputs.
+    await page.addStyleTag({ content: ".site-header{position:static!important}" });
     await page.screenshot({ path: `${shots}/retention-${name}.png`, fullPage: true });
     await page.getByRole("button", { name: "複製結果" }).click();
     await page.waitForFunction(() => document.querySelector("#copy-status")?.textContent?.includes("已複製") || document.querySelector("#copy-status")?.textContent?.includes("未能複製"));
