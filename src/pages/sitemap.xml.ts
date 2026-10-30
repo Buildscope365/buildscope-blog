@@ -14,7 +14,7 @@ export const GET: APIRoute = async () => {
   ]);
   const entries: { path: string; date?: Date }[] = [
     ...staticPaths.map((path) => ({ path })),
-    ...posts.map((post) => ({ path: `/blog/${post.id}/`, date: post.data.lastReviewedDate ?? post.data.date })),
+    ...posts.map((post) => ({ path: `/blog/${post.id}/`, date: post.data.updatedDate ?? post.data.date })),
     ...news.map((item) => ({ path: `/news/${item.id}/`, date: item.data.date })),
     ...readers.map((reader) => ({ path: `/read/${reader.slug}/`, date: new Date(`${reader.publishedDate}T00:00:00+08:00`) })),
   ];

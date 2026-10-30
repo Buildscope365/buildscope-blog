@@ -1,36 +1,51 @@
 export interface RetentionInput {
-  payment: number;
-  percentage: number;
-  cap: number;
-  previous: number;
+  payment: string | number;
+  percentage: string | number;
+  cap: string | number;
+  previous: string | number;
 }
 
 export interface RetentionResult {
-  current: number;
-  cumulative: number;
-  remaining: number;
-  uncapped: number;
+  current: string;
+  cumulative: string;
+  remaining: string;
+  uncapped: string;
+  capped: boolean;
 }
 
-/** Amounts are in the user's chosen currency, rounded to two decimal places. */
-export function calculateRetention(input: RetentionInput): RetentionResult {
-  for (const [key, value] of Object.entries(input)) {
-    if (!Number.isFinite(value) || value < 0) throw new RangeError(`${key} 必須是零或正數。`);
-    if (key !== "percentage" && Math.abs(Math.round(value * 100) - value * 100) > 0.000001) throw new RangeError(`${key} 最多只能輸入兩位小數。`);
-    if (key !== "percentage" && !Number.isSafeInteger(Math.round(value * 100))) throw new RangeError(`${key} 金額太大。`);
-  }
-  if (input.percentage > 100) throw new RangeError("扣款百分比不可超過 100%。");
-  if (input.previous > input.cap) throw new RangeError("以往累計保留款不可超過上限。");
+const MAX_CENTS = BigInt(Number.MAX_SAFE_INTEGER);
+const RATE_SCALE = 1_000_000n; // Up to six decimal places in a percentage.
+const RATE_DENOMINATOR = 100n * RATE_SCALE;
 
-  const payment = Math.round(input.payment * 100);
-  const cap = Math.round(input.cap * 100);
-  const previous = Math.round(input.previous * 100);
-  const uncapped = Math.round(payment * input.percentage / 100);
-  const current = Math.min(uncapped, cap - previous);
+function parseDecimal(value: string | number, places: number, label: string): bigint {
+  const raw = String(value).trim();
+  if (!/^(?:\d+)(?:\.\d+)?$/.test(raw)) throw new RangeError(`${label} 必須是零或正數，不能使用科學記數法。`);
+  const [whole, fraction = ""] = raw.split(".");
+  if (fraction.length > places) throw new RangeError(`${label} 最多只能輸入 ${places} 位小數。`);
+  return BigInt(whole) * 10n ** BigInt(places) + BigInt(fraction.padEnd(places, "0") || "0");
+}
+
+function money(value: bigint): string {
+  return `${value / 100n}.${String(value % 100n).padStart(2, "0")}`;
+}
+
+/** Exact integer-cent arithmetic; half a cent rounds up. Contract rules must be checked separately. */
+export function calculateRetention(input: RetentionInput): RetentionResult {
+  const payment = parseDecimal(input.payment, 2, "本期付款金額");
+  const cap = parseDecimal(input.cap, 2, "保留款總上限");
+  const previous = parseDecimal(input.previous, 2, "以往累計已扣");
+  const percentage = parseDecimal(input.percentage, 6, "保留款百分比");
+  if ([payment, cap, previous].some((value) => value > MAX_CENTS)) throw new RangeError("金額超出可計算範圍。");
+  if (percentage > 100n * RATE_SCALE) throw new RangeError("保留款百分比不可超過 100%。");
+  if (previous > cap) throw new RangeError("以往累計保留款不可超過上限。");
+
+  const uncapped = (payment * percentage + RATE_DENOMINATOR / 2n) / RATE_DENOMINATOR;
+  const current = uncapped < cap - previous ? uncapped : cap - previous;
   return {
-    current: current / 100,
-    cumulative: (previous + current) / 100,
-    remaining: (cap - previous - current) / 100,
-    uncapped: uncapped / 100,
+    current: money(current),
+    cumulative: money(previous + current),
+    remaining: money(cap - previous - current),
+    uncapped: money(uncapped),
+    capped: current < uncapped,
   };
 }

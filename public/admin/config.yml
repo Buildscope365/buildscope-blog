@@ -122,9 +122,11 @@ collections:
       - { label: "標籤", name: "tags", widget: "list", required: false, allow_add: true, collapsed: false }
       - { label: "封面圖片", name: "coverImage", widget: "image", required: false }
       - { label: "作者", name: "author", widget: "string", default: "BuildScope 編輯部" }
+      - { label: "作者類型", name: "authorType", widget: "select", default: "Organization", options: ["Organization", "Person"], hint: "真人作者選 Person；編輯部／機構選 Organization。" }
       - { label: "難度", name: "difficulty", widget: "select", default: "入門", options: ["入門", "中階", "進階"] }
       - { label: "閱讀時間", name: "readingTime", widget: "string", default: "5 分鐘" }
       - { label: "最後覆核日期", name: "lastReviewedDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false, hint: "只有實際覆核內容後才填寫；不要自動改為今日。" }
+      - { label: "內容更新日期", name: "updatedDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false, hint: "只有內容實際修改後才填；此日期用於 Article dateModified 與 Sitemap lastmod。" }
       - label: "參考來源"
         name: "sources"
         widget: "list"

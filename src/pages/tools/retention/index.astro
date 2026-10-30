@@ -9,7 +9,7 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
       <p>所有金額請使用同一貨幣，最多兩位小數。上限輸入可保留的總金額，而非合約金額。</p>
       <div class="fields">
         <label>本期付款金額 <span>Current payment amount</span><input name="payment" type="number" min="0" step="0.01" inputmode="decimal" placeholder="例如 100000.00" required /></label>
-        <label>保留款百分比 (%) <span>Retention percentage</span><input name="percentage" type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="例如 5" required /></label>
+        <label>保留款百分比 (%) <span>Retention percentage · 最多六位小數</span><input name="percentage" type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="例如 5" required /></label>
         <label>保留款總上限 <span>Retention cap</span><input name="cap" type="number" min="0" step="0.01" inputmode="decimal" placeholder="例如 50000.00" required /></label>
         <label>以往累計已扣 <span>Previously retained</span><input name="previous" type="number" min="0" step="0.01" inputmode="decimal" value="0" required /></label>
       </div>
@@ -41,7 +41,8 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
   const placeholder = document.querySelector<HTMLElement>("#result-placeholder");
   const copy = document.querySelector<HTMLButtonElement>("#copy-result");
   const status = document.querySelector<HTMLElement>("#copy-status");
-  const formatter = new Intl.NumberFormat("zh-HK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const formatter = new Intl.NumberFormat("zh-HK", { maximumFractionDigits: 0 });
+  const formatMoney = (value: string) => { const [whole, cents] = value.split("."); return `${formatter.format(BigInt(whole))}.${cents}`; };
   let summary = "";
   const setText = (id: string, value: string) => { const node = document.getElementById(id); if (node) node.textContent = value; };
   form?.addEventListener("submit", (event) => {
@@ -55,13 +56,13 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
     const values = fields.map((key) => (form.elements.namedItem(key) as HTMLInputElement).value.trim());
     if (values.some((value) => value === "")) { error.textContent = "請填寫全部四項數值。"; error.hidden = false; return; }
     try {
-      const result = calculateRetention({ payment: Number(values[0]), percentage: Number(values[1]), cap: Number(values[2]), previous: Number(values[3]) });
-      setText("uncapped", formatter.format(result.uncapped));
-      setText("current", formatter.format(result.current));
-      setText("cumulative", formatter.format(result.cumulative));
-      setText("remaining", formatter.format(result.remaining));
-      setText("cap-note", result.current < result.uncapped ? "已觸及保留款上限，本期扣款已按剩餘上限調整。" : "本期按輸入百分比計算，未超過剩餘上限。");
-      summary = `BuildScope 保留款計算\n本期保留款：${formatter.format(result.current)}\n累計保留款：${formatter.format(result.cumulative)}\n尚餘上限：${formatter.format(result.remaining)}\n請按合約條款覆核。`;
+      const result = calculateRetention({ payment: values[0], percentage: values[1], cap: values[2], previous: values[3] });
+      setText("uncapped", formatMoney(result.uncapped));
+      setText("current", formatMoney(result.current));
+      setText("cumulative", formatMoney(result.cumulative));
+      setText("remaining", formatMoney(result.remaining));
+      setText("cap-note", result.capped ? "已觸及保留款上限，本期扣款已按剩餘上限調整。" : "本期按輸入百分比計算，未超過剩餘上限。");
+      summary = `BuildScope 保留款計算\n本期付款：${values[0]}\n保留款率：${values[1]}%\n保留款上限：${values[2]}\n以往累計：${values[3]}\n本期保留款：${formatMoney(result.current)}\n累計保留款：${formatMoney(result.cumulative)}\n尚餘上限：${formatMoney(result.remaining)}\n請按合約條款覆核。`;
       placeholder.hidden = true;
       data.hidden = false;
     } catch (cause) {

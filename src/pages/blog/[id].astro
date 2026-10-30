@@ -3,6 +3,7 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { categoryLabel, formatDate } from "../../data/categories";
 import { getReaders } from "../../data/readers";
+import { buildArticleJsonLd } from "../../data/articleSeo";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
@@ -22,21 +23,9 @@ const relatedArticles = allPosts.filter((item) => item.id !== post.id).sort((a, 
 }).filter((item) => post.data.relatedArticles.includes(item.id) || item.data.category === post.data.category || item.data.tags.some((tag) => post.data.tags.includes(tag))).slice(0, 3);
 const relatedReaders = readers.filter((reader) => post.data.relatedReaders.includes(reader.slug) || reader.tags.some((tag) => post.data.tags.includes(tag))).sort((a, b) => Number(post.data.relatedReaders.includes(b.slug)) - Number(post.data.relatedReaders.includes(a.slug))).slice(0, 3);
 const canonical = new URL(`/blog/${post.id}/`, Astro.site).toString();
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: post.data.title,
-  description: post.data.description,
-  inLanguage: "zh-Hant-HK",
-  mainEntityOfPage: canonical,
-  datePublished: post.data.date.toISOString(),
-  ...(post.data.lastReviewedDate ? { dateModified: post.data.lastReviewedDate.toISOString() } : {}),
-  author: { "@type": "Organization", name: post.data.author },
-  publisher: { "@type": "Organization", name: "工程白話文 BuildScope", url: Astro.site?.toString() },
-  image: new URL(post.data.coverImage || "/og-default.svg", Astro.site).toString(),
-};
+const jsonLd = buildArticleJsonLd(post.data, canonical, Astro.site!.toString());
 ---
-<BaseLayout title={`${post.data.title}｜工程白話文 BuildScope`} description={post.data.description} image={post.data.coverImage} type="article" publishedTime={post.data.date.toISOString()} modifiedTime={post.data.lastReviewedDate?.toISOString()} jsonLd={jsonLd}>
+<BaseLayout title={`${post.data.title}｜工程白話文 BuildScope`} description={post.data.description} image={post.data.coverImage} type="article" publishedTime={post.data.date.toISOString()} modifiedTime={post.data.updatedDate?.toISOString()} jsonLd={jsonLd}>
   <article>
     <header class="article-hero">
       <div class="container article-head">
