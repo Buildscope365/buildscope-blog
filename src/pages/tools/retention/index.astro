@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="保留款計算機 Retention Calculator｜BuildScope" description="輸入本期付款、扣款百分比、保留款上限與以往累計保留款，計算本期扣款及餘額。">
+  <header class="page-hero"><div class="container"><a href="/tools/">← 返回實用工具</a><h1>保留款<span>計算機</span></h1><p>Retention Calculator · 按你輸入的合約假設計算，幫你檢查本期扣款有否觸及上限。</p></div></header>
+  <div class="container calculator-shell">
+    <form id="retention-form" class="calculator" novalidate>
+      <h2>輸入付款資料</h2>
+      <p>所有金額請使用同一貨幣，最多兩位小數。上限輸入可保留的總金額，而非合約金額。</p>
+      <div class="fields">
+        <label>本期付款金額 <span>Current payment amount</span><input name="payment" type="number" min="0" step="0.01" inputmode="decimal" placeholder="例如 100000.00" required /></label>
+        <label>保留款百分比 (%) <span>Retention percentage</span><input name="percentage" type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="例如 5" required /></label>
+        <label>保留款總上限 <span>Retention cap</span><input name="cap" type="number" min="0" step="0.01" inputmode="decimal" placeholder="例如 50000.00" required /></label>
+        <label>以往累計已扣 <span>Previously retained</span><input name="previous" type="number" min="0" step="0.01" inputmode="decimal" value="0" required /></label>
+      </div>
+      <p id="retention-error" class="error" role="alert" hidden></p>
+      <button type="submit">計算保留款 →</button>
+    </form>
+    <section class="results" aria-labelledby="results-heading">
+      <p class="eyebrow">CALCULATION RESULT</p><h2 id="results-heading">本期計算結果</h2>
+      <p id="result-placeholder">輸入資料後按「計算保留款」。</p>
+      <div id="result-data" hidden aria-live="polite">
+        <dl>
+          <div><dt>按百分比初算</dt><dd id="uncapped"></dd></div>
+          <div class="highlight"><dt>本期實際保留款</dt><dd id="current"></dd></div>
+          <div><dt>累計保留款</dt><dd id="cumulative"></dd></div>
+          <div><dt>尚餘保留款上限</dt><dd id="remaining"></dd></div>
+        </dl>
+        <p id="cap-note"></p>
+        <button id="copy-result" type="button">複製結果</button><p id="copy-status" role="status"></p>
+      </div>
+    </section>
+  </div>
+  <section class="container assumptions"><h2>計算假設與使用限制</h2><ul><li>本期保留款＝本期付款金額 × 指定百分比，計至兩位小數，再以尚餘上限限制；不計負數扣款。</li><li>本工具假設輸入的付款金額是適用保留款的金額，上限是保留款總金額。合約可能訂有不同基數、分階段比例、例外項目或上限定義。</li><li>不計算保留款發還、缺陷責任期、稅項、其他扣款或法定權利。實際付款證書與分判合約條款須由你核對。</li><li>計算在你的瀏覽器完成，沒有向伺服器提交金額；複製功能使用瀏覽器剪貼簿。</li></ul><p>想進一步整理 Payment Assessment 的實務做法？<a href="https://www.skool.com/buildscope-learning-lab-1916" target="_blank" rel="noopener noreferrer">了解 BuildScope Learning Lab ↗</a></p></section>
+</BaseLayout>
+<script>
+  import { calculateRetention } from "../../../scripts/retention";
+  const form = document.querySelector<HTMLFormElement>("#retention-form");
+  const error = document.querySelector<HTMLElement>("#retention-error");
+  const data = document.querySelector<HTMLElement>("#result-data");
+  const placeholder = document.querySelector<HTMLElement>("#result-placeholder");
+  const copy = document.querySelector<HTMLButtonElement>("#copy-result");
+  const status = document.querySelector<HTMLElement>("#copy-status");
+  const formatter = new Intl.NumberFormat("zh-HK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  let summary = "";
+  const setText = (id: string, value: string) => { const node = document.getElementById(id); if (node) node.textContent = value; };
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form || !error || !data || !placeholder) return;
+    data.hidden = true;
+    placeholder.hidden = false;
+    error.hidden = true;
+    if (status) status.textContent = "";
+    const fields = ["payment", "percentage", "cap", "previous"] as const;
+    const values = fields.map((key) => (form.elements.namedItem(key) as HTMLInputElement).value.trim());
+    if (values.some((value) => value === "")) { error.textContent = "請填寫全部四項數值。"; error.hidden = false; return; }
+    try {
+      const result = calculateRetention({ payment: Number(values[0]), percentage: Number(values[1]), cap: Number(values[2]), previous: Number(values[3]) });
+      setText("uncapped", formatter.format(result.uncapped));
+      setText("current", formatter.format(result.current));
+      setText("cumulative", formatter.format(result.cumulative));
+      setText("remaining", formatter.format(result.remaining));
+      setText("cap-note", result.current < result.uncapped ? "已觸及保留款上限，本期扣款已按剩餘上限調整。" : "本期按輸入百分比計算，未超過剩餘上限。");
+      summary = `BuildScope 保留款計算\n本期保留款：${formatter.format(result.current)}\n累計保留款：${formatter.format(result.cumulative)}\n尚餘上限：${formatter.format(result.remaining)}\n請按合約條款覆核。`;
+      placeholder.hidden = true;
+      data.hidden = false;
+    } catch (cause) {
+      error.textContent = cause instanceof Error ? cause.message : "輸入無效，請檢查數值。";
+      error.hidden = false;
+    }
+  });
+  form?.addEventListener("input", () => { if (data) data.hidden = true; if (placeholder) placeholder.hidden = false; if (status) status.textContent = ""; });
+  copy?.addEventListener("click", async () => {
+    if (!summary || !status) return;
+    try { await navigator.clipboard.writeText(summary); status.textContent = "已複製計算結果。"; }
+    catch { status.textContent = "未能複製；請手動選取結果。"; }
+  });
+</script>
+<style>
+  .calculator-shell{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:24px;align-items:start;padding-block:48px}.calculator,.results{padding:clamp(22px,4vw,38px);border:1px solid var(--line);border-radius:8px;background:white}.calculator>p,.assumptions{color:var(--body)}.calculator h2,.results h2{margin-top:0}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:28px 0}.fields label{display:grid;gap:5px;font-weight:800}.fields span{color:var(--muted);font-size:.73rem;font-weight:400}.fields input{width:100%;min-width:0;min-height:48px;padding:9px 12px;border:1px solid #9aa7b5;border-radius:5px;font:inherit}.fields input:focus{outline:2px solid var(--orange)}button{min-height:46px;padding:10px 18px;border:0;border-radius:5px;color:white;background:var(--ink);font:inherit;font-weight:800;cursor:pointer}button:hover{background:var(--orange-dark)}.error{padding:12px;color:#8b2020;background:#fff0ed}.error[hidden],#result-data[hidden],#result-placeholder[hidden]{display:none}.eyebrow{color:var(--orange-dark);font-size:.75rem;font-weight:900;letter-spacing:.1em}.results{background:#f6f3ed}.results dl{margin:24px 0}.results dl>div{display:flex;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}.results dd{margin:0;font-weight:900;font-variant-numeric:tabular-nums}.highlight{color:var(--orange-dark);font-size:1.15rem}#cap-note{font-size:.86rem}#copy-status{min-height:1.5em;font-size:.82rem}.assumptions{max-width:950px;padding-bottom:72px;line-height:1.8}.assumptions li{margin:10px 0}.assumptions a{color:var(--orange-dark);font-weight:800}@media(max-width:790px){.calculator-shell{grid-template-columns:1fr;padding-block:25px}}@media(max-width:480px){.fields{grid-template-columns:1fr}.results dl>div{font-size:.9rem}}
+</style>

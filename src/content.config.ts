@@ -16,6 +16,10 @@ const blog = defineCollection({
     readingTime: z.string().default("5 分鐘"),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+    lastReviewedDate: z.coerce.date().optional(),
+    sources: z.array(z.object({ name: z.string(), url: z.url() })).default([]),
+    relatedReaders: z.array(z.string()).default([]),
+    relatedArticles: z.array(z.string()).default([]),
   }),
 });
 

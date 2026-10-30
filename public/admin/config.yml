@@ -124,6 +124,16 @@ collections:
       - { label: "作者", name: "author", widget: "string", default: "BuildScope 編輯部" }
       - { label: "難度", name: "difficulty", widget: "select", default: "入門", options: ["入門", "中階", "進階"] }
       - { label: "閱讀時間", name: "readingTime", widget: "string", default: "5 分鐘" }
+      - { label: "最後覆核日期", name: "lastReviewedDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false, hint: "只有實際覆核內容後才填寫；不要自動改為今日。" }
+      - label: "參考來源"
+        name: "sources"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "來源名稱", name: "name", widget: "string" }
+          - { label: "完整 https 網址", name: "url", widget: "string" }
+      - { label: "相關圖解 Slug", name: "relatedReaders", widget: "list", required: false, hint: "例如 programme-contractual-status；只連結已發布的圖解。" }
+      - { label: "相關文章 Slug", name: "relatedArticles", widget: "list", required: false, hint: "只連結已發布文章的檔案名稱，不含 .md。" }
       - { label: "首頁精選", name: "featured", widget: "boolean", default: false }
       - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: false }
       - { label: "文章內容", name: "body", widget: "markdown" }
