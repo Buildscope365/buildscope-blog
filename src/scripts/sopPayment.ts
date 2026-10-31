@@ -91,7 +91,7 @@ export function calculateDeadlines(input: DeadlineInput) {
   const statutoryResponse = statutoryEnd(deemed, 30, exceptional);
   const payment = minimum(statutoryPayment, contractualPayment);
   const response = minimum(statutoryResponse, payment, contractualResponse);
-  const status = (deadline: number, actual?: number) => actual !== undefined ? actual > deadline ? `實際遲 ${actual - deadline} 日` : "已於期限內記錄" : asOf > deadline ? `可能逾期 ${asOf - deadline} 日` : asOf === deadline ? "今天到期" : `尚餘 ${deadline - asOf} 日`;
+  const status = (deadline: number, actual?: number) => actual !== undefined ? actual > deadline ? `實際遲 ${actual - deadline} 日` : "已於期限內記錄" : asOf > deadline ? `可能逾期 ${asOf - deadline} 日` : asOf === deadline ? "今天到期" : deadline - asOf <= 7 ? `期限將至（尚餘 ${deadline - asOf} 日）` : `尚餘 ${deadline - asOf} 日`;
   return {
     service: iso(service), deemed: iso(deemed), statutoryResponse: iso(statutoryResponse), response: iso(response),
     statutoryPayment: iso(statutoryPayment), payment: iso(payment),
