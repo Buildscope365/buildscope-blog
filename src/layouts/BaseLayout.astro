@@ -13,6 +13,8 @@ interface Props {
   image?: string;
   type?: "website" | "article";
   publishedTime?: string;
+  modifiedTime?: string;
+  jsonLd?: Record<string, unknown>;
   noindex?: boolean;
   showChrome?: boolean;
 }
@@ -22,6 +24,8 @@ const {
   image = "/og-default.svg",
   type = "website",
   publishedTime,
+  modifiedTime,
+  jsonLd,
   noindex = false,
   showChrome = true,
 } = Astro.props;
@@ -54,6 +58,8 @@ const ga4DebugMode = import.meta.env.PUBLIC_GA4_DEBUG_MODE === "true";
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd).replaceAll('<', '\\u003c')} />}
     <title>{title}</title>
   </head>
   <body

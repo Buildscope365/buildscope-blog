@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://buildscope-blog.com/sitemap-index.xml
+Sitemap: https://buildscope-blog.com/sitemap.xml

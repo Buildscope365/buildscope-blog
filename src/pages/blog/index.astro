@@ -13,13 +13,16 @@ const categories = [...new Set(posts.map((post) => post.data.category))];
   <section class="section">
     <div class="container">
       <div class="filters" aria-label="文章分類">
-        <button class="active" data-filter="all">全部</button>
-        {categories.map((category) => <button data-filter={category}>{categoryLabel(category)}</button>)}
+        <button type="button" class="active" data-filter="all" aria-pressed="true">全部</button>
+        {categories.map((category) => <button type="button" data-filter={category} aria-pressed="false">{categoryLabel(category)}</button>)}
       </div>
+      <label class="search-label" for="article-search">搜尋文章</label>
+      <input id="article-search" class="article-search" type="search" placeholder="搜尋標題、簡介或標籤" autocomplete="off" />
+      <p id="article-count" class="article-count" aria-live="polite">共 {posts.length} 篇文章</p>
       {posts.length > 0 ? (
         <div class="posts">
           {posts.map((post, index) => (
-            <article class="post" data-category={post.data.category}>
+            <article class="post" data-category={post.data.category} data-search={`${post.data.title} ${post.data.description} ${post.data.tags.join(" ")}`.toLocaleLowerCase()}>
               <span class="post-number">{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <span class="category">{categoryLabel(post.data.category)}</span>
@@ -32,22 +35,39 @@ const categories = [...new Set(posts.map((post) => post.data.category))];
           ))}
         </div>
       ) : <p class="empty">暫時未有已發布文章。</p>}
+      <p id="no-results" class="empty" hidden>找不到符合條件的文章，試試其他關鍵字。</p>
     </div>
   </section>
 </BaseLayout>
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
   const posts = document.querySelectorAll<HTMLElement>("[data-category]");
-  buttons.forEach((button) => button.addEventListener("click", () => {
-    buttons.forEach((item) => item.classList.remove("active"));
-    button.classList.add("active");
+  const search = document.querySelector<HTMLInputElement>("#article-search");
+  const count = document.querySelector<HTMLElement>("#article-count");
+  const empty = document.querySelector<HTMLElement>("#no-results");
+  let active = "all";
+  const update = () => {
+    const query = search?.value.trim().toLocaleLowerCase() ?? "";
+    let visible = 0;
     posts.forEach((post) => {
-      post.hidden = button.dataset.filter !== "all" && post.dataset.category !== button.dataset.filter;
+      post.hidden = (active !== "all" && post.dataset.category !== active) || !post.dataset.search?.includes(query);
+      if (!post.hidden) visible++;
     });
+    if (count) count.textContent = `顯示 ${visible} 篇文章`;
+    if (empty) empty.hidden = visible > 0 || posts.length === 0;
+  };
+  buttons.forEach((button) => button.addEventListener("click", () => {
+    active = button.dataset.filter ?? "all";
+    buttons.forEach((item) => item.classList.remove("active"));
+    buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+    button.classList.add("active");
+    update();
   }));
+  search?.addEventListener("input", update);
 </script>
 <style>
   .filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
+  .search-label{display:block;margin-bottom:8px;font-weight:800}.article-search{display:block;width:min(100%,540px);min-height:48px;padding:9px 14px;border:1px solid var(--line);border-radius:5px;font:inherit}.article-search:focus{outline:2px solid var(--orange)}.article-count{color:var(--muted);font-size:.85rem}.post[hidden],.empty[hidden]{display:none}
   .filters button { min-height:40px; padding:0 15px; border:1px solid var(--line); border-radius:5px; color:var(--body); background:white; font-weight:700; cursor:pointer; }
   .filters button:hover,.filters button.active { color:white; border-color:var(--orange); background:var(--orange); }
   .posts { border-top:1px solid var(--line); }

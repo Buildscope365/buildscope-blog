@@ -1,0 +1,39 @@
+name: Website Phase 1 QA
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "public/**"
+      - "tests/**"
+      - "package*.json"
+      - ".github/workflows/phase1-qa.yml"
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run test:assets
+      - run: npx playwright install --with-deps chromium
+      - name: Browser QA
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/astro-preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4321/sitemap.xml > /dev/null && break; sleep 1; done
+          npm run test:e2e
+        env:
+          SCREENSHOT_DIR: /tmp/buildscope-phase1-screenshots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phase1-desktop-mobile-screenshots
+          path: /tmp/buildscope-phase1-screenshots/
+          if-no-files-found: warn
