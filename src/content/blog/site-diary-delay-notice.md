@@ -1,14 +1,18 @@
 ---
-title: "地盤日日寫 Diary，點解 Delay Notice 仍然會漏？"
-description: "Site Diary 是證據來源，但不等於已履行合約通知責任。"
+title: 地盤日日寫 Diary，點解 Delay Notice 仍然會漏？
+description: Site Diary 是證據來源，但不等於已履行合約通知責任。
 date: 2026-07-30
-category: "project-management"
-tags: ["Site Diary", "Delay Notice", "Record"]
-author: "BuildScope 編輯部"
-difficulty: "入門"
-readingTime: "6 分鐘"
+category: project-management
+tags:
+  - Site Diary
+  - Delay Notice
+  - Record
+author: BuildScope 編輯部
+authorType: Organization
+difficulty: 入門
+readingTime: 6 分鐘
 featured: false
-draft: false
+draft: true
 ---
 
 Site Diary 的作用是記錄現場事實；Delay Notice 的作用是按合約正式告知事件及其可能影響。兩者互相支持，但不能互相取代。
