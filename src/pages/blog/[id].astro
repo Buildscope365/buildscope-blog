@@ -43,7 +43,7 @@ const jsonLd = buildArticleJsonLd(post.data, canonical, Astro.site!.toString());
       {relatedReaders.length > 0 && <section class="article-extras" aria-labelledby="readers-title"><h2 id="readers-title">相關工程圖解</h2><div class="related-grid">{relatedReaders.map((reader) => <a href={`/read/${reader.slug}/`}><img src={reader.slides[0].src} alt="" loading="lazy" /><strong>{reader.title}</strong><span>閱讀圖解 →</span></a>)}</div></section>}
       {relatedArticles.length > 0 && <section class="article-extras" aria-labelledby="articles-title"><h2 id="articles-title">延伸閱讀</h2><div class="related-grid">{relatedArticles.map((item) => <a href={`/blog/${item.id}/`}><strong>{item.data.title}</strong><span>{categoryLabel(item.data.category)} · {formatDate(item.data.date)}</span></a>)}</div></section>}
       {post.data.tags.length > 0 && <footer class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</footer>}
-      <p class="learning-link">想將概念應用到工程工作？<a href="https://www.skool.com/buildscope-learning-lab-1916" target="_blank" rel="noopener noreferrer">了解 BuildScope Learning Lab ↗</a></p>
+      <p class="learning-link">想將概念應用到工程工作？<a href="https://www.skool.com/buildscope-learning-lab-1916" target="_blank" rel="noopener noreferrer">了解 BuildScope Learning Lab 付費社群 ↗</a></p>
       <a class="button" href="/blog/">返回全部文章</a>
     </div>
   </article>
