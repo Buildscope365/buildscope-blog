@@ -1,14 +1,18 @@
 ---
-title: "EOT 索償點樣先站得住腳？五個關鍵要素拆解"
-description: "由通知、因果關係到同期記錄，建立完整延誤證據鏈。"
+title: EOT 索償點樣先站得住腳？五個關鍵要素拆解
+description: 由通知、因果關係到同期記錄，建立完整延誤證據鏈。
 date: 2026-08-01
-category: "contract-management"
-tags: ["EOT", "Delay", "Claim"]
-author: "BuildScope 編輯部"
-difficulty: "中階"
-readingTime: "8 分鐘"
-featured: true
-draft: false
+category: contract-management
+tags:
+  - EOT
+  - Delay
+  - Claim
+author: BuildScope 編輯部
+authorType: Organization
+difficulty: 中階
+readingTime: 8 分鐘
+featured: false
+draft: true
 ---
 
 EOT 申請並不是把延誤日數加起來就完成。要令評審人員能夠跟隨你的推論，至少需要把合約權利、通知、事件、工序影響和同期記錄連成一條清楚的證據鏈。
