@@ -8,7 +8,7 @@ tags:
   - Delay Notice
   - Record
 author: BuildScope 編輯部
-authorType: Organization
+authorType: Person
 difficulty: 入門
 readingTime: 6 分鐘
 featured: false
