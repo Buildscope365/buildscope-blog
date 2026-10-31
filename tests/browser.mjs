@@ -51,7 +51,7 @@ try {
     assert.equal(gaRequests.length, 1, "GA loads only after explicit consent");
 
     await page.goto(`${base}/blog/`);
-    assert.equal(await page.locator(".post").count(), 1);
+    assert.equal(await page.locator(".post").count(), 2);
     assert.equal(await page.locator('a[href="/blog/vo-instruction-payment-entitlement/"]').count() > 0, true);
     await page.locator("#article-search").fill("VO Instruction");
     assert.equal(await page.locator(".post:visible").count(), 1);
@@ -69,6 +69,24 @@ try {
     assert.equal("dateModified" in article, false);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${name}: article horizontal overflow`);
     await page.screenshot({ path: `${shots}/article-${name}.png`, fullPage: true });
+
+    await page.goto(`${base}/blog/subcontractor-cost-overrun-qs-guide/`);
+    const newCanonical = "https://buildscope-blog.com/blog/subcontractor-cost-overrun-qs-guide/";
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute("href"), newCanonical);
+    const newArticle = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
+    assert.equal(newArticle.mainEntityOfPage["@id"], newCanonical);
+    assert.equal(newArticle.author["@type"], "Organization");
+    assert.equal(newArticle.datePublished, "2026-11-01T00:00:00.000Z");
+    assert.equal("dateModified" in newArticle, false);
+    assert.equal(await page.locator("article figure img").count(), 4);
+    for (const image of await page.locator("article figure img").all()) {
+      await image.scrollIntoViewIfNeeded();
+      await image.evaluate((element) => element.decode());
+      assert.equal(await image.evaluate((element) => element.complete && element.naturalWidth > 0), true, `${name}: missing article image`);
+      assert.ok((await image.getAttribute("alt"))?.length > 10);
+    }
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${name}: new article horizontal overflow`);
+    await page.screenshot({ path: `${shots}/subcontractor-article-${name}.png`, fullPage: true });
 
     await page.goto(`${base}/read/method-statement-use/`);
     const slides = page.locator("[data-slide]");
