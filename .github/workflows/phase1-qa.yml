@@ -29,6 +29,7 @@ jobs:
           npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/astro-preview.log 2>&1 &
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4321/sitemap.xml > /dev/null && break; sleep 1; done
           npm run test:e2e
+          node tests/sop-browser.mjs
         env:
           SCREENSHOT_DIR: /tmp/buildscope-phase1-screenshots
       - uses: actions/upload-artifact@v4

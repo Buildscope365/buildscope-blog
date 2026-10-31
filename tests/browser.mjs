@@ -51,21 +51,21 @@ try {
     assert.equal(gaRequests.length, 1, "GA loads only after explicit consent");
 
     await page.goto(`${base}/blog/`);
-    assert.equal(await page.locator(".post").count(), 8);
+    assert.equal(await page.locator(".post").count(), 1);
     assert.equal(await page.locator('a[href="/blog/vo-instruction-payment-entitlement/"]').count() > 0, true);
-    await page.locator("#article-search").fill("EOT");
+    await page.locator("#article-search").fill("VO Instruction");
     assert.equal(await page.locator(".post:visible").count(), 1);
     await page.locator("#article-search").fill("不存在的文章");
     assert.equal(await page.locator("#no-results").isVisible(), true);
 
-    await page.goto(`${base}/blog/eot-claim-five-elements/`);
+    await page.goto(`${base}/blog/vo-instruction-payment-entitlement/`);
     const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
-    assert.equal(canonical, "https://buildscope-blog.com/blog/eot-claim-five-elements/");
+    assert.equal(canonical, "https://buildscope-blog.com/blog/vo-instruction-payment-entitlement/");
     const article = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
     assert.equal(article["@type"], "Article");
     assert.equal(article.mainEntityOfPage["@id"], canonical);
     assert.equal(article.author["@type"], "Organization");
-    assert.equal(article.datePublished, "2026-08-01T00:00:00.000Z");
+    assert.equal(article.datePublished, "2026-10-31T00:00:00.000Z");
     assert.equal("dateModified" in article, false);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${name}: article horizontal overflow`);
     await page.screenshot({ path: `${shots}/article-${name}.png`, fullPage: true });
