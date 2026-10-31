@@ -33,6 +33,15 @@ test("Saturday remains; Sunday and confirmed public holiday or warning roll to n
   assert.equal(iso(statutoryEnd(dayNumber("2026-01-02"), 30, new Set([dayNumber("2026-02-02")]))), "2026-02-03");
   assert.equal(calculateDeadlines({ serviceDate: "2026-01-01", asOf: "2026-01-02", exceptionalDays: ["2026-01-31"] }).statutoryResponse, "2026-02-02");
 });
+test("2026 National Day is a general holiday: 30-day endpoint moves from 1 to 2 October", () => {
+  // G.N. 2965 of 2025 lists Thursday 1 October 2026 as a general holiday.
+  const r = calculateDeadlines({ serviceDate: "2026-09-01", asOf: "2026-09-02", exceptionalDays: ["2026-10-01"], holidaysConfirmed: true });
+  assert.equal(r.statutoryResponse, "2026-10-02");
+});
+test("approaching deadline is labelled without asserting a breach", () => {
+  const r = calculateDeadlines({ ...base, asOf: "2026-03-25" });
+  assert.equal(r.responseStatus, "期限將至（尚餘 6 日）");
+});
 test("actual response/payment and overdue days", () => {
   const r = calculateDeadlines({ ...base, asOf: "2026-05-03", actualResponse: "2026-04-02", actualPayment: "2026-04-30" });
   assert.equal(r.responseStatus, "實際遲 2 日"); assert.equal(r.paymentStatus, "已於期限內記錄");
