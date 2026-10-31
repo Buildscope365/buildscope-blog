@@ -16,7 +16,7 @@ export const GET: APIRoute = async () => {
     ...staticPaths.map((path) => ({ path })),
     ...posts.map((post) => ({ path: `/blog/${post.id}/`, date: post.data.updatedDate ?? post.data.date })),
     ...news.map((item) => ({ path: `/news/${item.id}/`, date: item.data.date })),
-    ...readers.map((reader) => ({ path: `/read/${reader.slug}/`, date: new Date(`${reader.publishedDate}T00:00:00+08:00`) })),
+    ...readers.map((reader) => ({ path: `/read/${reader.slug}/` })),
   ];
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries.map(({ path, date }) => `<url><loc>${xml(new URL(path, site).toString())}</loc>${date ? `<lastmod>${date.toISOString().slice(0, 10)}</lastmod>` : ""}</url>`).join("")}</urlset>`;
   return new Response(body, { headers: { "Content-Type": "application/xml; charset=utf-8" } });

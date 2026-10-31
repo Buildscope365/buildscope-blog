@@ -3,6 +3,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 const files = (await readdir("src/content/readers")).filter((name) => name.endsWith(".md"));
+const sitemap = await readFile("dist/sitemap.xml", "utf8");
 const slugs = new Set();
 let images = 0;
 let publicReaders = 0;
@@ -22,6 +23,7 @@ for (const name of files) {
     images++;
   }
   if (/^draft:\s*true\s*$/m.test(frontmatter)) continue;
+  assert.ok(sitemap.includes(`<loc>https://buildscope-blog.com/read/${slug}/</loc>`), `${slug}: missing from sitemap`);
   const html = await readFile(join("dist/read", slug, "index.html"), "utf8");
   const rendered = [...html.matchAll(/<figure\b[^>]*\bdata-slide\b[^>]*>[\s\S]*?<img\b[^>]*\bsrc="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(rendered, paths, `${slug}: rendered slide order differs from content`);
