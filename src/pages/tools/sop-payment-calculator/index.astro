@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+const url = "https://buildscope-blog.com/tools/sop-payment-calculator/";
+const jsonLd = { "@context": "https://schema.org", "@type": "WebApplication", name: "SOP Payment Deadline Calculator", url, applicationCategory: "BusinessApplication", operatingSystem: "Web", inLanguage: "zh-HK", isAccessibleForFree: true, publisher: { "@type": "Organization", name: "BuildScope" } };
+---
+<BaseLayout title="SOP Payment Deadline Calculator｜工程白話文 BuildScope" description="香港《建造業付款保障條例》（第 652 章）付款回應及付款期限計算器。先篩選適用範圍，再按送達、發單日與合約條款計算，顯示假日核實提示。" jsonLd={jsonLd}>
+  <header class="page-hero"><div class="container"><a href="/tools/">← 返回實用工具</a><p>TOOL 001 · PAYMENT</p><h1>SOP Payment <span>Deadline Calculator</span></h1><p>香港《建造業付款保障條例》付款期限計算器</p></div></header>
+  <div class="container intro"><p>由 Payment Claim 的有效送達日期推算 30 日回應、60 日付款期限，並比較較早的合約期限。結果只供核對；請先確認索償有效、送達證據、主合約適用性及假日資料。</p></div>
+  <div class="container grid">
+    <form id="sop-form" novalidate>
+      <fieldset><legend>01｜合約適用性初篩</legend><div class="fields">
+        <label>合約層級<select name="tier" required><option value="">請選擇</option><option value="main">主合約</option><option value="sub">分判合約</option></select></label>
+        <label>項目性質<select name="project" required><option value="">請選擇</option><option value="public">公營／指明實體業主</option><option value="private">私人業主</option></select></label>
+        <label>主合約訂立日期<input name="mainContractDate" type="date" required /></label>
+        <label>主合約性質<select name="kind" required><option value="">請選擇</option><option value="works">建造工程</option><option value="services">相關貨品／服務</option><option value="mixed">混合／未能分類</option></select></label>
+        <label>主合約訂立時合資格價值（HK$）<input name="mainValue" type="number" min="0" step="0.01" inputmode="decimal" placeholder="分判不填分判金額" /></label>
+        <label>上游主合約已核實涵蓋？<select name="mainCovered"><option value="unknown">未核實</option><option value="yes">已核實</option><option value="no">未涵蓋</option></select></label>
+        <label>工程在香港？<select name="hongKong"><option value="unknown">未核實</option><option value="yes">是</option><option value="no">否</option></select></label>
+        <label>私人項目地點<select name="privateSite"><option value="unknown">未核實／不適用</option><option value="new">新建工程</option><option value="existingResidential">現有私人住宅及公用部分</option><option value="existingNonResidential">現有非住宅</option><option value="other">其他已核實地點</option></select></label>
+        <label>現有非住宅工程 BA 批准及同意？<select name="baApproval"><option value="unknown">未核實／不適用</option><option value="yes">需要</option><option value="no">不需要</option></select></label>
+      </div></fieldset>
+      <fieldset><legend>02｜Payment Claim 及送達</legend><div class="fields">
+        <label>有效 Payment Claim 實際送達日<input name="serviceDate" type="date" required /></label>
+        <label>該期合約 Billing Date（如已知）<input name="billingDate" type="date" /></label>
+        <label class="full check"><input name="claimValid" type="checkbox" /> 已核對書面索償、工程／服務、申索額及計法、重複索償限制和送達證據</label>
+      </div><p class="hint">提交日不一定是送達日。第 69 條容許合約約定送達方式；郵寄、電郵等的視作送達日期及相反證據須個別確認。請輸入已核實的實際／依法視作送達日。</p></fieldset>
+      <fieldset><legend>03｜較早合約期限（可留空）</legend><p class="hint">指定日期或日數二選一。日數按日曆日輸入；若合約使用工作日、證書後付款、月末公式或其他條件，請不要以簡單日數代替。</p><div class="fields">
+        <label>Payment Response：指定日期<input name="responseDate" type="date" /></label><label>或：合約日數<input name="responseDays" type="number" min="0" max="3650" step="1" /></label>
+        <label>回應日數由哪天起計？<select name="responseBasis"><option value="service">送達日</option><option value="billing">發單日</option></select></label><span></span>
+        <label>Payment Due：指定日期<input name="paymentDate" type="date" /></label><label>或：合約日數<input name="paymentDays" type="number" min="0" max="3650" step="1" /></label>
+        <label>付款日數由哪天起計？<select name="paymentBasis"><option value="service">送達日</option><option value="billing">發單日</option></select></label>
+      </div></fieldset>
+      <fieldset><legend>04｜假日與實際紀錄</legend><div class="fields">
+        <label>可能影響最後一日的公眾假期／烈風／黑雨日期<input name="exceptionalDays" type="text" placeholder="YYYY-MM-DD, YYYY-MM-DD" aria-describedby="holiday-help" /></label>
+        <label>截至日期（香港日曆）<input name="asOf" type="date" required /></label>
+        <label>實際回應送達日（如已核實）<input name="actualResponse" type="date" /></label><label>實際付款日（如已核實）<input name="actualPayment" type="date" /></label>
+        <label class="full check"><input name="holidaysConfirmed" type="checkbox" /> 我已查核相關日期的香港公眾假期、烈風及黑雨警告日，包括順延後日期</label>
+      </div><p id="holiday-help" class="hint">星期日自動視為公眾假期；星期六不自動順延。工具沒有內置可保證完整的假日／警告日資料，未勾選核實時日期及逾期狀態均屬暫定。</p></fieldset>
+      <p id="sop-error" class="error" role="alert" hidden></p><button type="submit">計算期限 →</button>
+    </form>
+    <aside class="result" aria-live="polite"><p class="eyebrow">CALCULATION RESULT</p><h2>付款時間線</h2><p id="sop-placeholder">填妥資料後按「計算期限」。</p><div id="sop-result" hidden>
+      <p id="coverage" class="badge"></p><p id="coverage-note"></p><p id="confidence" class="warning"></p>
+      <ol class="timeline"><li><strong>Payment Claim</strong><span id="claim-date"></span></li><li><strong>Payment Response</strong><span id="response-deadline"></span></li><li><strong>Payment Due</strong><span id="payment-deadline"></span></li></ol>
+      <dl><div><dt>法定 30 日回應界線</dt><dd id="stat-response"></dd></div><div><dt>生效回應期限</dt><dd id="effective-response"></dd></div><div><dt>法定 60 日付款界線</dt><dd id="stat-payment"></dd></div><div><dt>生效付款期限</dt><dd id="effective-payment"></dd></div></dl>
+      <p id="risk"></p><ul id="calculation-notes"></ul><p class="hint">付款期限指應付金額；是否已有有效回應、承認款項、爭議或審裁權利須另行分析（第 19、21、23 條）。</p>
+      <button type="button" id="copy-sop">複製結果</button> <button type="button" id="print-sop">列印／儲存 PDF</button><p id="copy-status" role="status"></p>
+    </div></aside>
+  </div>
+  <section class="container reference"><h2>法律依據及假設</h2><p>第 652 章第 7–9、12、15、18–21、23、69 條；第 1 章第 71 條。由送達後翌日起計 30／60 日，末日遇公眾假期或烈風／黑雨警告日須順延。合約指定較早日期可收緊期限。實際合約日數輸入假設是日曆日；指定日期應由用戶按合約自行核實。</p><p>本頁只在瀏覽器計算，不儲存輸入資料；網站既有分析功能不接收表格欄位。結果不構成法律意見。</p><p><a href="https://www.elegislation.gov.hk/hk/cap652!en?INDEX_CS=N" target="_blank" rel="noopener noreferrer">香港電子法例：第 652 章 ↗</a> · <a href="https://www.elegislation.gov.hk/hk/cap1!en?INDEX_CS=N" target="_blank" rel="noopener noreferrer">第 1 章 ↗</a> · <a href="https://www.cic.hk/content/sopl/en/faq.html" target="_blank" rel="noopener noreferrer">建造業議會 FAQ ↗</a> · <a href="https://www.gov.hk/en/about/abouthk/holiday/index.htm" target="_blank" rel="noopener noreferrer">香港公眾假期 ↗</a></p><h2>常見問題</h2><details><summary>星期六、日會否順延？</summary><p>30／60 日計算包括中間的週末；最後一日若是公眾假期（包括星期日）或法定警告日，按第 1 章第 71 條處理。星期六本身並非自動順延理由。</p></details><details><summary>早交或遲交 Payment Claim 點計？</summary><p>早於 billing date 送達，依第 18(2) 條視作在 billing date 送達。遲交則法定 30／60 日由實際送達起計；若合約期限按 billing date 推算，第 15(3)、20(3) 條要求以實際送達日代替該發單日重算。</p></details><details><summary>過期是否自動等於違法或可審裁？</summary><p>不是。須核對合約適用性、索償及回應是否有效送達、承認額與付款情況，以及額外付款的 claim handling procedure。</p></details><p class="lab">想深入掌握 Payment Claim、Payment Response 和 QS 工作流程？<a href="https://www.skool.com/buildscope-learning-lab-1916" target="_blank" rel="noopener noreferrer">了解 BuildScope Learning Lab ↗</a></p></section>
+</BaseLayout>
+<script>
+  import { screenCoverage, calculateDeadlines } from "../../../scripts/sopPayment";
+  const form = document.querySelector<HTMLFormElement>("#sop-form")!;
+  const result = document.querySelector<HTMLElement>("#sop-result")!;
+  const error = document.querySelector<HTMLElement>("#sop-error")!;
+  const field = (name: string) => (form.elements.namedItem(name) as HTMLInputElement).value.trim();
+  const checked = (name: string) => (form.elements.namedItem(name) as HTMLInputElement).checked;
+  const set = (id: string, value: string) => { document.getElementById(id)!.textContent = value; };
+  const todayHK = () => { const parts = new Intl.DateTimeFormat("en", { timeZone: "Asia/Hong_Kong", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date()); const get = (type: string) => parts.find(part => part.type === type)!.value; return `${get("year")}-${get("month")}-${get("day")}`; };
+  (form.elements.namedItem("asOf") as HTMLInputElement).value = todayHK();
+  let summary = "";
+  form.addEventListener("submit", (event) => {
+    event.preventDefault(); error.hidden = true; result.hidden = true;
+    try {
+      const coverage = screenCoverage({ tier: field("tier") as "main" | "sub" | "", project: field("project") as "public" | "private" | "", kind: field("kind") as "works" | "services" | "mixed" | "", mainContractDate: field("mainContractDate"), mainValue: field("mainValue"), mainCovered: field("mainCovered") as "yes" | "no" | "unknown", hongKong: field("hongKong") as "yes" | "no" | "unknown", privateSite: field("privateSite") as "new" | "existingResidential" | "existingNonResidential" | "other" | "unknown", baApproval: field("baApproval") as "yes" | "no" | "unknown" });
+      if (!field("serviceDate")) throw new RangeError("請輸入已核實的有效索償送達日。");
+      const dates = calculateDeadlines({ serviceDate: field("serviceDate"), billingDate: field("billingDate"), responseDays: field("responseDays"), responseDate: field("responseDate"), responseBasis: field("responseBasis") as "service" | "billing", paymentDays: field("paymentDays"), paymentDate: field("paymentDate"), paymentBasis: field("paymentBasis") as "service" | "billing", actualResponse: field("actualResponse"), actualPayment: field("actualPayment"), asOf: field("asOf"), exceptionalDays: field("exceptionalDays").split(/[，,\s]+/).filter(Boolean), holidaysConfirmed: checked("holidaysConfirmed") });
+      const labels = { potential: "可能適用", outside: "可能不在適用範圍", uncertain: "須進一步法律評估" };
+      set("coverage", labels[coverage.status]); set("coverage-note", coverage.reasons.join(" "));
+      const reliable = coverage.status === "potential" && checked("claimValid") && dates.confirmed;
+      set("confidence", reliable ? "已按輸入條件推算；仍請覆核合約及送達證據。" : "暫定結果：適用性、索償有效性或假日／警告日尚未全部核實；不據此斷言逾期或違反條例。");
+      set("claim-date", `${dates.service}${dates.deemed !== dates.service ? `（視作 ${dates.deemed}）` : ""}`);
+      set("response-deadline", dates.response); set("payment-deadline", dates.payment);
+      set("stat-response", dates.statutoryResponse); set("effective-response", dates.response);
+      set("stat-payment", dates.statutoryPayment); set("effective-payment", dates.payment);
+      set("risk", reliable ? `回應：${dates.responseStatus}；付款：${dates.paymentStatus}。上述狀態須按實際有效文件及承認金額覆核。` : "風險提示：資料未足以確定逾期；請先核實缺漏資料。");
+      const notes = document.getElementById("calculation-notes")!; notes.replaceChildren();
+      for (const note of [...dates.notes, `合約回應期限：${dates.contractualResponse ?? "未提供"}；合約付款期限：${dates.contractualPayment ?? "未提供"}。`, `計算日期：${field("asOf")}（香港）`]) { const li = document.createElement("li"); li.textContent = note; notes.appendChild(li); }
+      summary = `BuildScope SOP Payment Deadline Calculator\n適用性：${labels[coverage.status]}｜${coverage.reasons.join(" ")}\n索償實際送達：${dates.service}；法定視作送達：${dates.deemed}\n法定回應界線：${dates.statutoryResponse}；生效回應期限：${dates.response}\n法定付款界線：${dates.statutoryPayment}；生效付款期限：${dates.payment}\n合約回應：${dates.contractualResponse ?? "未提供"}；合約付款：${dates.contractualPayment ?? "未提供"}\n${reliable ? `回應：${dates.responseStatus}；付款：${dates.paymentStatus}` : "日期暫定；適用性、索償或假日未全部核實"}\n${dates.notes.join(" ")}\n計算日期：${field("asOf")}（香港）\n來源：Cap. 652 ss.7–9,12,15,18–21,23,69；Cap. 1 s.71。請覆核合約及送達證據。`;
+      document.getElementById("sop-placeholder")!.hidden = true; result.hidden = false;
+    } catch (cause) { error.textContent = cause instanceof Error ? cause.message : "輸入無效。"; error.hidden = false; }
+  });
+  form.addEventListener("input", () => { result.hidden = true; document.getElementById("sop-placeholder")!.hidden = false; });
+  document.getElementById("copy-sop")?.addEventListener("click", async () => { try { await navigator.clipboard.writeText(summary); set("copy-status", "已複製結果。"); } catch { set("copy-status", "未能複製；請使用列印或手動選取。"); } });
+  document.getElementById("print-sop")?.addEventListener("click", () => window.print());
+</script>
+<style>
+  .intro{max-width:960px;padding-block:32px;color:var(--body);line-height:1.8}.grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);gap:24px;align-items:start;padding-bottom:40px}fieldset,.result{min-width:0;margin:0 0 18px;padding:clamp(20px,3vw,32px);border:1px solid var(--line);border-radius:8px;background:white}legend{padding:0 8px;font-size:1.12rem;font-weight:900;color:var(--ink)}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:15px}label{display:grid;gap:6px;font-weight:700;font-size:.88rem}input,select{width:100%;min-width:0;min-height:46px;padding:9px;border:1px solid #8d9ba8;border-radius:5px;background:white;font:inherit}input:focus,select:focus,button:focus-visible{outline:3px solid var(--orange)}.full{grid-column:1/-1}.check{display:flex;align-items:flex-start;font-weight:500}.check input{width:20px;min-height:20px;flex:none}.hint{color:var(--muted);font-size:.84rem;line-height:1.7}.error,.warning{padding:12px;border-radius:4px;background:#fff0dc;color:#784100}.error{background:#fff0ed;color:#8b2020}.error[hidden],#sop-result[hidden]{display:none}button{min-height:46px;padding:10px 17px;border:0;border-radius:5px;background:var(--ink);color:white;font:inherit;font-weight:800;cursor:pointer}button:hover{background:var(--orange-dark)}.result{position:sticky;top:105px;background:#f6f3ed}.eyebrow{color:var(--orange-dark);font-size:.78rem;font-weight:900;letter-spacing:.1em}.badge{font-size:1.15rem;font-weight:900}.timeline{list-style:none;padding:0;margin:24px 0;border-left:3px solid var(--orange)}.timeline li{display:grid;gap:4px;position:relative;padding:0 0 26px 22px}.timeline li:last-child{padding-bottom:0}.timeline li:before{content:"";position:absolute;left:-8px;top:5px;width:13px;height:13px;border-radius:50%;background:var(--orange)}.timeline span,dd{font-variant-numeric:tabular-nums}.result dl>div{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}dd{margin:0;font-weight:900}.result li{line-height:1.6}.reference{max-width:960px;padding-bottom:80px;line-height:1.8}.reference a{color:var(--orange-dark);font-weight:800}.reference details{padding:15px 0;border-bottom:1px solid var(--line)}.reference summary{cursor:pointer;font-weight:800}.lab{margin-top:32px;padding:24px;background:var(--soft)}@media(max-width:900px){.grid{grid-template-columns:1fr}.result{position:static}}@media(max-width:530px){.fields{grid-template-columns:1fr}.full{grid-column:auto}.result dl>div{font-size:.85rem}}@media print{.site-header,.page-hero a,#sop-form button,#copy-sop,#print-sop,.lab{display:none!important}.grid{display:block}.result{position:static;break-inside:avoid}fieldset{display:none}.reference{padding:0}body{color:#111}}
+</style>
