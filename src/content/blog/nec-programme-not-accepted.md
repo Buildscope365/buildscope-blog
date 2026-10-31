@@ -1,14 +1,18 @@
 ---
-title: "PM 唔批 programme，會有咩後果？"
-description: "Programme 不只是進度表，也是 NEC 管理風險及評估 CE 的基礎。"
+title: PM 唔批 programme，會有咩後果？
+description: Programme 不只是進度表，也是 NEC 管理風險及評估 CE 的基礎。
 date: 2026-07-24
-category: "nec"
-tags: ["NEC", "Programme", "Compensation Event"]
-author: "BuildScope 編輯部"
-difficulty: "進階"
-readingTime: "7 分鐘"
+category: nec
+tags:
+  - NEC
+  - Programme
+  - Compensation Event
+author: BuildScope 編輯部
+authorType: Person
+difficulty: 進階
+readingTime: 7 分鐘
 featured: false
-draft: false
+draft: true
 ---
 
 在 NEC 項目中，programme 是雙方管理餘下工程、風險和變更的重要工具。PM 不接受 programme，不代表 Contractor 可以停止更新；相反，團隊應盡快找出不接受的原因並重新提交。
