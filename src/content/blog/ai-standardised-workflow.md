@@ -1,14 +1,18 @@
 ---
-title: "AI 真正價值：由生成內容升級到標準化工程流程"
-description: "把 AI 由個人助手，發展成可管理、可審核的企業工作流程。"
+title: AI 真正價值：由生成內容升級到標準化工程流程
+description: 把 AI 由個人助手，發展成可管理、可審核的企業工作流程。
 date: 2026-07-21
-category: "ai-tools"
-tags: ["AI", "Workflow", "Contract Management"]
-author: "BuildScope 編輯部"
-difficulty: "中階"
-readingTime: "5 分鐘"
+category: ai-tools
+tags:
+  - AI
+  - Workflow
+  - Contract Management
+author: BuildScope 編輯部
+authorType: Organization
+difficulty: 中階
+readingTime: 5 分鐘
 featured: false
-draft: false
+draft: true
 ---
 
 單次叫 AI 寫 Email，只能節省幾分鐘。把資料來源、檢查規則、審批和輸出格式連成流程，才可以令整個項目團隊持續受惠。
