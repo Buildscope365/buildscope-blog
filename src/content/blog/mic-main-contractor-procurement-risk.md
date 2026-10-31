@@ -5,10 +5,11 @@ date: 2026-08-08
 category: tender
 coverImage: /images/uploads/whatsapp-image-2026-08-08-at-22.53.54.jpeg
 author: BuildScope 編輯部
+authorType: Organization
 difficulty: 入門
 readingTime: 5 分鐘
 featured: true
-draft: false
+draft: true
 ---
 # 中央採購 MiC，Main Contractor 真係少咗 Procurement Risk？
 
