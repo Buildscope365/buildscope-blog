@@ -51,7 +51,8 @@ try {
     assert.equal(gaRequests.length, 1, "GA loads only after explicit consent");
 
     await page.goto(`${base}/blog/`);
-    assert.equal(await page.locator(".post").count(), 7);
+    assert.equal(await page.locator(".post").count(), 8);
+    assert.equal(await page.locator('a[href="/blog/vo-instruction-payment-entitlement/"]').count() > 0, true);
     await page.locator("#article-search").fill("EOT");
     assert.equal(await page.locator(".post:visible").count(), 1);
     await page.locator("#article-search").fill("不存在的文章");
