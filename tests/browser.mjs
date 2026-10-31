@@ -86,6 +86,8 @@ try {
       assert.ok((await image.getAttribute("alt"))?.length > 10);
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${name}: new article horizontal overflow`);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.addStyleTag({ content: ".site-header{position:static!important}" });
     await page.screenshot({ path: `${shots}/subcontractor-article-${name}.png`, fullPage: true });
 
     await page.goto(`${base}/read/method-statement-use/`);
