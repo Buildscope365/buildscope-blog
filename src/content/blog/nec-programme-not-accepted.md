@@ -8,7 +8,7 @@ tags:
   - Programme
   - Compensation Event
 author: BuildScope 編輯部
-authorType: Person
+authorType: Organization
 difficulty: 進階
 readingTime: 7 分鐘
 featured: false
