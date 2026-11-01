@@ -51,7 +51,8 @@ try {
     assert.equal(gaRequests.length, 1, "GA loads only after explicit consent");
 
     await page.goto(`${base}/blog/`);
-    assert.equal(await page.locator(".post").count(), 2);
+    assert.equal(await page.locator(".post").count(), 3);
+    assert.equal(await page.locator('a[href="/blog/hetao-ai-exchange-construction-market/"]').count() > 0, true);
     assert.equal(await page.locator('a[href="/blog/vo-instruction-payment-entitlement/"]').count() > 0, true);
     await page.locator("#article-search").fill("VO Instruction");
     assert.equal(await page.locator(".post:visible").count(), 1);
@@ -91,6 +92,30 @@ try {
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.addStyleTag({ content: ".site-header{position:static!important}" });
     await page.screenshot({ path: `${shots}/subcontractor-article-${name}.png`, fullPage: true });
+
+    await page.goto(`${base}/blog/hetao-ai-exchange-construction-market/`);
+    const hetaocanonical = "https://buildscope-blog.com/blog/hetao-ai-exchange-construction-market/";
+    assert.match(await page.title(), /河套 AI Exchange 開幕/);
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute("href"), hetaocanonical);
+    const hetaoArticle = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
+    assert.equal(hetaoArticle.mainEntityOfPage["@id"], hetaocanonical);
+    assert.equal(hetaoArticle.author["@type"], "Organization");
+    assert.equal(hetaoArticle.datePublished, "2026-11-01T00:00:00.000Z");
+    assert.equal("dateModified" in hetaoArticle, false);
+    const hetaoImages = page.locator("article figure img");
+    assert.equal(await hetaoImages.count(), 4);
+    for (const image of await hetaoImages.all()) {
+      await image.scrollIntoViewIfNeeded();
+      await image.evaluate((element) => element.decode());
+      assert.equal(await image.evaluate((element) => element.complete && element.naturalWidth > 0), true, `${name}: missing Hetao article image`);
+      assert.ok((await image.getAttribute("alt"))?.length > 10);
+    }
+    const hetaoCoverSize = await page.locator(".cover-figure img").boundingBox();
+    assert.ok(hetaoCoverSize && Math.abs(hetaoCoverSize.width / hetaoCoverSize.height - 1400 / 790) < 0.02, `${name}: Hetao cover is cropped`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${name}: Hetao article overflow`);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.addStyleTag({ content: ".site-header{position:static!important}" });
+    await page.screenshot({ path: `${shots}/hetao-article-${name}.png`, fullPage: true });
 
     await page.goto(`${base}/read/method-statement-use/`);
     const slides = page.locator("[data-slide]");

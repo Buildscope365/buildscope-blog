@@ -15,7 +15,7 @@ authorType: "Organization"
 difficulty: "中階"
 readingTime: "8 分鐘"
 featured: false
-draft: true
+draft: false
 lastReviewedDate: 2026-11-01
 sources:
   - name: "香港電訊：河套創新科技中心暨 AI 機樓揭幕，2026-10-28"
