@@ -85,6 +85,8 @@ try {
       assert.equal(await image.evaluate((element) => element.complete && element.naturalWidth > 0), true, `${name}: missing article image`);
       assert.ok((await image.getAttribute("alt"))?.length > 10);
     }
+    const coverSize = await page.locator(".cover-figure img").boundingBox();
+    assert.ok(coverSize && Math.abs(coverSize.width / coverSize.height - 1400 / 790) < 0.02, `${name}: cover is cropped`);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${name}: new article horizontal overflow`);
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.addStyleTag({ content: ".site-header{position:static!important}" });
