@@ -1,0 +1,115 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+const url = "https://buildscope-blog.com/tools/nec-option-c-forecast/";
+const jsonLd = { "@context": "https://schema.org", "@type": "WebApplication", name: "NEC4 ECC Option C Target Cost Forecast Tool", url, applicationCategory: "BusinessApplication", operatingSystem: "Web", inLanguage: "zh-HK", isAccessibleForFree: true, publisher: { "@type": "Organization", name: "BuildScope" } };
+---
+<BaseLayout title="NEC4 Option C Target Cost Forecast Tool｜BuildScope" description="以 Target、CE、Defined Cost、Fee 和 Contract Data Share Ranges 模擬 NEC4 ECC Option C 的預測 Pain/Gain。" jsonLd={jsonLd}>
+  <header class="page-hero"><div class="container"><a href="/tools/">← 返回實用工具</a><p>TOOL 002 · NEC4 ECC OPTION C</p><h1>Target Cost <span>Forecast</span></h1><p>將合約 Target、成本預測及 Pain / Gain 分開睇清楚。</p></div></header>
+  <div class="container introduction"><p><strong>工作預測，並非付款證書或合約認定。</strong>「Target」指 Option C 的 Total of the Prices；Forecast PWDD 以預測 Defined Cost + Fee 簡化表示。Share 用 Contract Data 的逐段比例估算。請先核實實際合約版本、HK Edition、Z Clauses、成本組成及取整規則。</p></div>
+  <div class="container workbench">
+    <form id="forecast-form" novalidate>
+      <fieldset><legend>01 · 基礎數字</legend><div class="fields">
+        <label>Original Target · 原始 Total of the Prices<input name="target" type="text" inputmode="decimal" placeholder="例如 10000000.00" required /></label>
+        <label>Defined Cost Forecast · 基本預測<input name="cost" type="text" inputmode="decimal" placeholder="例如 9000000.00" required /></label>
+        <label>Contract Data Fee percentage (%)<input name="fee" type="text" inputmode="decimal" placeholder="例如 8" required /></label>
+        <label>成本敏感度 (%) · Selected 情景 ±<input name="stress" type="text" inputmode="decimal" value="5" /></label>
+      </div><p class="hint">金額同一貨幣，最多 2 位小數；百分比最多 6 位小數。基本 Defined Cost 應排除下面 CE「新增預測成本」欄已輸入的金額，以免重複。Fee 以同一百分比套用於所有情景；不處理不同成本類別／特殊費率。</p></fieldset>
+      <fieldset><legend>02 · Implemented CE Register</legend><p class="hint">只輸入已按合約實施的 CE。Target 調整填已實施的價格變動；如其成本已包括於基本 Defined Cost，新增預測成本填 0。</p><div id="implemented-list" class="entry-list"></div><button class="secondary" type="button" id="add-implemented">＋ 新增已實施 CE</button></fieldset>
+      <fieldset><legend>03 · Pending CE Scenarios</legend><p class="hint">未實施 CE 不改變 Current Target。「Selected」只包括勾選項目，「All」包括全部；所輸入的 Target 與成本變動均為情景假設，並非已確認權利。</p><div id="pending-list" class="entry-list"></div><button class="secondary" type="button" id="add-pending">＋ 新增待定 CE</button></fieldset>
+      <fieldset><legend>04 · Contract Data Share Ranges</legend><p class="hint">以 <strong>Forecast PWDD ÷ Adjusted Target</strong> 的百分比設定各段上限，從 0% 連續遞增；最後一段須為「以上、無上限」。每段 Contractor Share 是該段差額的比例，並逐段累計。請照抄你項目的 Contract Data，沒有通用預設率。</p><div id="range-list" class="entry-list"></div><button class="secondary" type="button" id="add-range">＋ 新增分段</button></fieldset>
+      <p id="forecast-error" class="error" role="alert" hidden></p><button class="primary" type="submit">計算 Forecast →</button>
+    </form>
+    <aside class="output" aria-live="polite"><p class="eyebrow">SCENARIO ANALYSIS</p><h2>Forecast Pain / Gain</h2><p id="empty-result">填入基礎數字及 Contract Data 比例，再按「計算 Forecast」。</p><div id="forecast-result" hidden><p class="hint">正數 Share = Gain；負數 = Pain。金額只作內部預測。</p><div id="scenario-cards"></div><button id="download-csv" class="secondary" type="button">下載 CSV</button><p class="hint">CSV 包括情景結果及分段計算。本頁在瀏覽器計算，不向伺服器提交表格數值。</p></div></aside>
+  </div>
+  <section class="container reference"><h2>計算口徑及合約覆核</h2><ul><li>Adjusted Target = Original Target + 已實施 CE 的 Target 變動 + 情景納入的 Pending CE 假設；成本變動另計，不會自動等於 CE 調整額。</li><li>Forecast PWDD = Forecast Defined Cost + Fee；差額 = Adjusted Target − Forecast PWDD。各 Share Range 按實際 Target 的百分比設邊界，Contractor Share 逐段累計；Forecast Payment = PWDD + 預測 Contractor Share。Client Share 為差額扣除 Contractor Share。</li><li>成本敏感度只作用於<strong>基本</strong> Defined Cost，不作用於逐項 CE 新增成本。所有金額以整數分計算，Fee、每段門檻及最終 Share 以 half-up 取整至分；合約若另有取整方式，須另行覆核。</li><li>Forecast Payment 只表示簡化的 cost-plus-fee 加 share 情景，不等於已認證應付款或最終結算。Option C 的 share 評估按合約指定時點；預測不能提早變成付款扣減。Disallowed Cost、X1、X22、X29、其他 secondary options、稅項、扣款及其他付款項目未納入。</li><li><strong>內部利潤另算：</strong>Contractual Fee 與 Contractor Share 不是公司淨利潤；實際 margin 要另核對不可收回成本、公司 overhead、分判安排及其他商務項目。本工具不推算內部 profit。</li><li>HK Edition 及 Z Clauses 可能修改條文、Share Ranges、Fee 或 CE 處理。先核對簽署版 Contract Data、Activity Schedule 及修訂條款，再使用結果。</li></ul>
+  <h3>NEC 官方參考</h3><p><a href="https://www.neccontract.com/news/nec4-ecc-pricing-provisions-%E2%80%93-an-introduction-for-new-nec-users" target="_blank" rel="noopener noreferrer">NEC4 ECC pricing provisions ↗</a> · <a href="https://www.neccontract.com/support/faqs/defined-cost-exceeds-target" target="_blank" rel="noopener noreferrer">Defined Cost Exceeds Target ↗</a> · <a href="https://www.neccontract.com/support/faqs/forecasting-defined-cost" target="_blank" rel="noopener noreferrer">Forecasting Defined Cost ↗</a> · <a href="https://www.neccontract.com/products/contracts/hk-edition/user-guides-and-flow-charts-hong-kong-edition/nec4-preparing-an-engineering-and-construction-contract-hong-kong-edition" target="_blank" rel="noopener noreferrer">HK Edition preparation guide ↗</a></p></section>
+</BaseLayout>
+<script>
+  import { calculateForecast, type CE, type PendingCE, type ShareRange, type ForecastResult } from "../../../scripts/necOptionC";
+  const form = document.querySelector<HTMLFormElement>("#forecast-form")!;
+  const lists = { implemented: document.querySelector<HTMLElement>("#implemented-list")!, pending: document.querySelector<HTMLElement>("#pending-list")!, range: document.querySelector<HTMLElement>("#range-list")! };
+  const error = document.querySelector<HTMLElement>("#forecast-error")!;
+  const result = document.querySelector<HTMLElement>("#forecast-result")!;
+  const empty = document.querySelector<HTMLElement>("#empty-result")!;
+  const cards = document.querySelector<HTMLElement>("#scenario-cards")!;
+  let last: ForecastResult | null = null;
+  let exportInput: { originalTarget: string; definedCost: string; feePercent: string; stressPercent: string; implemented: CE[]; pending: PendingCE[]; ranges: ShareRange[] } | null = null;
+  const append = (parent: Node, ...children: Node[]) => { children.forEach(child => parent.appendChild(child)); };
+  const field = (name: string) => (form.elements.namedItem(name) as HTMLInputElement).value.trim();
+  function input(name: string, label: string, placeholder = "0.00", value = "") {
+    const wrap = document.createElement("label"); wrap.textContent = label;
+    const control = document.createElement("input"); control.name = name; control.type = "text"; control.inputMode = name === "ref" ? "text" : "decimal"; control.placeholder = placeholder; control.value = value; append(wrap, control); return wrap;
+  }
+  function add(type: keyof typeof lists) {
+    const row = document.createElement("div"); row.className = "entry";
+    if (type === "range") append(row, input("upper", "上限 (%) · 最後一段留空 = 以上", "例如 100"), input("rate", "Contractor Share (%)", "例如 50"));
+    else {
+      append(row, input("ref", "CE 編號 / 描述", "例如 CE-01"), input("targetChange", "Target 變動（可負數）", "0.00", "0"), input("costChange", "新增預測 Defined Cost（可負數）", "0.00", "0"));
+      if (type === "pending") { const label = document.createElement("label"); label.className = "checkbox"; label.textContent = "納入 Selected"; const cb = document.createElement("input"); cb.type = "checkbox"; cb.name = "included"; label.insertBefore(cb, label.firstChild); append(row, label); }
+    }
+    const remove = document.createElement("button"); remove.type = "button"; remove.className = "remove"; remove.textContent = "移除"; remove.setAttribute("aria-label", `移除此${type === "range" ? "分段" : "CE"}`); remove.addEventListener("click", () => { row.remove(); invalidate(); }); append(row, remove); append(lists[type], row); invalidate();
+  }
+  const invalidate = () => { last = null; exportInput = null; result.hidden = true; empty.hidden = false; };
+  document.querySelector("#add-implemented")!.addEventListener("click", () => add("implemented"));
+  document.querySelector("#add-pending")!.addEventListener("click", () => add("pending"));
+  document.querySelector("#add-range")!.addEventListener("click", () => add("range"));
+  add("range"); add("range");
+  (lists.range.children[0].querySelector('[name="upper"]') as HTMLInputElement).value = "100";
+  form.addEventListener("input", invalidate); form.addEventListener("change", invalidate);
+  const read = (row: Element, name: string) => (row.querySelector(`[name="${name}"]`) as HTMLInputElement).value.trim();
+  const money = (value: string) => `${value.startsWith("-") ? "−" : ""}${new Intl.NumberFormat("zh-HK").format(BigInt(value.replace("-", "").split(".")[0]))}.${value.split(".")[1]}`;
+  const line = (label: string, value: string, standout = false) => { const div = document.createElement("div"); if (standout) div.className = "key"; const dt = document.createElement("dt"); dt.textContent = label; const dd = document.createElement("dd"); dd.textContent = money(value); append(div, dt, dd); return div; };
+  form.addEventListener("submit", event => {
+    event.preventDefault(); error.hidden = true; invalidate();
+    try {
+      const implemented: CE[] = [...lists.implemented.children].map(row => ({ ref: read(row, "ref") || "CE", targetChange: read(row, "targetChange"), costChange: read(row, "costChange") }));
+      const pending: PendingCE[] = [...lists.pending.children].map(row => ({ ref: read(row, "ref") || "Pending CE", targetChange: read(row, "targetChange"), costChange: read(row, "costChange"), included: (row.querySelector('[name="included"]') as HTMLInputElement).checked }));
+      const ranges: ShareRange[] = [...lists.range.children].map(row => ({ upperPercent: read(row, "upper") || null, contractorPercent: read(row, "rate") }));
+      const calculationInput = { originalTarget: field("target"), definedCost: field("cost"), feePercent: field("fee"), stressPercent: field("stress"), implemented, pending, ranges };
+      last = calculateForecast(calculationInput); exportInput = calculationInput;
+      cards.replaceChildren();
+      for (const scenario of last.scenarios) {
+        const article = document.createElement("article"); article.className = "scenario";
+        const title = document.createElement("h3"); title.textContent = scenario.name;
+        const dl = document.createElement("dl");
+        append(dl, line("Adjusted Target", scenario.target), line("Forecast Defined Cost", scenario.definedCost), line("Fee", scenario.fee), line("Forecast PWDD", scenario.pwdd), line("差額 Target − PWDD", scenario.variance), line("Contractor Share · Gain (+) / Pain (−)", scenario.contractorShare, true), line("Forecast Payment · PWDD + Share", scenario.forecastPayment), line("Client Share · 差額 − Contractor Share", scenario.clientShare));
+        const details = document.createElement("details"); const summary = document.createElement("summary"); summary.textContent = "查看逐段 Share Range"; const list = document.createElement("ul");
+        scenario.bands.forEach(band => { const li = document.createElement("li"); li.textContent = `${money(band.from)} – ${band.to === "∞" ? "以上" : money(band.to)} · ${band.rate}% · 本段 PWDD ${money(band.amount)}`; append(list, li); }); append(details, summary, list);
+        append(article, title, dl, details); append(cards, article);
+      }
+      empty.hidden = true; result.hidden = false;
+    } catch (cause) { error.textContent = cause instanceof Error ? cause.message : "輸入無效。"; error.hidden = false; error.scrollIntoView({ block: "center" }); }
+  });
+  const csvCell = (value: string) => `"${value.replaceAll('"', '""')}"`;
+  document.querySelector("#download-csv")!.addEventListener("click", () => {
+    if (!last || !exportInput) return;
+    const rows = [["Scenario", "Adjusted Target", "Defined Cost", "Fee", "Forecast PWDD", "Target minus PWDD", "Contractor Share", "Forecast Payment", "Client Share", "Band From", "Band To", "Band Contractor %", "Band PWDD", "Band Share"]];
+    for (const s of last.scenarios) for (const b of s.bands) rows.push([s.name, s.target, s.definedCost, s.fee, s.pwdd, s.variance, s.contractorShare, s.forecastPayment, s.clientShare, b.from, b.to, b.rate, b.amount, b.share]);
+    rows.push([], ["Input", "Value"], ["Original Target", exportInput.originalTarget], ["Base Defined Cost", exportInput.definedCost], ["Fee %", exportInput.feePercent], ["Stress %", exportInput.stressPercent], [], ["CE status", "Reference", "Target change", "Incremental Defined Cost", "Selected"]);
+    for (const ce of exportInput.implemented) rows.push(["Implemented", ce.ref, ce.targetChange, ce.costChange || "0", ""]);
+    for (const ce of exportInput.pending) rows.push(["Pending", ce.ref, ce.targetChange, ce.costChange || "0", ce.included ? "Yes" : "No"]);
+    rows.push([], ["Share range upper %", "Contractor share %"]);
+    for (const range of exportInput.ranges) rows.push([range.upperPercent ?? "Open", range.contractorPercent]);
+    rows.push([], ["Note", "Forecast only; verify signed Contract Data, HK Edition, Z clauses, cost eligibility and rounding."]);
+    const blob = new Blob(["\uFEFF" + rows.map(row => row.map(csvCell).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = "buildscope-nec-option-c-forecast.csv"; append(document.body, link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+</script>
+<style>
+  .introduction{padding-block:30px;max-width:980px;color:var(--body)}.workbench{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:22px;align-items:start;padding-bottom:42px}fieldset,.output{min-width:0;margin:0 0 18px;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:8px;background:#fff}legend{font-weight:900;font-size:1.12rem;padding:0 8px}.fields,.entry{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.entry{position:relative;padding:16px 0;border-top:1px solid var(--line)}.entry-list{margin-top:16px}label{display:grid;gap:5px;min-width:0;font-size:.86rem;font-weight:700}input{width:100%;min-width:0;min-height:46px;border:1px solid #98a5b1;border-radius:5px;padding:9px;background:#fff;font:inherit}input:focus-visible,button:focus-visible{outline:3px solid var(--orange)}.checkbox{display:flex;align-items:center;gap:8px}.checkbox input{width:20px;min-height:20px}.hint{color:var(--muted);font-size:.83rem;line-height:1.75}button{min-height:46px;border:1px solid var(--ink);border-radius:5px;padding:8px 15px;background:white;color:var(--ink);font:inherit;font-weight:800;cursor:pointer}button:hover{border-color:var(--orange-dark);color:var(--orange-dark)}.primary{background:var(--ink);color:white}.primary:hover{background:var(--orange-dark);color:white}.remove{justify-self:start;min-height:36px;border-color:#c6cbd0;font-size:.8rem}.error{padding:12px;background:#fff0ed;color:#8b2020}.output{position:sticky;top:100px;background:#f6f3ed;max-height:calc(100vh - 115px);overflow:auto}.eyebrow{color:var(--orange-dark);font-size:.75rem;font-weight:900;letter-spacing:.1em}.output h2{margin-top:0}.scenario{margin:18px 0;padding:16px;background:#fff;border:1px solid var(--line)}.scenario h3{font-size:1rem;margin:0 0 10px}.scenario dl{margin:0}.scenario dl>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:.83rem}.scenario dd{margin:0;font-weight:900;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.scenario .key{color:var(--orange-dark);font-size:.96rem}.scenario summary{cursor:pointer;font-weight:800}.scenario li{font-size:.8rem;line-height:1.7}.reference{max-width:960px;padding-bottom:75px;color:var(--body)}.reference li{margin:9px 0}.reference a{color:var(--orange-dark);font-weight:800;text-decoration:underline}@media(max-width:900px){.workbench{grid-template-columns:1fr}.output{position:static;max-height:none}}@media(max-width:520px){.fields,.entry{grid-template-columns:1fr}.page-hero h1{overflow-wrap:anywhere}.scenario dl>div{display:block}.scenario dd{text-align:left}.output{padding:18px}}@media print{form,.page-hero a,#download-csv{display:none!important}.workbench{display:block}.output{max-height:none;overflow:visible}.scenario{break-inside:avoid}}
+  :global(.entry){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px 0;border-top:1px solid var(--line)}
+  :global(.entry label){display:grid;gap:5px;min-width:0;font-size:.86rem;font-weight:700}
+  :global(.entry input){width:100%;min-width:0;min-height:46px;border:1px solid #98a5b1;border-radius:5px;padding:9px;background:#fff;font:inherit}
+  :global(.entry .checkbox){display:flex;align-items:center;gap:8px;min-height:44px}
+  :global(.entry .checkbox input){width:20px;min-height:20px}
+  :global(.entry .remove){justify-self:start;min-height:36px;border:1px solid #c6cbd0;border-radius:5px;padding:5px 14px;background:white;font:inherit;font-size:.8rem;cursor:pointer}
+  :global(.scenario){margin:18px 0;padding:16px;background:#fff;border:1px solid var(--line)}
+  :global(.scenario h3){font-size:1rem;margin:0 0 10px}
+  :global(.scenario dl){margin:0}
+  :global(.scenario dl>div){display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:.83rem}
+  :global(.scenario dd){margin:0;font-weight:900;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  :global(.scenario .key){color:var(--orange-dark);font-size:.96rem}
+  :global(.scenario summary){cursor:pointer;font-weight:800}
+  :global(.scenario li){font-size:.8rem;line-height:1.7}
+  @media(max-width:520px){:global(.entry){grid-template-columns:1fr}:global(.scenario dl>div){display:block}:global(.scenario dd){text-align:left}}
+</style>
