@@ -57,7 +57,7 @@ try {
     await page.getByRole("button", { name: "下載 CSV" }).click();
     const download = await downloadEvent;
     const csv = await readFile(await download.path(), "utf8");
-    assert.match(csv, /CE-01/); assert.match(csv, /P-01/); assert.match(csv, /1,300\.00/);
+    assert.match(csv, /CE-01/); assert.match(csv, /P-01/); assert.match(csv, /1300\.00/);
     await page.locator('#range-list [name="rate"]').first().fill("101");
     assert.equal(await page.locator("#forecast-result").isVisible(), false, "stale result hidden after edit");
     await page.getByRole("button", { name: "計算 Forecast" }).click();
