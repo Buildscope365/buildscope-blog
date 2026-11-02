@@ -46,8 +46,9 @@ try {
     assert.match(await selected.innerText(), /950\.00/);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${name}: result horizontal overflow`);
     if (name === "mobile") {
-      const boxes = await page.locator(".entry input, .entry button, #download-csv").evaluateAll(items => items.map(el => el.getBoundingClientRect().width));
+      const boxes = await page.locator(".entry input:not([type=checkbox]), .entry button, #download-csv").evaluateAll(items => items.map(el => el.getBoundingClientRect().width));
       assert.ok(boxes.every(width => width <= 390 && width >= 35), "mobile: usable controls");
+      assert.ok(await page.locator(".entry .checkbox").evaluate(el => el.getBoundingClientRect().height >= 44), "mobile: checkbox touch target");
     }
     await page.locator(".scenario details").first().locator("summary").click();
     assert.match(await current.locator("details").innerText(), /本段 PWDD/);
