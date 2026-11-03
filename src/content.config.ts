@@ -116,6 +116,8 @@ const readers = defineCollection({
     skoolCourseUrl: optionalUrl,
     skoolResourceUrl: optionalUrl,
     skoolDiscussionUrl: optionalUrl,
+    toolUrl: optionalUrl,
+    toolTitle: z.string().optional(),
   }),
 });
 

@@ -44,6 +44,13 @@ const { reader } = Astro.props;
       <div>{reader.quickTakeaway}</div>
     </section>
 
+    {reader.toolUrl && (
+      <aside class="reader-tool" aria-label="相關實用工具">
+        <span>相關實用工具</span>
+        <a href={reader.toolUrl}>{reader.toolTitle ?? "立即試用工具"} →</a>
+      </aside>
+    )}
+
     <SkoolConversionCTA
       contentId={reader.slug}
       contentTitle={reader.title}
@@ -93,6 +100,9 @@ const { reader } = Astro.props;
   .reader-note { display: grid; grid-template-columns: 8.5rem 1fr; gap: 24px; width: min(100%, 46rem); margin: 30px auto 0; padding: 24px 0; border-block: 1px solid rgba(11, 27, 47, .16); }
   .reader-note p { margin: 0; color: #c4510b; font-size: .7rem; font-weight: 900; letter-spacing: .13em; }
   .reader-note div { color: #26384c; font-size: 1rem; font-weight: 700; line-height: 1.75; }
+  .reader-tool { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; width: min(100%, 46rem); margin: 18px auto 0; padding: 18px 22px; border-radius: 8px; color: #fff; background: #0b1b2f; }
+  .reader-tool span { color: #ffc107; font-size: .75rem; font-weight: 900; letter-spacing: .08em; }
+  .reader-tool a { color: #fff; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }
   .reader-footer { margin-top: 28px; color: #657486; font-size: .72rem; letter-spacing: .04em; text-align: center; }
   .reader-footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 18px; }
   .reader-footer nav a { display: inline-flex; min-height: 38px; align-items: center; padding: 0 12px; border: 1px solid rgba(11,27,47,.18); border-radius: 999px; color: #26384c; background: rgba(255,255,255,.55); font-weight: 800; }

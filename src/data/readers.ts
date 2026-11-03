@@ -25,6 +25,8 @@ export interface ReaderItem {
   skoolCourseUrl: string | null;
   skoolResourceUrl: string | null;
   skoolDiscussionUrl: string | null;
+  toolUrl: string | null;
+  toolTitle: string | null;
 }
 
 export const VISUAL_CATEGORIES: Record<string, string> = {
@@ -69,6 +71,8 @@ export async function getReaders(): Promise<ReaderItem[]> {
       skoolCourseUrl: optionalUrl(data.skoolCourseUrl),
       skoolResourceUrl: optionalUrl(data.skoolResourceUrl),
       skoolDiscussionUrl: optionalUrl(data.skoolDiscussionUrl),
+      toolUrl: optionalUrl(data.toolUrl),
+      toolTitle: data.toolTitle?.trim() || null,
     };
   });
 
