@@ -41,7 +41,8 @@ const sendAccountEmail = async (env: LearningEnv, email: string, link: string, p
 const sendAccountToken = async (db: D1Database, env: LearningEnv, memberId: string, email: string, purpose: 'verify'|'reset', origin: string) => {
   const token=random(), tokenHash=await sha(token);
   await db.prepare('DELETE FROM account_tokens WHERE member_id=? AND purpose=?').bind(memberId,purpose).run();
-  await db.prepare('INSERT INTO account_tokens(token_hash,member_id,purpose,expires_at) VALUES(?,?,?,?)').bind(tokenHash,memberId,purpose,Math.floor(Date.now()/1000)+3600).run();
+  const now=Math.floor(Date.now()/1000);
+  await db.prepare('INSERT INTO account_tokens(token_hash,member_id,purpose,created_at,expires_at) VALUES(?,?,?,?,?)').bind(tokenHash,memberId,purpose,now,now+3600).run();
   const link=`${origin}/learn/dewatering/#${purpose}=${token}`;
   if (!(await sendAccountEmail(env,email,link,purpose))) {
     await db.prepare('DELETE FROM account_tokens WHERE token_hash=?').bind(tokenHash).run();
@@ -134,6 +135,8 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     const member=await db.prepare('SELECT id,verified_at FROM members WHERE email=?').bind(email).first<{id:string;verified_at:number|null}>();
     const purpose=path.endsWith('/request-reset')?'reset':'verify';
     if (member && (purpose==='reset' ? Boolean(member.verified_at) : !member.verified_at)) {
+      const recent=await db.prepare('SELECT created_at FROM account_tokens WHERE member_id=? AND purpose=? AND created_at>?').bind(member.id,purpose,Math.floor(Date.now()/1000)-60).first();
+      if (recent) return json({ok:true,message:'如帳戶符合條件，請檢查電郵。'});
       if (!(await sendAccountToken(db,env,member.id,email,purpose,url.origin))) return json({error:'電郵未能送出，請稍後再試'},502);
     }
     return json({ok:true,message:'如帳戶符合條件，請檢查電郵。'});
@@ -193,7 +196,7 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     if (id==='completion') {
       const result=await db.prepare("SELECT lesson_id FROM learning_progress WHERE member_id=? AND course_id=? AND lesson_id IN ('basics','systems','drawdown','settlement','failures','quick-check')").bind(member.id,course).all<{lesson_id:string}>();
       if (!coreLessonIds.every(slug=>result.results.some(x=>x.lesson_id===slug))) return json({error:'請先完成六堂課'},403);
-      return json({id,ready:true,body:'你已完成 BuildScope 100｜#009 Dewatering 六堂課。由 Groundwater Control、Drawdown、Effective Stress 到 Site Quick Check，請將所學應用於核對已核准設計、監測趨勢及應變程序。\n\n下一課：#010/100｜Excavation Monitoring｜數據升緊，代表地盤就快出事？\n\nSkool 會員權限與網站訂閱分開管理；課程完成紀錄會保留喺你嘅網站帳戶。'});
+      return json({id,ready:true,body:'你已完成 BuildScope 100｜#009 Dewatering 六堂課。\n\n下一課：#010/100｜Excavation Monitoring｜數據升緊，代表地盤就快出事？\n\n你嘅完成紀錄已保留喺網站帳戶。'});
     }
     // Private D1 content is never served by static assets. Render as plain text on the client.
     const content=await db.prepare('SELECT body FROM lesson_content WHERE course_id=? AND lesson_id=? AND published=1').bind(course,id).first<{body:string}>();

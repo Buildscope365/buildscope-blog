@@ -5,11 +5,12 @@ import {learning} from '../worker/learning.ts';
 
 test('email ownership, login, reset, and old-session invalidation', async () => {
   type Member={id:string;email:string;salt:string;password_hash:string;verified_at:number|null;failed_attempts:number;locked_until:number;stripe_customer_id:null};
-  const members=new Map<string,Member>(),tokens=new Map<string,{member_id:string;purpose:string;expires_at:number}>(),sessions=new Map<string,string>();
+  const members=new Map<string,Member>(),tokens=new Map<string,{member_id:string;purpose:string;created_at:number;expires_at:number}>(),sessions=new Map<string,string>();
   const db={
     prepare:(sql:string)=>({bind:(...args:any[])=>({
       first:async()=>{
         if(sql.includes('FROM members WHERE email=')) return members.get(args[0])??null;
+        if(sql.includes('SELECT created_at FROM account_tokens')) return [...tokens.values()].find(value=>value.member_id===args[0]&&value.purpose===args[1]&&value.created_at>args[2])??null;
         if(sql.includes('FROM account_tokens')) {const value=tokens.get(args[0]);return value&&value.purpose===args[1]&&value.expires_at>args[2]?value:null;}
         if(sql.includes('FROM sessions')) {const memberId=sessions.get(args[0]);const member=[...members.values()].find(x=>x.id===memberId);return member?.verified_at?member:null;}
         throw Error(`Unexpected read: ${sql}`);
@@ -18,7 +19,7 @@ test('email ownership, login, reset, and old-session invalidation', async () => 
         if(sql.startsWith('INSERT INTO members')) members.set(args[1],{id:args[0],email:args[1],salt:args[2],password_hash:args[3],verified_at:null,failed_attempts:0,locked_until:0,stripe_customer_id:null});
         else if(sql.startsWith('DELETE FROM account_tokens WHERE member_id')) {for(const [key,value] of tokens) if(value.member_id===args[0]&&value.purpose===args[1]) tokens.delete(key);}
         else if(sql.startsWith('DELETE FROM account_tokens WHERE token_hash')) tokens.delete(args[0]);
-        else if(sql.startsWith('INSERT INTO account_tokens')) tokens.set(args[0],{member_id:args[1],purpose:args[2],expires_at:args[3]});
+        else if(sql.startsWith('INSERT INTO account_tokens')) tokens.set(args[0],{member_id:args[1],purpose:args[2],created_at:args[3],expires_at:args[4]});
         else if(sql.startsWith('UPDATE members SET verified_at')) [...members.values()].find(x=>x.id===args[1])!.verified_at=args[0];
         else if(sql.startsWith('UPDATE members SET salt=')) {const member=[...members.values()].find(x=>x.id===args[2])!;member.salt=args[0];member.password_hash=args[1];member.failed_attempts=0;}
         else if(sql.startsWith('UPDATE members SET failed_attempts=0')) {const member=[...members.values()].find(x=>x.id===args[0])!;member.failed_attempts=0;member.locked_until=0;}
@@ -43,6 +44,8 @@ test('email ownership, login, reset, and old-session invalidation', async () => 
     assert.equal(register.headers.get('Set-Cookie'),null,'registration must not create a session');
     assert.equal((await post('login',{email,password})).status,403,'unverified email cannot log in');
     const verifyToken=extractToken();assert.ok(verifyToken);assert.equal(tokens.size,1,'registration should leave a verification token');
+    assert.equal((await post('resend-verification',{email})).status,200);
+    assert.equal(emails.length,1,'immediate resend must not spam an inbox');
     assert.equal((await post('verify',{token:verifyToken})).status,200);
     assert.equal((await post('verify',{token:verifyToken})).status,400,'verification token is single-use');
     const login=await post('login',{email,password});assert.equal(login.status,200);
