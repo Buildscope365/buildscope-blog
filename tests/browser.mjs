@@ -58,6 +58,7 @@ try {
     assert.equal(await page.locator(".post:visible").count(), 1);
     await page.locator('.post:visible a[href="/blog/government-land-release-site-possession-date/"]').first().click();
     assert.match(await page.locator("h1").innerText(), /Site Possession Date/);
+    assert.equal(await page.locator(".article-head .category").innerText(), "合約管理");
     const accessCanonical = "https://buildscope-blog.com/blog/government-land-release-site-possession-date/";
     assert.equal(await page.locator('link[rel="canonical"]').getAttribute("href"), accessCanonical);
     const accessArticle = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());

@@ -3,7 +3,7 @@ title: "政府話 2027 年交地，Contractor 可唔可以當係 Site Possession
 seoTitle: "2027 年工程開展等於交地？NEC4 Access Date 與 Site Possession"
 description: "政府預告 2027 年工程開展，能否直接寫入承建商進場日期？拆解 NEC4 ECC Access Date、Accepted Programme、60.1(2)、CE 與工期費用評估。"
 date: 2026-11-07
-category: "contracts-qs"
+category: "contract-management"
 tags: ["NEC4", "Access Date", "Site Possession", "Accepted Programme", "CE", "EOT", "Programme"]
 coverImage: "/images/blog/government-land-release-site-possession-date/hero.webp"
 coverAlt: "生成工地情境圖：圍欄、工程進度圖和安全帽；並非元朗南工程實景或核實施工圖。"
@@ -20,7 +20,7 @@ lastReviewedDate: 2026-11-07
 sources:
   - name: "土木工程拓展署：元朗南第二期合約六框架合約招標公告，2026-09-25"
     url: "https://www.info.gov.hk/gia/general/202609/25/P2026092500218.htm"
-  - name: "土木工程拓展署：相關招標公告與施工要求"
+  - name: "土木工程拓展署：框架合約招標公告（施工要求安排）"
     url: "https://www.cedd.gov.hk/tc/tender-notices/contracts/tender-notices/index-id-2440.html"
   - name: "NEC Contracts：NEC4 ECC clauses 33.1、60.1(2) 官方解說"
     url: "https://www.neccontract.com/news/do-what-nec4-ecc-says-or-face-the-%E2%80%98enforcement-clauses%E2%80%99"
