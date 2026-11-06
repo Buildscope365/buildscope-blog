@@ -101,7 +101,7 @@ test('expired and canceled subscriptions cannot access a paid lesson', async () 
 });
 test('signed Stripe events only reconcile a recorded checkout and ignore retries', async () => {
   const seen=new Set<string>();
-  let customer:string|null=null, checkoutSubscription:string|null=null, storedStatus:string|null=null, fetches=0;
+  let customer:string|null=null, checkoutSubscription:string|null=null, storedStatus:string|null=null, fetches=0, currentStatus='active', currentPrice='price_monthly';
   const db={
     prepare:(sql:string)=>({bind:(...args:unknown[])=>({
       first:async()=>{
@@ -122,7 +122,7 @@ test('signed Stripe events only reconcile a recorded checkout and ignore retries
     batch:async(statements:Array<{run:()=>Promise<void>}>)=>{for(const statement of statements) await statement.run();},
   };
   const originalFetch=globalThis.fetch;
-  globalThis.fetch=async(input)=>{fetches++;const id=String(input).split('/').at(-1);return new Response(JSON.stringify({id,customer:'cus_test_ours',status:'active',items:{data:[{current_period_end:Math.floor(Date.now()/1000)+3600,price:{id:'price_monthly'}}]}}),{status:200});};
+  globalThis.fetch=async(input)=>{fetches++;const id=String(input).split('/').at(-1);return new Response(JSON.stringify({id,customer:'cus_test_ours',status:currentStatus,items:{data:[{current_period_end:Math.floor(Date.now()/1000)+3600,price:{id:currentPrice}}]}}),{status:200});};
   const send=async(id:string,type:string,object:object)=>{
     const raw=JSON.stringify({id,livemode:false,type,data:{object}}),timestamp=Math.floor(Date.now()/1000);
     const signature=createHmac('sha256','whsec_test').update(`${timestamp}.${raw}`).digest('hex');
@@ -136,5 +136,11 @@ test('signed Stripe events only reconcile a recorded checkout and ignore retries
     assert.equal(fetches,1);
     assert.equal((await send('evt_2','customer.subscription.updated',{id:'sub_test_unrelated'})).status,503);
     assert.equal(storedStatus,'active');
+    currentStatus='canceled';
+    assert.equal((await send('evt_3','customer.subscription.deleted',{id:'sub_test_ours'})).status,200);
+    assert.equal(storedStatus,'canceled');
+    currentStatus='active';currentPrice='price_not_configured';
+    assert.equal((await send('evt_4','customer.subscription.updated',{id:'sub_test_ours'})).status,200);
+    assert.equal(storedStatus,'ineligible');
   } finally {globalThis.fetch=originalFetch;}
 });

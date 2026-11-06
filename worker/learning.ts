@@ -1,4 +1,5 @@
 const course = 'dewatering';
+const coreLessonIds = ['basics','systems','drawdown','settlement','failures','quick-check'];
 const cookieName = 'bs_member';
 const enc = new TextEncoder();
 export const lessons = [
@@ -168,7 +169,8 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
   if (path === '/api/learn/lessons' && request.method === 'GET') {
     const ready=await db.prepare('SELECT lesson_id FROM lesson_content WHERE course_id=? AND published=1').bind(course).all<{lesson_id:string}>();
     const completed=member ? await db.prepare('SELECT lesson_id FROM learning_progress WHERE member_id=? AND course_id=?').bind(member.id,course).all<{lesson_id:string}>() : {results:[]};
-    return json({lessons:lessons.map(([id,title])=>({id,title,ready:ready.results.some(x=>x.lesson_id===id),completed:completed.results.some(x=>x.lesson_id===id)})),access:member?await entitlement(db,member.id):false});
+    const completedCore=coreLessonIds.every(id=>completed.results.some(x=>x.lesson_id===id));
+    return json({lessons:lessons.map(([id,title])=>({id,title,ready:id==='completion'?completedCore:ready.results.some(x=>x.lesson_id===id),completed:id==='completion'?completedCore:completed.results.some(x=>x.lesson_id===id)})),access:member?await entitlement(db,member.id):false});
   }
   if (path.startsWith('/api/learn/media/')) {
     if (request.method !== 'GET') return json({error:'Method not allowed'},405);
@@ -188,6 +190,11 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     if (!lessons.some(([slug])=>slug===id)) return json({error:'Lesson not found'},404);
     if (!member) return json({error:'請先登入'},401);
     if (!(await entitlement(db,member.id))) return json({error:'會員課堂需先開通'},403);
+    if (id==='completion') {
+      const result=await db.prepare("SELECT lesson_id FROM learning_progress WHERE member_id=? AND course_id=? AND lesson_id IN ('basics','systems','drawdown','settlement','failures','quick-check')").bind(member.id,course).all<{lesson_id:string}>();
+      if (!coreLessonIds.every(slug=>result.results.some(x=>x.lesson_id===slug))) return json({error:'請先完成六堂課'},403);
+      return json({id,ready:true,body:'你已完成 BuildScope 100｜#009 Dewatering 六堂課。由 Groundwater Control、Drawdown、Effective Stress 到 Site Quick Check，請將所學應用於核對已核准設計、監測趨勢及應變程序。\n\n下一課：#010/100｜Excavation Monitoring｜數據升緊，代表地盤就快出事？\n\nSkool 會員權限與網站訂閱分開管理；課程完成紀錄會保留喺你嘅網站帳戶。'});
+    }
     // Private D1 content is never served by static assets. Render as plain text on the client.
     const content=await db.prepare('SELECT body FROM lesson_content WHERE course_id=? AND lesson_id=? AND published=1').bind(course,id).first<{body:string}>();
     return content ? json({id,ready:true,body:content.body}) : json({id,ready:false,message:'課堂原始內容尚待核對及匯入，暫未開放。'},404);
@@ -202,7 +209,7 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
   if (path === '/api/learn/progress') {
     if (!(await entitlement(db,member.id))) return json({error:'Access denied'},403);
     const input = await body(request), id = String(input.id||'');
-    if (!lessons.some(([slug])=>slug===id)) return json({error:'Invalid lesson'},400);
+    if (!lessons.some(([slug])=>slug===id) || id==='completion' || id==='resource') return json({error:'Invalid lesson'},400);
     const published=await db.prepare('SELECT 1 FROM lesson_content WHERE course_id=? AND lesson_id=? AND published=1').bind(course,id).first();
     if (!published) return json({error:'此課堂尚未發布，未能標記完成'},409);
     await db.prepare('INSERT OR IGNORE INTO learning_progress(member_id,course_id,lesson_id,completed_at) VALUES(?,?,?,?)').bind(member.id,course,id,Math.floor(Date.now()/1000)).run();
