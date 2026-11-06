@@ -23,6 +23,12 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:assets
+      - name: Learning Worker smoke QA
+        run: |
+          npx wrangler d1 execute LEARNING_DB --config wrangler.learning-ci.jsonc --local --persist-to /tmp/buildscope-learning-ci --file migrations/0001_learning.sql
+          npx wrangler dev --config wrangler.learning-ci.jsonc --local --persist-to /tmp/buildscope-learning-ci --ip 127.0.0.1 --port 8787 > /tmp/buildscope-learning-worker.log 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/api/learn/lessons > /dev/null && break; sleep 1; done
+          node tests/learning-worker-smoke.mjs
       - run: npx playwright install --with-deps chromium
       - name: Browser QA
         run: |
