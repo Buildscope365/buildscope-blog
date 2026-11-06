@@ -7,10 +7,11 @@
   "assets": {
     "directory": "./dist/",
     "binding": "ASSETS",
-    "run_worker_first": ["/admin*", "/auth*", "/callback*", "/api/instagram*"],
+    "run_worker_first": ["/admin*", "/auth*", "/callback*", "/api/instagram*", "/api/learn/*"],
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
   },
+  "d1_databases": [{ "binding": "LEARNING_DB", "database_name": "buildscope-learning-test", "database_id": "REPLACE_WITH_TEST_D1_ID" }],
   "vars": {
     "CMS_ORIGIN": "https://buildscope-blog.com",
     "GITHUB_REPOSITORY": "Buildscope365/buildscope-blog",
