@@ -29,3 +29,9 @@ Leave Skool billing intact. Members register a website account and request manua
 ## Release decision
 
 **No-Go for production.** The approved private content import, lesson images and download, test D1, test Stripe configuration, email ownership flow, end-to-end billing verification, screenshots and preview remain to be done. Keep this PR unmerged and do not deploy it to production.
+
+## Artwork supplied after initial PR
+
+The owner supplied seven 16:9 PNGs in sequence: Lesson 1–6 and course cover. The cover is optimized to WebP and stored in public static assets; the six lesson artboards contain member teaching points and are kept in a separate private media bundle, outside Git. After provisioning the test `LEARNING_MEDIA` R2 binding, upload files to exact object keys `dewatering/lesson-1.webp` through `dewatering/lesson-6.webp`. The Worker media route verifies a logged-in member, current entitlement and published lesson before streaming. No public R2 URL or public bucket access should be enabled. The artwork is not a substitute for the private lesson text import.
+
+Image QA: all are 1536 px wide; six are 864 px high and Lesson 4 is 865 px high. Verify legibility at a 390 px viewport. Lesson 5 groups Boiling / Base Heave in a short bullet, while the supplied lesson text distinguishes soft-clay shear heave from seepage/uplift; editorial review should refine that label before publication. The six cover files and their SHA-256 manifest are available as a private transfer bundle; the public cover alone is committed to the PR.

@@ -13,7 +13,7 @@ export const lessons = [
   ['completion', 'Course Completion｜#010 學習路線'],
 ] as const;
 
-type LearningEnv = Env & { LEARNING_DB?: D1Database; STRIPE_SECRET_KEY?: string; STRIPE_WEBHOOK_SECRET?: string; STRIPE_MONTHLY_PRICE_ID?: string; STRIPE_ANNUAL_PRICE_ID?: string; LEARNING_ADMIN_TOKEN?: string; ASSETS: Fetcher };
+type LearningEnv = Env & { LEARNING_DB?: D1Database; LEARNING_MEDIA?: R2Bucket; STRIPE_SECRET_KEY?: string; STRIPE_WEBHOOK_SECRET?: string; STRIPE_MONTHLY_PRICE_ID?: string; STRIPE_ANNUAL_PRICE_ID?: string; LEARNING_ADMIN_TOKEN?: string; ASSETS: Fetcher };
 const headers = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' };
 const json = (data: unknown, status = 200, extra: HeadersInit = {}) => new Response(JSON.stringify(data), { status, headers: { ...headers, ...extra } });
 const hex = (bytes: Uint8Array) => Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
@@ -117,6 +117,19 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     const ready=await db.prepare('SELECT lesson_id FROM lesson_content WHERE course_id=? AND published=1').bind(course).all<{lesson_id:string}>();
     const completed=member ? await db.prepare('SELECT lesson_id FROM learning_progress WHERE member_id=? AND course_id=?').bind(member.id,course).all<{lesson_id:string}>() : {results:[]};
     return json({lessons:lessons.map(([id,title])=>({id,title,ready:ready.results.some(x=>x.lesson_id===id),completed:completed.results.some(x=>x.lesson_id===id)})),access:member?await entitlement(db,member.id):false});
+  }
+  if (path.startsWith('/api/learn/media/')) {
+    if (request.method !== 'GET') return json({error:'Method not allowed'},405);
+    const match=/^\/api\/learn\/media\/lesson-([1-6])\.webp$/.exec(path);
+    if (!match) return json({error:'Not found'},404);
+    if (!member) return json({error:'請先登入'},401);
+    if (!(await entitlement(db,member.id))) return json({error:'會員課堂需先開通'},403);
+    const id=lessons[Number(match[1])][0];
+    if (!(await db.prepare('SELECT 1 FROM lesson_content WHERE course_id=? AND lesson_id=? AND published=1').bind(course,id).first())) return json({error:'課堂尚未發布'},404);
+    if (!env.LEARNING_MEDIA) return json({error:'Private media 尚未設定'},503);
+    const object=await env.LEARNING_MEDIA.get(`dewatering/lesson-${match[1]}.webp`);
+    if (!object) return json({error:'Image not found'},404);
+    return new Response(object.body,{headers:{'Content-Type':'image/webp','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Cross-Origin-Resource-Policy':'same-origin'}});
   }
   if (path === '/api/learn/lesson' && request.method === 'GET') {
     const id = url.searchParams.get('id');

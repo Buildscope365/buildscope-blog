@@ -38,3 +38,17 @@ test('private lesson import escapes quotes and defaults to unpublished', async (
   assert.ok(!sql.includes('published) VALUES(\'dewatering\',\'basics\',\'What\'s groundwater'));
   assert.ok(sql.includes('published=0'));
 });
+test('private lesson image rejects unauthenticated request', async () => {
+  const db={prepare:()=>({bind:()=>({first:async()=>null})})};
+  const response=await learning(new Request('https://example.com/api/learn/media/lesson-1.webp'),{LEARNING_DB:db} as never);
+  assert.equal(response.status,401);
+});
+test('private lesson images never enter public output', async () => {
+  const { access }=await import('node:fs/promises');
+  for (let i=1;i<=6;i++) await assert.rejects(access(new URL(`../public/images/learning/dewatering/lesson-${i}.webp`,import.meta.url)));
+});
+test('public course cover is available while lesson covers stay private', async () => {
+  const { stat }=await import('node:fs/promises');
+  const cover=await stat(new URL('../dist/images/learning/dewatering/course-cover.webp',import.meta.url));
+  assert.ok(cover.size>100000);
+});
