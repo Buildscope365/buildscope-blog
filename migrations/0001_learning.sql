@@ -6,3 +6,4 @@ CREATE TABLE IF NOT EXISTS access_grants (id TEXT PRIMARY KEY, member_id TEXT NO
 CREATE TABLE IF NOT EXISTS learning_progress (member_id TEXT NOT NULL REFERENCES members(id), course_id TEXT NOT NULL, lesson_id TEXT NOT NULL, completed_at INTEGER NOT NULL, PRIMARY KEY(member_id,course_id,lesson_id));
 CREATE INDEX IF NOT EXISTS sessions_expiry ON sessions(expires_at);
 CREATE TABLE IF NOT EXISTS lesson_content (course_id TEXT NOT NULL, lesson_id TEXT NOT NULL, body TEXT NOT NULL, published INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(course_id,lesson_id));
+CREATE TABLE IF NOT EXISTS checkout_sessions (stripe_session_id TEXT PRIMARY KEY, member_id TEXT NOT NULL REFERENCES members(id), price_id TEXT NOT NULL, created_at INTEGER NOT NULL);

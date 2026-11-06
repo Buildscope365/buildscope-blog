@@ -65,7 +65,7 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     const object = event.data.object;
     // Associate only the member ID stored by our own Checkout session, never an email claim.
     if (event.type === 'checkout.session.completed' && object.mode === 'subscription' && object.client_reference_id && object.customer) {
-      const known=await db.prepare('SELECT id FROM members WHERE id=?').bind(object.client_reference_id).first();
+      const known=await db.prepare('SELECT member_id FROM checkout_sessions WHERE stripe_session_id=? AND member_id=?').bind(object.id,object.client_reference_id).first();
       if (known) {
         await db.prepare('UPDATE members SET stripe_customer_id=? WHERE id=? AND (stripe_customer_id IS NULL OR stripe_customer_id=?)').bind(object.customer,object.client_reference_id,object.customer).run();
       }
@@ -75,12 +75,14 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
       // Reconcile current Stripe state; webhooks may arrive out of order.
       const response=await fetch(`https://api.stripe.com/v1/subscriptions/${encodeURIComponent(subscriptionId)}`, {headers:{Authorization:`Bearer ${env.STRIPE_SECRET_KEY}`,'Stripe-Version':'2026-02-25.clover'}});
       if (!response.ok) return json({error:'Stripe reconciliation failed'},502);
-      const current=await response.json() as {id:string;customer:string;status:string;current_period_end?:number;items?:{data?:Array<{current_period_end?:number}>}};
+      const current=await response.json() as {id:string;customer:string;status:string;current_period_end?:number;items?:{data?:Array<{current_period_end?:number;price?:{id:string}}>}};
       const member=await db.prepare('SELECT id FROM members WHERE stripe_customer_id=?').bind(current.customer).first<{id:string}>();
       if (!member) return json({error:'Unmatched customer; retry later'},503);
+      const configuredPrices=[env.STRIPE_MONTHLY_PRICE_ID,env.STRIPE_ANNUAL_PRICE_ID];
+      const validPrice=current.items?.data?.some(item=>configuredPrices.includes(item.price?.id));
       const periodEnd=current.current_period_end||current.items?.data?.[0]?.current_period_end||0;
       await db.batch([
-        db.prepare('INSERT INTO subscriptions(stripe_subscription_id,member_id,status,period_end,last_event_created) VALUES(?,?,?,?,?) ON CONFLICT(stripe_subscription_id) DO UPDATE SET status=excluded.status,period_end=excluded.period_end,last_event_created=excluded.last_event_created WHERE excluded.last_event_created>=subscriptions.last_event_created').bind(current.id,member.id,current.status,periodEnd,Math.floor(Date.now()/1000)),
+        db.prepare('INSERT INTO subscriptions(stripe_subscription_id,member_id,status,period_end,last_event_created) VALUES(?,?,?,?,?) ON CONFLICT(stripe_subscription_id) DO UPDATE SET status=excluded.status,period_end=excluded.period_end,last_event_created=excluded.last_event_created WHERE excluded.last_event_created>=subscriptions.last_event_created').bind(current.id,member.id,validPrice?current.status:'ineligible',periodEnd,Math.floor(Date.now()/1000)),
         db.prepare('INSERT OR IGNORE INTO stripe_events(id) VALUES(?)').bind(event.id),
       ]);
     }
@@ -158,6 +160,7 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     const params=new URLSearchParams({mode:'subscription','line_items[0][price]':price,'line_items[0][quantity]':'1',client_reference_id:member.id,success_url:`${url.origin}/learn/dewatering/?checkout=return`,cancel_url:`${url.origin}/learn/dewatering/?checkout=cancel`});
     if (member.stripe_customer_id) params.set('customer',member.stripe_customer_id); else params.set('customer_email',member.email);
     const session=await stripe(env,'checkout/sessions',params);
+    if (session) await db.prepare('INSERT INTO checkout_sessions(stripe_session_id,member_id,price_id,created_at) VALUES(?,?,?,?)').bind(session.id,member.id,price,Math.floor(Date.now()/1000)).run();
     return session ? json({url:session.url}) : json({error:'Test billing 尚未設定'},503);
   }
   if (path === '/api/learn/billing-portal') {

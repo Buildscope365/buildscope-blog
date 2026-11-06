@@ -29,3 +29,12 @@ test('private course text is absent from the public Astro output', async () => {
   assert.ok(!html.includes('Effective Stress Principle'));
   assert.ok(!html.includes('Dewatering｜5 問 Quick Check'));
 });
+test('private lesson import escapes quotes and defaults to unpublished', async () => {
+  const { buildImportSql } = await import('../scripts/prepare-learning-import.mjs');
+  const ids=['positioning','basics','systems','drawdown','settlement','failures','quick-check'];
+  const sql=buildImportSql({courseId:'dewatering',lessons:ids.map(id=>({id,body:"What's groundwater? ".repeat(12)}))});
+  assert.match(sql,/What''s groundwater/);
+  assert.equal((sql.match(/published\) VALUES/g)||[]).length,7);
+  assert.ok(!sql.includes('published) VALUES(\'dewatering\',\'basics\',\'What\'s groundwater'));
+  assert.ok(sql.includes('published=0'));
+});
