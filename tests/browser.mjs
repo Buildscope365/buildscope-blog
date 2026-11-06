@@ -51,9 +51,35 @@ try {
     assert.equal(gaRequests.length, 1, "GA loads only after explicit consent");
 
     await page.goto(`${base}/blog/`);
-    assert.equal(await page.locator(".post").count(), 3);
+    assert.equal(await page.locator(".post").count(), 4);
     assert.equal(await page.locator('a[href="/blog/hetao-ai-exchange-construction-market/"]').count() > 0, true);
     assert.equal(await page.locator('a[href="/blog/vo-instruction-payment-entitlement/"]').count() > 0, true);
+    await page.locator("#article-search").fill("Site Possession");
+    assert.equal(await page.locator(".post:visible").count(), 1);
+    await page.locator('.post:visible a[href="/blog/government-land-release-site-possession-date/"]').first().click();
+    assert.match(await page.locator("h1").innerText(), /Site Possession Date/);
+    const accessCanonical = "https://buildscope-blog.com/blog/government-land-release-site-possession-date/";
+    assert.equal(await page.locator('link[rel="canonical"]').getAttribute("href"), accessCanonical);
+    const accessArticle = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
+    assert.equal(accessArticle.mainEntityOfPage["@id"], accessCanonical);
+    assert.equal(accessArticle.author["@type"], "Organization");
+    assert.equal(accessArticle.datePublished, "2026-11-07T00:00:00.000Z");
+    const accessImages = page.locator("article figure img");
+    assert.equal(await accessImages.count(), 4);
+    for (const image of await accessImages.all()) {
+      await image.scrollIntoViewIfNeeded();
+      await image.evaluate((element) => element.decode());
+      assert.equal(await image.evaluate((element) => element.complete && element.naturalWidth > 0), true, `${name}: missing access article image`);
+      assert.ok((await image.getAttribute("alt"))?.length > 10);
+    }
+    const accessCoverSize = await page.locator(".cover-figure img").boundingBox();
+    assert.ok(accessCoverSize && Math.abs(accessCoverSize.width / accessCoverSize.height - 1400 / 790) < 0.02, `${name}: access cover is cropped`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${name}: access article horizontal overflow`);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.addStyleTag({ content: ".site-header{position:static!important}" });
+    await page.screenshot({ path: `${shots}/land-access-article-${name}.png`, fullPage: true });
+
+    await page.goto(`${base}/blog/`);
     await page.locator("#article-search").fill("VO Instruction");
     assert.equal(await page.locator(".post:visible").count(), 1);
     await page.locator("#article-search").fill("不存在的文章");
