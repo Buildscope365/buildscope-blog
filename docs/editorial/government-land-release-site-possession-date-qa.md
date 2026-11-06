@@ -1,6 +1,6 @@
 # Editorial QA — Government land release / Site Possession
 
-Research and review: 2026-11-07 (Hong Kong). Status: **REVISE pending desktop/mobile browser inspection and human contractual review**. This is a PR-only delivery, not authorization to merge or deploy.
+Research and review: 2026-11-07 (Hong Kong). Status: **GO for publication as a general NEC4 ECC explainer, subject to BuildScope owner approval of the PR**. This is a PR-only delivery, not authorization to merge or deploy.
 
 ## Fact-check register
 
@@ -12,7 +12,7 @@ Research and review: 2026-11-07 (Hong Kong). Status: **REVISE pending desktop/mo
 | CE notification, programme changes, time and cost assessment are distinct | [NEC enforcement clauses explainer](https://www.neccontract.com/news/do-what-nec4-ecc-says-or-face-the-%E2%80%98enforcement-clauses%E2%80%99); [NEC correct programme FAQ](https://www.neccontract.com/support/faqs/using-the-correct-programme) | Verified as general NEC4 framework. No project-specific entitlement or amount asserted. |
 | A/B zones, third-party interface and hypothetical impacts | BuildScope teaching hypothesis | Clearly marked hypothetical; no project dates, cost or contract terms invented. |
 
-The actual F1–F4 NEC edition, Hong Kong amendments, ACC, Z clauses, Contract Data, Scope and Job Requests were not provided. This article does **not** decide entitlement under those contracts. Human contractual review of that boundary remains a publication gate.
+Final editorial and contractual review: the actual F1–F4 NEC edition, Hong Kong amendments, ACC, Z clauses, Contract Data, Scope and Job Requests were not provided. Their provisions are **not asserted** in the article. The government announcement is used only to demonstrate that a forecast start is not a contractual access date; the NEC discussion is explicitly limited to the unamended standard mechanism and a labelled hypothetical example. A project-specific entitlement analysis would require those documents and is outside this article's scope. No material claim within the stated scope remains unverified.
 
 ## Image QA
 
@@ -21,12 +21,12 @@ The actual F1–F4 NEC edition, Hong Kong amendments, ACC, Z clauses, Contract D
 | `hero.webp` | 1400×790 / 134,350 | Article cover | Existing generated construction context image, recompressed; caption and alt expressly say not actual site | GO |
 | `logic.png` | 1400×900 / 32,386 | After official-announcement section | In article; later-of rule and separate event/time/cost boxes | GO |
 | `scenario.png` | 1400×900 / 24,282 | After hypothetical interface-delay section | In article; no fictional dates or entitlement amounts | GO |
-| `checklist.png` | 1200×1500 / 35,830 | Before practical evidence list | Existing seven-point checklist, palette optimized; article groups these into five workflow steps | GO |
+| `checklist.png` | 1200×1500 / 35,830 | After practical evidence list | Existing seven-point checklist, palette optimized; article groups these into five workflow steps | GO |
 
-The previously generated hero and checklist were inspected and retained. The previous logic and scenario graphics did not show the NEC4 later-of rule or separate time/cost assessment sufficiently; they were rebuilt and checked. All four were inspected at native size for Traditional Chinese, arrow direction, dimensions, contrast and text bounds. On small screens, the body supplies the same information in HTML text and a table. A live mobile browser check remains open.
+The previously generated hero and checklist were inspected and retained. The previous logic and scenario graphics did not show the NEC4 later-of rule or separate time/cost assessment sufficiently; they were rebuilt and checked. All four were inspected at native size for Traditional Chinese, arrow direction, dimensions, contrast and text bounds. At 390 px the diagram lettering is small; the adjacent HTML text, table and captions state the complete decision rule accessibly. Mobile and desktop full-page captures were inspected with no clipping or horizontal overflow.
 
 ## Website and SEO
 
 Content file: `src/content/blog/government-land-release-site-possession-date.md`. Slug follows filename. Existing blog template generates canonical URL, Article JSON-LD, publication and review metadata, source list, related readers/articles, and the general paid Learning Lab CTA. No course URL is claimed. No existing Reader or tool assets changed.
 
-Production build and Astro validation: pass, 60 pages, 0 diagnostics. Reader asset test: 36 Reader entries, 334 images and ordering pass. New article local image/link and metadata checks: pass after replacement of two draft-only article links. Browser visual regression: **not run** because the local Playwright Chromium download was unavailable; inspect desktop and mobile before marking publish GO.
+Production build and Astro validation: pass, 60 pages, 0 diagnostics. Unit tests: 27/27 pass. Reader asset test: 36 Reader entries, 334 images and ordering pass. New article local image/link and metadata checks: pass after replacement of two draft-only article links. GitHub Actions [run 53](https://github.com/Buildscope365/buildscope-blog/actions/runs/42314237528): **success**, including Playwright Chromium browser QA at 1440×900 and 390×844, article search-to-open interaction, four decoded article images, alt text, canonical/Article structured data, category label, no horizontal overflow, and existing tool/Reader regression. Full-page screenshots were reviewed from [run 52's artifact](https://github.com/Buildscope365/buildscope-blog/actions/runs/42313823602); run 53 confirms the final category correction. No Production preview was deployed.
