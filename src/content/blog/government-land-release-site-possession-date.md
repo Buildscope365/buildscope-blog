@@ -6,8 +6,8 @@ date: 2026-11-07
 category: "contracts-qs"
 tags: ["NEC4", "Access Date", "Site Possession", "Accepted Programme", "CE", "EOT", "Programme"]
 coverImage: "/images/blog/government-land-release-site-possession-date/hero.webp"
-coverAlt: "抽象工地界面示意：場地由規劃、施工要求及合同進場安排逐步轉換；並非元朗南工程實景。"
-coverCaption: "政府工程時間表與個別合約的進場安排，須分開核對。圖為教學示意，並非項目現場。"
+coverAlt: "生成工地情境圖：圍欄、工程進度圖和安全帽；並非元朗南工程實景或核實施工圖。"
+coverCaption: "政府工程時間表與個別合約的進場安排，須分開核對。生成情境圖並非項目現場。"
 coverWidth: 1400
 coverHeight: 790
 author: "BuildScope 編輯部"
@@ -79,7 +79,7 @@ CE 是**事件分類及評估機制**，不等於自動獲得一段工期延長�
 4. **費用分隔：** 只記錄與事件有因果關係的勞工、機械、分判及改序費用，標明原計劃、實際投入和其他同時事件。
 5. **合約程序：** 查核誰須通知、何時通知、早期預警、報價與回覆時限；沿用合約指定通訊渠道，不用口頭共識取代正式程序。
 
-<figure><img src="/images/blog/government-land-release-site-possession-date/checklist.png" alt="五步實務清單：核對分區合同日期與條款、確認實際限制、保存當期進度、分開評估工期費用、依合約發出通知。" width="1200" height="1500" loading="lazy" decoding="async" /><figcaption>BuildScope 工作清單；屬一般實務建議。正式通知與權利須按個別合約及事實核定。</figcaption></figure>
+<figure><img src="/images/blog/government-land-release-site-possession-date/checklist.png" alt="七項 QS／PM 進場及延誤證據清單：查合同、界面、現場、Programme、通知、責任及減損。" width="1200" height="1500" loading="lazy" decoding="async" /><figcaption>BuildScope 七項工作核對；正文把資料歸納成五個執行步驟。屬一般實務建議，正式通知與權利須按個別合約及事實核定。</figcaption></figure>
 
 ## 三個 Takeaways
 

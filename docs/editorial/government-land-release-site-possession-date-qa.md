@@ -18,12 +18,12 @@ The actual F1–F4 NEC edition, Hong Kong amendments, ACC, Z clauses, Contract D
 
 | File | Pixels / bytes | Placement | Caption and alt | Result |
 | --- | --- | --- | --- | --- |
-| `hero.webp` | 1400×790 / 40,534 | Article cover | In frontmatter; abstract A/B zone diagram, expressly not actual site | GO |
+| `hero.webp` | 1400×790 / 134,350 | Article cover | Existing generated construction context image, recompressed; caption and alt expressly say not actual site | GO |
 | `logic.png` | 1400×900 / 32,386 | After official-announcement section | In article; later-of rule and separate event/time/cost boxes | GO |
 | `scenario.png` | 1400×900 / 24,282 | After hypothetical interface-delay section | In article; no fictional dates or entitlement amounts | GO |
-| `checklist.png` | 1200×1500 / 45,405 | Before practical evidence list | In article; five steps match article | GO |
+| `checklist.png` | 1200×1500 / 35,830 | Before practical evidence list | Existing seven-point checklist, palette optimized; article groups these into five workflow steps | GO |
 
-All images inspected at native size; Traditional Chinese, arrow direction, dimensions, contrast and text bounds checked. On small screens, the body supplies the same information in HTML text and a table. A live mobile browser check remains open.
+The previously generated hero and checklist were inspected and retained. The previous logic and scenario graphics did not show the NEC4 later-of rule or separate time/cost assessment sufficiently; they were rebuilt and checked. All four were inspected at native size for Traditional Chinese, arrow direction, dimensions, contrast and text bounds. On small screens, the body supplies the same information in HTML text and a table. A live mobile browser check remains open.
 
 ## Website and SEO
 
