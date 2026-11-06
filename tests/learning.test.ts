@@ -52,3 +52,28 @@ test('public course cover is available while lesson covers stay private', async 
   const cover=await stat(new URL('../dist/images/learning/dewatering/course-cover.webp',import.meta.url));
   assert.ok(cover.size>100000);
 });
+test('member media enforces entitlement and publication before reading R2', async () => {
+  const { createHash }=await import('node:crypto');
+  const token='a'.repeat(64), tokenHash=createHash('sha256').update(token).digest('hex');
+  let granted=false, published=false, reads=0;
+  const db={prepare:(sql:string)=>({bind:(...params:unknown[])=>({first:async()=>{
+    if(sql.includes('FROM sessions')) return params[0]===tokenHash ? {id:'member-1',email:'test@example.com',stripe_customer_id:null}:null;
+    if(sql.includes('FROM access_grants')) return granted ? {1:1}:null;
+    if(sql.includes('FROM subscriptions')) return null;
+    if(sql.includes('FROM lesson_content')) return published ? {1:1}:null;
+    throw new Error(`Unexpected SQL: ${sql}`);
+  }})})};
+  const media={get:async(key:string)=>{reads++;assert.equal(key,'dewatering/lesson-1.webp');return {body:new Uint8Array([82,73,70,70])};}};
+  const request=new Request('https://example.com/api/learn/media/lesson-1.webp',{headers:{cookie:`bs_member=${token}`}});
+  const env={LEARNING_DB:db,LEARNING_MEDIA:media} as never;
+  assert.equal((await learning(request,env)).status,403);
+  granted=true;
+  assert.equal((await learning(request,env)).status,404);
+  published=true;
+  const response=await learning(request,env);
+  assert.equal(response.status,200);assert.equal(response.headers.get('Cache-Control'),'private, no-store');assert.equal(response.headers.get('Content-Type'),'image/webp');
+  assert.equal(reads,1);
+  granted=false;
+  assert.equal((await learning(request,env)).status,403);
+  assert.equal(reads,1);
+});
