@@ -208,12 +208,16 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     await db.prepare('INSERT OR IGNORE INTO learning_progress(member_id,course_id,lesson_id,completed_at) VALUES(?,?,?,?)').bind(member.id,course,id,Math.floor(Date.now()/1000)).run();
     return json({ok:true});
   }
-  if (path === '/api/learn/admin/grant') {
+  if (path === '/api/learn/admin/grant' || path === '/api/learn/admin/revoke') {
     const supplied = request.headers.get('Authorization')?.replace(/^Bearer /,'')||'';
     if (!env.LEARNING_ADMIN_TOKEN || !equal(supplied,env.LEARNING_ADMIN_TOKEN)) return json({error:'Unauthorized'},401);
     const input=await body(request), id=String(input.memberId||''), reference=String(input.skoolReference||'').trim();
     if (!reference || reference.length>200 || !(await db.prepare('SELECT 1 FROM members WHERE id=? AND verified_at IS NOT NULL').bind(id).first())) return json({error:'Invalid verified member'},400);
-    await db.prepare("INSERT INTO access_grants(id,member_id,course_id,source,reference,created_at) VALUES(?,? ,?,'skool_verified',?,?)").bind(crypto.randomUUID(),id,course,reference,Math.floor(Date.now()/1000)).run();
+    if (path.endsWith('/grant')) {
+      await db.prepare("INSERT INTO access_grants(id,member_id,course_id,source,reference,created_at) VALUES(?,? ,?,'skool_verified',?,?) ON CONFLICT(member_id,course_id,source,reference) DO UPDATE SET revoked_at=NULL,expires_at=NULL").bind(crypto.randomUUID(),id,course,reference,Math.floor(Date.now()/1000)).run();
+    } else {
+      await db.prepare("UPDATE access_grants SET revoked_at=? WHERE member_id=? AND course_id=? AND source='skool_verified' AND reference=? AND revoked_at IS NULL").bind(Math.floor(Date.now()/1000),id,course,reference).run();
+    }
     return json({ok:true});
   }
   if (path === '/api/learn/checkout') {
