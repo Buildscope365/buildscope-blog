@@ -187,7 +187,7 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
   if (path === '/api/learn/lessons' && request.method === 'GET') {
     const ready=await db.prepare('SELECT lesson_id FROM lesson_content WHERE course_id=? AND published=1').bind(course).all<{lesson_id:string}>();
     const completed=member ? await db.prepare('SELECT lesson_id FROM learning_progress WHERE member_id=? AND course_id=?').bind(member.id,course).all<{lesson_id:string}>() : {results:[]};
-    const completedCore=coreLessonIds.every(id=>completed.results.some(x=>x.lesson_id===id));
+    const completedCore=coreLessonIds.every(id=>completed.results.some(x=>x.lesson_id===id) && ready.results.some(x=>x.lesson_id===id));
     return json({lessons:lessons.map(([id,title])=>({id,title,ready:id==='completion'?completedCore:ready.results.some(x=>x.lesson_id===id),completed:id==='completion'?completedCore:completed.results.some(x=>x.lesson_id===id)})),access:member?await entitlement(db,member.id):false});
   }
   if (path.startsWith('/api/learn/media/')) {
@@ -219,6 +219,8 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     if (!member) return json({error:'請先登入'},401);
     if (!(await entitlement(db,member.id))) return json({error:'會員課堂需先開通'},403);
     if (id==='completion') {
+      const ready=await db.prepare('SELECT lesson_id FROM lesson_content WHERE course_id=? AND published=1').bind(course).all<{lesson_id:string}>();
+      if (!coreLessonIds.every(slug=>ready.results.some(x=>x.lesson_id===slug))) return json({error:'課堂正在編審，暫未能開啟完成頁'},404);
       const result=await db.prepare("SELECT lesson_id FROM learning_progress WHERE member_id=? AND course_id=? AND lesson_id IN ('basics','systems','drawdown','settlement','failures','quick-check')").bind(member.id,course).all<{lesson_id:string}>();
       if (!coreLessonIds.every(slug=>result.results.some(x=>x.lesson_id===slug))) return json({error:'請先完成六堂課'},403);
       return json({id,ready:true,body:'你已完成 BuildScope 100｜#009 Dewatering 六堂課。\n\n下一課：#010/100｜Excavation Monitoring｜數據升緊，代表地盤就快出事？\n\n你嘅完成紀錄已保留喺網站帳戶。'});

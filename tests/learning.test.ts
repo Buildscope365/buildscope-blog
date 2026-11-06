@@ -144,6 +144,33 @@ test('test checkout requires the exact seven published teaching units', async ()
   published=[...published.slice(0,-1),'quick-check'];
   assert.equal((await learning(request,{LEARNING_DB:db} as never)).status,503);
 });
+test('completion closes if a completed lesson is withdrawn for editorial review', async () => {
+  const {createHash}=await import('node:crypto');
+  const token='f'.repeat(64), tokenHash=createHash('sha256').update(token).digest('hex');
+  const core=['basics','systems','drawdown','settlement','failures','quick-check'];
+  let published=[...core];
+  const db={prepare:(sql:string)=>({bind:(...params:unknown[])=>({
+    first:async()=>{
+      if(sql.includes('FROM sessions')) return params[0]===tokenHash?{id:'member',email:'test@example.com',stripe_customer_id:null}:null;
+      if(sql.includes('FROM access_grants')) return {1:1};
+      if(sql.includes('FROM subscriptions')) return null;
+      throw Error(sql);
+    },
+    all:async()=>{
+      if(sql.includes('FROM lesson_content')) return {results:published.map(lesson_id=>({lesson_id}))};
+      if(sql.includes('FROM learning_progress')) return {results:core.map(lesson_id=>({lesson_id}))};
+      throw Error(sql);
+    },
+  })})};
+  const headers={cookie:`bs_member=${token}`}, env={LEARNING_DB:db} as never;
+  const listing=async():Promise<{lessons:Array<{id:string;ready:boolean}>}>=>learning(new Request('https://example.com/api/learn/lessons',{headers}),env).then(r=>r.json() as Promise<{lessons:Array<{id:string;ready:boolean}>}>);
+  const completion=async()=>learning(new Request('https://example.com/api/learn/lesson?id=completion',{headers}),env);
+  assert.equal((await listing()).lessons.find(x=>x.id==='completion')?.ready,true);
+  assert.equal((await completion()).status,200);
+  published=core.filter(id=>id!=='failures');
+  assert.equal((await listing()).lessons.find(x=>x.id==='completion')?.ready,false);
+  assert.equal((await completion()).status,404);
+});
 test('signed Stripe events only reconcile a recorded checkout and ignore retries', async () => {
   const seen=new Set<string>();
   let customer:string|null=null, checkoutSubscription:string|null=null, storedStatus:string|null=null, fetches=0, currentStatus='active', currentPrice='price_monthly';
