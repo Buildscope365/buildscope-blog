@@ -17,7 +17,7 @@ References: [CEDD Geoguide 1](https://www.cedd.gov.hk/filemanager/eng/content_10
 
 ## Test configuration
 
-1. Create a separate test D1 database and replace `REPLACE_WITH_TEST_D1_ID` in `wrangler.jsonc` with its actual binding ID in a preview environment. Apply `migrations/0001_learning.sql`.
+1. Create a separate test D1 database. Copy `wrangler.learning-preview.example.jsonc` to ignored `.wrangler.learning-preview.jsonc`, replace `REPLACE_WITH_TEST_D1_ID`, and use that file only with `wrangler --config .wrangler.learning-preview.jsonc`. Apply `migrations/0001_learning.sql` to the **test** D1 database. The normal `wrangler.jsonc` intentionally has no learning D1/R2 bindings; a production release needs separate approved production bindings and a production migration before deployment.
 2. Create a private test R2 bucket `buildscope-learning-media-test`, keep public bucket access disabled, and upload the six owner-supplied lesson WebPs to `dewatering/lesson-1.webp` through `dewatering/lesson-6.webp`. Bind it as `LEARNING_MEDIA`. The public course cover remains under `public/`.
 3. Configure verified Brevo sender `LEARNING_EMAIL_FROM`, secret `BREVO_API_KEY` and a random `LEARNING_ADMIN_TOKEN`. Registration is disabled until email delivery works. Test registration, verification link, resend, password reset, session invalidation after reset and an admin grant only after email verification. Tokens expire after one hour; token links live in the URL fragment and are submitted by same-origin POST.
 4. Configure Worker secrets `STRIPE_SECRET_KEY=sk_test_...`, `STRIPE_WEBHOOK_SECRET=whsec_...`. Provide monthly and annual recurring test Price IDs (`STRIPE_MONTHLY_PRICE_ID`, `STRIPE_ANNUAL_PRICE_ID`) only after prices are approved. No real price or live key is in code.
@@ -30,7 +30,7 @@ Leave Skool billing intact. Members register a website account and verify the em
 
 ## Release decision
 
-**No-Go for production.** The approved private content import, private lesson media upload, approved resource download, test D1/R2, test Stripe configuration, live email delivery, end-to-end billing verification and a bound Worker preview remain to be done. Static landing desktop/mobile screenshots are captured in [GitHub Actions run #42](https://github.com/Buildscope365/buildscope-blog/actions/runs/42208436632). Keep this PR unmerged and do not deploy it to production.
+**No-Go for production.** The approved private content import, private lesson media upload, approved resource download, test D1/R2, test Stripe configuration, live email delivery, end-to-end billing verification and a bound Worker preview remain to be done. After preview QA, separately provision production D1/R2, apply the migration, configure approved production bindings and re-run protected access checks before any production deployment. Never point the production Worker at the preview database or bucket. Static landing desktop/mobile screenshots are captured in [GitHub Actions run #42](https://github.com/Buildscope365/buildscope-blog/actions/runs/42208436632). Keep this PR unmerged and do not deploy it to production.
 
 ## Artwork supplied after initial PR
 
