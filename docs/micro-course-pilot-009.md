@@ -26,7 +26,7 @@ References: [CEDD Geoguide 1](https://www.cedd.gov.hk/filemanager/eng/content_10
 
 ## Existing Skool members
 
-Leave Skool billing intact. Members register a website account and verify the email link, then request manual eligibility verification. The administrator must verify paid Skool status and account ownership out of band before calling `/api/learn/admin/grant` with the registered member ID and a verification reference. A repeated grant with the same reference is idempotent; `/api/learn/admin/revoke` revokes the matching reference without changing Stripe or Skool. Grants are separate from Stripe status. A recurring review workflow is required before release. The email flow is prepared but cannot be exercised end to end until a verified sender and test Brevo key are configured.
+Leave Skool billing intact. Members register a website account and verify the email link, then request manual eligibility verification. The administrator must verify paid Skool status and account ownership out of band before calling `/api/learn/admin/grant` with the registered member ID and a verification reference. This endpoint accepts an administrator Bearer token from a server-side script without a member cookie; browser requests with a foreign Origin are rejected. A repeated grant with the same reference is idempotent; `/api/learn/admin/revoke` revokes the matching reference without changing Stripe or Skool. Keep the token in a Worker secret and a local administrator environment variable, never in a web page or command history. Grants are separate from Stripe status. A recurring review workflow is required before release. The email flow is prepared but cannot be exercised end to end until a verified sender and test Brevo key are configured.
 
 ## Release decision
 

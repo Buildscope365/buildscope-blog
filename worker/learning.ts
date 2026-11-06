@@ -167,6 +167,21 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     await db.prepare('INSERT INTO sessions(token_hash,member_id,expires_at) VALUES(?,?,?)').bind(await sha(token),member.id,Math.floor(Date.now()/1000)+1209600).run();
     return json({ok:true},200,{'Set-Cookie':cookie(token)});
   }
+  if (path === '/api/learn/admin/grant' || path === '/api/learn/admin/revoke') {
+    if (request.method !== 'POST') return json({error:'Method not allowed'},405);
+    const origin=request.headers.get('Origin');
+    if (origin && !requireOrigin(request)) return json({error:'Invalid origin'},403);
+    const supplied=request.headers.get('Authorization')?.match(/^Bearer (.+)$/i)?.[1]||'';
+    if (!env.LEARNING_ADMIN_TOKEN || !equal(supplied,env.LEARNING_ADMIN_TOKEN)) return json({error:'Unauthorized'},401);
+    const input=await body(request), id=String(input.memberId||''), reference=String(input.skoolReference||'').trim();
+    if (!reference || reference.length>200 || !(await db.prepare('SELECT 1 FROM members WHERE id=? AND verified_at IS NOT NULL').bind(id).first())) return json({error:'Invalid verified member'},400);
+    if (path.endsWith('/grant')) {
+      await db.prepare("INSERT INTO access_grants(id,member_id,course_id,source,reference,created_at) VALUES(?,? ,?,'skool_verified',?,?) ON CONFLICT(member_id,course_id,source,reference) DO UPDATE SET revoked_at=NULL,expires_at=NULL").bind(crypto.randomUUID(),id,course,reference,Math.floor(Date.now()/1000)).run();
+    } else {
+      await db.prepare("UPDATE access_grants SET revoked_at=? WHERE member_id=? AND course_id=? AND source='skool_verified' AND reference=? AND revoked_at IS NULL").bind(Math.floor(Date.now()/1000),id,course,reference).run();
+    }
+    return json({ok:true});
+  }
   const member = await getSession(request,db);
   if (path === '/api/learn/me' && request.method === 'GET') return json({member:member ? {email:member.email,id:member.id} : null, access:member ? await entitlement(db,member.id):false, billingConfigured:Boolean(env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET&&env.STRIPE_SECRET_KEY?.startsWith('sk_test_'))});
   if (path === '/api/learn/lessons' && request.method === 'GET') {
@@ -216,18 +231,6 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     const published=await db.prepare('SELECT 1 FROM lesson_content WHERE course_id=? AND lesson_id=? AND published=1').bind(course,id).first();
     if (!published) return json({error:'此課堂尚未發布，未能標記完成'},409);
     await db.prepare('INSERT OR IGNORE INTO learning_progress(member_id,course_id,lesson_id,completed_at) VALUES(?,?,?,?)').bind(member.id,course,id,Math.floor(Date.now()/1000)).run();
-    return json({ok:true});
-  }
-  if (path === '/api/learn/admin/grant' || path === '/api/learn/admin/revoke') {
-    const supplied = request.headers.get('Authorization')?.replace(/^Bearer /,'')||'';
-    if (!env.LEARNING_ADMIN_TOKEN || !equal(supplied,env.LEARNING_ADMIN_TOKEN)) return json({error:'Unauthorized'},401);
-    const input=await body(request), id=String(input.memberId||''), reference=String(input.skoolReference||'').trim();
-    if (!reference || reference.length>200 || !(await db.prepare('SELECT 1 FROM members WHERE id=? AND verified_at IS NOT NULL').bind(id).first())) return json({error:'Invalid verified member'},400);
-    if (path.endsWith('/grant')) {
-      await db.prepare("INSERT INTO access_grants(id,member_id,course_id,source,reference,created_at) VALUES(?,? ,?,'skool_verified',?,?) ON CONFLICT(member_id,course_id,source,reference) DO UPDATE SET revoked_at=NULL,expires_at=NULL").bind(crypto.randomUUID(),id,course,reference,Math.floor(Date.now()/1000)).run();
-    } else {
-      await db.prepare("UPDATE access_grants SET revoked_at=? WHERE member_id=? AND course_id=? AND source='skool_verified' AND reference=? AND revoked_at IS NULL").bind(Math.floor(Date.now()/1000),id,course,reference).run();
-    }
     return json({ok:true});
   }
   if (path === '/api/learn/checkout') {
