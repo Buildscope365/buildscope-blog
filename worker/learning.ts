@@ -203,6 +203,16 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
     if (!object) return json({error:'Image not found'},404);
     return new Response(object.body,{headers:{'Content-Type':'image/webp','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Cross-Origin-Resource-Policy':'same-origin'}});
   }
+  if (path === '/api/learn/resource') {
+    if (request.method !== 'GET') return json({error:'Method not allowed'},405);
+    if (!member) return json({error:'請先登入'},401);
+    if (!(await entitlement(db,member.id))) return json({error:'會員資源需先開通'},403);
+    if (!(await db.prepare('SELECT 1 FROM lesson_content WHERE course_id=? AND lesson_id=? AND published=1').bind(course,'resource').first())) return json({error:'資源尚未發布'},404);
+    if (!env.LEARNING_MEDIA) return json({error:'Private media 尚未設定'},503);
+    const object=await env.LEARNING_MEDIA.get('dewatering/resource-checklist.pdf');
+    if (!object) return json({error:'Resource not found'},404);
+    return new Response(object.body,{headers:{'Content-Type':'application/pdf','Content-Disposition':'attachment; filename="BuildScope-009-Dewatering-Checklist.pdf"','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff','Cross-Origin-Resource-Policy':'same-origin'}});
+  }
   if (path === '/api/learn/lesson' && request.method === 'GET') {
     const id = url.searchParams.get('id');
     if (!lessons.some(([slug])=>slug===id)) return json({error:'Lesson not found'},404);

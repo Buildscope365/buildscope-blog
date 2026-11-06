@@ -83,6 +83,31 @@ test('member media enforces entitlement and publication before reading R2', asyn
   assert.equal((await learning(request,env)).status,403);
   assert.equal(reads,1);
 });
+test('PDF resource stays private until entitlement and resource publication', async () => {
+  const {createHash}=await import('node:crypto');
+  const token='e'.repeat(64), tokenHash=createHash('sha256').update(token).digest('hex');
+  let granted=false,published=false,reads=0;
+  const db={prepare:(sql:string)=>({bind:(...params:unknown[])=>({first:async()=>{
+    if(sql.includes('FROM sessions')) return params[0]===tokenHash?{id:'member',email:'test@example.com',stripe_customer_id:null}:null;
+    if(sql.includes('FROM access_grants')) return granted?{1:1}:null;
+    if(sql.includes('FROM subscriptions')) return null;
+    if(sql.includes('FROM lesson_content')) {assert.equal(params[1],'resource');return published?{1:1}:null;}
+    throw Error(sql);
+  }})})};
+  const media={get:async(key:string)=>{reads++;assert.equal(key,'dewatering/resource-checklist.pdf');return {body:new Uint8Array([37,80,68,70])};}};
+  const env={LEARNING_DB:db,LEARNING_MEDIA:media} as never;
+  assert.equal((await learning(new Request('https://example.com/api/learn/resource'),env)).status,401);
+  const request=new Request('https://example.com/api/learn/resource',{headers:{cookie:`bs_member=${token}`}});
+  assert.equal((await learning(request,env)).status,403);
+  granted=true;
+  assert.equal((await learning(request,env)).status,404);
+  published=true;
+  const response=await learning(request,env);
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get('Cache-Control'),'private, no-store');
+  assert.match(response.headers.get('Content-Disposition')||'',/attachment/);
+  assert.equal(reads,1);
+});
 test('expired and canceled subscriptions cannot access a paid lesson', async () => {
   const {createHash}=await import('node:crypto');
   const token='c'.repeat(64), tokenHash=createHash('sha256').update(token).digest('hex');

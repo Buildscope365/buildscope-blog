@@ -37,4 +37,5 @@ assert.ok(!courseHtml.includes("① Groundwater Control 目標係乜？"), "paid
 assert.ok((await stat("dist/images/learning/dewatering/course-cover.webp")).size > 100000, "course cover missing from build");
 const courseAssets = await readdir("dist/images/learning/dewatering");
 assert.ok(!courseAssets.some((name) => /^lesson-[1-6]\./.test(name)), "private lesson cover leaked into public build");
+assert.ok(!courseAssets.some((name) => /checklist|resource/i.test(name)), "private resource leaked into public build");
 console.log("Dewatering public build: cover present; private lesson text and covers absent.");

@@ -38,6 +38,8 @@ The owner supplied seven 16:9 PNGs in sequence: Lesson 1–6 and course cover. T
 
 The course progress meter counts the six actual lessons. Course Completion unlocks only after those six published lessons are marked complete by an entitled member; its summary and #010 learning path are served privately. The proposed Resource remains visibly unready and cannot be marked complete, so a missing PDF never inflates progress or blocks the six-lesson completion state.
 
+The proposed 10-point checklist now has a private **unpublished draft PDF** for owner review. Do not add it to Git or public static assets. After editorial approval, upload the approved PDF to the private R2 key `dewatering/resource-checklist.pdf`, import approved descriptive text as the `resource` D1 unit, verify the file is readable by an entitled member and denied to anonymous/unentitled visitors, and only then set that unit's `published=1`. The member download route `/api/learn/resource` checks session, entitlement and publication before reading R2 and returns a private, no-store attachment. The draft is not a finished member resource.
+
 Image QA: all are 1536 px wide; six are 864 px high and Lesson 4 is 865 px high. Verify legibility at a 390 px viewport. Lesson 5 groups Boiling / Base Heave in a short bullet, while the supplied lesson text distinguishes soft-clay shear heave from seepage/uplift; editorial review should refine that label before publication. The six cover files and their SHA-256 manifest are available as a private transfer bundle; the public cover alone is committed to the PR.
 
 ## Local integration QA (6 November 2026)
