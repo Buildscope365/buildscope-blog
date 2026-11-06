@@ -235,8 +235,8 @@ export async function learning(request: Request, env: LearningEnv): Promise<Resp
   }
   if (path === '/api/learn/checkout') {
     if (await entitlement(db,member.id)) return json({error:'已有課程權限，無需重複付款'},409);
-    const published=await db.prepare('SELECT COUNT(*) AS count FROM lesson_content WHERE course_id=? AND published=1').bind(course).first<{count:number}>();
-    if (!published || published.count<7) return json({error:'課堂未齊，測試 Checkout 暫停'},409);
+    const published=await db.prepare('SELECT lesson_id FROM lesson_content WHERE course_id=? AND published=1').bind(course).all<{lesson_id:string}>();
+    if (!['positioning',...coreLessonIds].every(id=>published.results.some(row=>row.lesson_id===id))) return json({error:'課堂未齊，測試 Checkout 暫停'},409);
     const input=await body(request), price=input.interval==='annual'?env.STRIPE_ANNUAL_PRICE_ID:input.interval==='monthly'?env.STRIPE_MONTHLY_PRICE_ID:null;
     if (!price || !/^price_/.test(price)) return json({error:'Test billing 尚未設定'},503);
     const params=new URLSearchParams({mode:'subscription','line_items[0][price]':price,'line_items[0][quantity]':'1',client_reference_id:member.id,success_url:`${url.origin}/learn/dewatering/?checkout=return`,cancel_url:`${url.origin}/learn/dewatering/?checkout=cancel`});

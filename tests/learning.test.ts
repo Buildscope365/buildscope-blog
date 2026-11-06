@@ -99,6 +99,26 @@ test('expired and canceled subscriptions cannot access a paid lesson', async () 
   periodEnd=Math.floor(Date.now()/1000)+3600;status='canceled';
   assert.equal((await learning(request,env)).status,403);
 });
+test('test checkout requires the exact seven published teaching units', async () => {
+  const {createHash}=await import('node:crypto');
+  const token='d'.repeat(64), tokenHash=createHash('sha256').update(token).digest('hex');
+  let published=['positioning','basics','systems','drawdown','settlement','failures','resource'];
+  const db={prepare:(sql:string)=>({bind:(...params:unknown[])=>({
+    first:async()=>{
+      if(sql.includes('FROM sessions')) return params[0]===tokenHash?{id:'member',email:'test@example.com',stripe_customer_id:null}:null;
+      if(sql.includes('FROM access_grants')||sql.includes('FROM subscriptions')) return null;
+      throw Error(sql);
+    },
+    all:async()=>{
+      if(sql.includes('FROM lesson_content')) return {results:published.map(lesson_id=>({lesson_id}))};
+      throw Error(sql);
+    },
+  })})};
+  const request=new Request('https://example.com/api/learn/checkout',{method:'POST',headers:{Origin:'https://example.com',cookie:`bs_member=${token}`},body:JSON.stringify({interval:'monthly'})});
+  assert.equal((await learning(request,{LEARNING_DB:db} as never)).status,409);
+  published=[...published.slice(0,-1),'quick-check'];
+  assert.equal((await learning(request,{LEARNING_DB:db} as never)).status,503);
+});
 test('signed Stripe events only reconcile a recorded checkout and ignore retries', async () => {
   const seen=new Set<string>();
   let customer:string|null=null, checkoutSubscription:string|null=null, storedStatus:string|null=null, fetches=0, currentStatus='active', currentPrice='price_monthly';
