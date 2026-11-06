@@ -1,4 +1,5 @@
-CREATE TABLE IF NOT EXISTS members (id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, salt TEXT NOT NULL, password_hash TEXT NOT NULL, stripe_customer_id TEXT UNIQUE, failed_attempts INTEGER NOT NULL DEFAULT 0, locked_until INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS members (id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, salt TEXT NOT NULL, password_hash TEXT NOT NULL, stripe_customer_id TEXT UNIQUE, failed_attempts INTEGER NOT NULL DEFAULT 0, locked_until INTEGER NOT NULL DEFAULT 0, verified_at INTEGER);
+CREATE TABLE IF NOT EXISTS account_tokens (token_hash TEXT PRIMARY KEY, member_id TEXT NOT NULL REFERENCES members(id), purpose TEXT NOT NULL CHECK(purpose IN ('verify','reset')), expires_at INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, member_id TEXT NOT NULL REFERENCES members(id), expires_at INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS subscriptions (stripe_subscription_id TEXT PRIMARY KEY, member_id TEXT NOT NULL REFERENCES members(id), status TEXT NOT NULL, period_end INTEGER NOT NULL, last_event_created INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS stripe_events (id TEXT PRIMARY KEY);
@@ -6,4 +7,4 @@ CREATE TABLE IF NOT EXISTS access_grants (id TEXT PRIMARY KEY, member_id TEXT NO
 CREATE TABLE IF NOT EXISTS learning_progress (member_id TEXT NOT NULL REFERENCES members(id), course_id TEXT NOT NULL, lesson_id TEXT NOT NULL, completed_at INTEGER NOT NULL, PRIMARY KEY(member_id,course_id,lesson_id));
 CREATE INDEX IF NOT EXISTS sessions_expiry ON sessions(expires_at);
 CREATE TABLE IF NOT EXISTS lesson_content (course_id TEXT NOT NULL, lesson_id TEXT NOT NULL, body TEXT NOT NULL, published INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(course_id,lesson_id));
-CREATE TABLE IF NOT EXISTS checkout_sessions (stripe_session_id TEXT PRIMARY KEY, member_id TEXT NOT NULL REFERENCES members(id), price_id TEXT NOT NULL, created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS checkout_sessions (stripe_session_id TEXT PRIMARY KEY, member_id TEXT NOT NULL REFERENCES members(id), price_id TEXT NOT NULL, stripe_subscription_id TEXT UNIQUE, created_at INTEGER NOT NULL);

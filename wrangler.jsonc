@@ -12,6 +12,7 @@
     "html_handling": "auto-trailing-slash"
   },
   "d1_databases": [{ "binding": "LEARNING_DB", "database_name": "buildscope-learning-test", "database_id": "REPLACE_WITH_TEST_D1_ID" }],
+  "r2_buckets": [{ "binding": "LEARNING_MEDIA", "bucket_name": "buildscope-learning-media-test" }],
   "vars": {
     "CMS_ORIGIN": "https://buildscope-blog.com",
     "GITHUB_REPOSITORY": "Buildscope365/buildscope-blog",
