@@ -23,4 +23,14 @@ try {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     await page.close();
   }
+  const page=await browser.newPage();
+  let ready=false;
+  await page.route('**/api/learn/me',route=>route.fulfill({json:{member:{id:'member-test',email:'test@example.com'},access:false,billingConfigured:true}}));
+  await page.route('**/api/learn/lessons',route=>route.fulfill({json:{lessons:['positioning','basics','systems','drawdown','settlement','failures','quick-check'].map(id=>({id,ready:ready||id!=='quick-check',completed:false})),access:false}}));
+  await page.goto(`${base}/learn/dewatering/`,{waitUntil:'networkidle'});
+  assert.equal(await page.locator('#monthly').isDisabled(),true,'incomplete course must not offer test checkout');
+  ready=true;
+  await page.reload({waitUntil:'networkidle'});
+  assert.equal(await page.locator('#monthly').isEnabled(),true,'published course with test billing may offer checkout');
+  await page.close();
 } finally { await browser.close(); }
