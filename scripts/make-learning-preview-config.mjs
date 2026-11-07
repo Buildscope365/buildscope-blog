@@ -14,8 +14,8 @@ if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(data
 
 let origin;
 try { origin = new URL(previewOrigin); } catch { throw new Error('LEARNING_PREVIEW_ORIGIN must be a valid HTTPS URL.'); }
-if (origin.protocol !== 'https:' || !origin.hostname.endsWith('.workers.dev') || origin.username || origin.password || origin.pathname !== '/' || origin.search || origin.hash) {
-  throw new Error('LEARNING_PREVIEW_ORIGIN must be a workers.dev origin, never the production domain.');
+if (origin.protocol !== 'https:' || !origin.hostname.startsWith('buildscope-learning-preview.') || !origin.hostname.endsWith('.workers.dev') || origin.username || origin.password || origin.pathname !== '/' || origin.search || origin.hash) {
+  throw new Error('LEARNING_PREVIEW_ORIGIN must match the buildscope-learning-preview Worker on workers.dev.');
 }
 
 const config = JSON.parse(await readFile(templatePath, 'utf8'));
