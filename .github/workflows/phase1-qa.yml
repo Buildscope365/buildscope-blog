@@ -51,3 +51,37 @@ jobs:
           name: phase1-desktop-mobile-screenshots
           path: /tmp/buildscope-phase1-screenshots/
           if-no-files-found: warn
+
+  deploy-learning-preview:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/feat/dewatering-course-pilot-009'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    concurrency:
+      group: buildscope-learning-preview
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Prepare isolated preview configuration
+        env:
+          LEARNING_TEST_D1_ID: ${{ secrets.LEARNING_TEST_D1_ID }}
+          LEARNING_PREVIEW_ORIGIN: ${{ secrets.LEARNING_PREVIEW_ORIGIN }}
+        run: node scripts/make-learning-preview-config.mjs
+      - name: Deploy only the separate preview Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo 'Cloudflare preview credentials are missing from GitHub Secrets.' >&2
+            exit 1
+          fi
+          npx wrangler deploy --config .wrangler.learning-preview.jsonc
