@@ -79,9 +79,25 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          LEARNING_TEST_D1_ID: ${{ secrets.LEARNING_TEST_D1_ID }}
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo 'Cloudflare preview credentials are missing from GitHub Secrets.' >&2
             exit 1
           fi
+          npx wrangler d1 info LEARNING_DB --json --config .wrangler.learning-preview.jsonc > /tmp/learning-preview-db.json
+          node -e "const fs=require('fs'); const db=JSON.parse(fs.readFileSync('/tmp/learning-preview-db.json')); if (db.name!=='buildscope-learning-test' || db.uuid!==process.env.LEARNING_TEST_D1_ID) throw Error('Refusing to migrate a D1 database other than buildscope-learning-test')"
+          npx wrangler d1 execute LEARNING_DB --remote --yes --config .wrangler.learning-preview.jsonc --file migrations/0001_learning.sql
           npx wrangler deploy --config .wrangler.learning-preview.jsonc
+      - name: Verify locked preview routes
+        env:
+          LEARNING_PREVIEW_ORIGIN: ${{ secrets.LEARNING_PREVIEW_ORIGIN }}
+        run: |
+          for i in $(seq 1 12); do
+            if curl -fsS "$LEARNING_PREVIEW_ORIGIN/api/learn/lessons" -o /tmp/learning-preview-lessons.json; then break; fi
+            sleep 5
+          done
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('/tmp/learning-preview-lessons.json')); if (data.lessons?.length!==9 || data.access!==false) process.exit(1)"
+          lesson_status=$(curl -sS -o /dev/null -w '%{http_code}' "$LEARNING_PREVIEW_ORIGIN/api/learn/lesson?id=basics")
+          resource_status=$(curl -sS -o /dev/null -w '%{http_code}' "$LEARNING_PREVIEW_ORIGIN/api/learn/resource")
+          test "$lesson_status" = 401 && test "$resource_status" = 401
