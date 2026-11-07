@@ -26,6 +26,12 @@ assert.equal((await request('/api/learn/lesson?id=completion',{headers:memberHea
 const paid=await request('/api/learn/lesson?id=basics',{headers:memberHeaders});
 assert.equal(paid.status,200);
 assert.equal((await paid.json()).body,'CI synthetic lesson, no paid content');
+for(let i=1;i<=6;i++) {
+  const media=await request(`/api/learn/media/lesson-${i}.webp`,{headers:memberHeaders});
+  assert.equal(media.status,200);
+  assert.equal(media.headers.get('Content-Type'),'image/webp');
+  assert.equal(media.headers.get('Cache-Control'),'private, no-store');
+}
 for(const id of ['basics','systems','drawdown','settlement','failures','quick-check']) {
   assert.equal((await request('/api/learn/progress',{method:'POST',headers:{...memberHeaders,Origin:base,'Content-Type':'application/json'},body:JSON.stringify({id})})).status,200);
 }

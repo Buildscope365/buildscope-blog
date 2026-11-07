@@ -28,6 +28,7 @@ jobs:
           npx wrangler d1 execute LEARNING_DB --config wrangler.learning-ci.jsonc --local --persist-to /tmp/buildscope-learning-ci --file migrations/0001_learning.sql
           node tests/learning-worker-seed.mjs
           npx wrangler d1 execute LEARNING_DB --config wrangler.learning-ci.jsonc --local --persist-to /tmp/buildscope-learning-ci --file /tmp/buildscope-learning-fixture.sql
+          for i in $(seq 1 6); do npx wrangler r2 object put buildscope-learning-ci/dewatering/lesson-$i.webp --config wrangler.learning-ci.jsonc --local --persist-to /tmp/buildscope-learning-ci --file public/images/learning/dewatering/course-cover.webp; done
           npx wrangler dev --config wrangler.learning-ci.jsonc --local --persist-to /tmp/buildscope-learning-ci --ip 127.0.0.1 --port 8787 --var LEARNING_ADMIN_TOKEN:ci_admin_token > /tmp/buildscope-learning-worker.log 2>&1 &
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/api/learn/lessons > /dev/null && break; sleep 1; done
           node tests/learning-worker-smoke.mjs
@@ -40,8 +41,10 @@ jobs:
           node tests/sop-browser.mjs
           node tests/nec-browser.mjs
           node tests/learning-browser.mjs
+          node tests/learning-reader-browser.mjs
         env:
           SCREENSHOT_DIR: /tmp/buildscope-phase1-screenshots
+          LEARNING_WORKER_URL: http://127.0.0.1:8787
       - uses: actions/upload-artifact@v4
         if: always()
         with:
