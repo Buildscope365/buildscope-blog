@@ -1,3 +1,5 @@
+import { learning } from "./learning";
+
 type OAuthEnv = Env & {
   GITHUB_OAUTH_ID?: string;
   GITHUB_OAUTH_SECRET?: string;
@@ -407,6 +409,7 @@ export default {
         const canonicalUrl = new URL(`${url.pathname}${url.search}`, env.CMS_ORIGIN);
         return Response.redirect(canonicalUrl.toString(), 308);
       }
+      if (url.pathname.startsWith("/api/learn/")) return await learning(request, env);
       if (url.pathname === "/auth") return await handleAuth(request, env);
       if (url.pathname === "/callback") return await handleCallback(request, env);
       if (url.pathname === "/api/instagram/publish") return await handleInstagramPublish(request, env);

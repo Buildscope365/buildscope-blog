@@ -6,4 +6,6 @@ dist/
 .env
 .env.local
 .env.*.local
+.wrangler.learning-preview.jsonc
+.wrangler.learning-production.jsonc
 .DS_Store
