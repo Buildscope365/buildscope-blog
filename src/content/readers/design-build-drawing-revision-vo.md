@@ -18,33 +18,33 @@ quickTakeaway: D&B 圖則修訂只係一項事實，唔會自動產生 VO。先�
 publishedDate: 2026-11-09T08:00:00+08:00
 draft: false
 slides:
-  - src: /images/readers/design-build-drawing-revision-vo/01-v2.jpg
-    label: Drawing 改咗，就可以 Claim VO？
-    alt: 1/9 D&B 承建商負責設計，圖則 Rev A、B、C 多次修訂；先區分設計深化與雇主變更
-  - src: /images/readers/design-build-drawing-revision-vo/02-v2.jpg
-    label: D&B 核心概念
-    alt: 2/9 Employer 訂立項目要求，Contractor 按 D&B 合約負責設計深化及施工；責任以合約和 ER 為準
-  - src: /images/readers/design-build-drawing-revision-vo/03-v2.jpg
-    label: ER 係判斷變更嘅起點
-    alt: 3/9 Employer's Requirements 可界定功能、容量、性能、質量、合規與工期要求，須按整份合約理解
-  - src: /images/readers/design-build-drawing-revision-vo/04-v2.jpg
-    label: 圖則改咗，但 Scope 未必改
-    alt: 4/9 調整風管走線、喉管尺寸或處理結構衝突，可能只係履行原有設計責任的深化工作
-  - src: /images/readers/design-build-drawing-revision-vo/05-v2.jpg
-    label: Employer Change 幾時可能有 Variation？
-    alt: 5/9 例子比較原有 ER 的 500 個座位與雇主正式要求 650 個座位；須查變更機制及合約條款
-  - src: /images/readers/design-build-drawing-revision-vo/06-v2.jpg
-    label: Employer Comment 等於 Variation？
-    alt: 6/9 區分修正不符合 ER 的設計、技術建議與新增或改變原有要求；Comment 不一定是變更指示
-  - src: /images/readers/design-build-drawing-revision-vo/07-v2.jpg
-    label: 有額外 Cost，唔代表有 Entitlement
-    alt: 7/9 QS 分析 Contractor 設計風險、Employer 指示變更、設計錯誤及合約權利，逐項核對權利基礎
-  - src: /images/readers/design-build-drawing-revision-vo/08-v2.jpg
-    label: 收到 Revised Drawing 先查 5 大問題
-    alt: 8/9 核對 ER 基線、變更來源、設計深化或新增要求、正式指示通知，以及成本和工期影響
-  - src: /images/readers/design-build-drawing-revision-vo/09-v2.jpg
-    label: Drawing 改咗，唔等於有 VO
-    alt: 9/9 先睇合約責任與變更性質，再評估指示、權利及 Scope 的實際影響
+  - src: /images/readers/design-build-drawing-revision-vo/01-v3.jpg
+    label: Drawing 改咗三次，可以 Claim 三次 VO？
+    alt: 1/9 D&B 圖則 Rev A、B、C 修訂三次，承建商未必可以申請三次 VO；須區分設計深化與雇主變更
+  - src: /images/readers/design-build-drawing-revision-vo/02-v3.jpg
+    label: D&B 合約係甚麼？
+    alt: 2/9 設計與施工由同一個 Contractor 負責，設計成果須滿足 Employer's Requirements
+  - src: /images/readers/design-build-drawing-revision-vo/03-v3.jpg
+    label: Drawing 改動未必都係 VO
+    alt: 3/9 比較履行原有設計責任的設計深化，以及修改或新增原有要求的雇主變更
+  - src: /images/readers/design-build-drawing-revision-vo/04-v3.jpg
+    label: 設計深化不等於 VO
+    alt: 4/9 機電路線調整、設備尺寸修改和 Clash 協調與雇主要求由 500 座位改為 650 座位的示意比較
+  - src: /images/readers/design-build-drawing-revision-vo/05-v3.jpg
+    label: QS 收到 Revised Drawing 先查五樣關鍵
+    alt: 5/9 核對原有 ER 與 Proposal、誰提出修改、設計深化或雇主變更、合約指示通知及成本工期證據
+  - src: /images/readers/design-build-drawing-revision-vo/06-v3.jpg
+    label: 改圖由誰負責？
+    alt: 6/9 路線調整及系統優化可能屬 Contractor 設計責任；新增功能或數量須查雇主要求和變更權利
+  - src: /images/readers/design-build-drawing-revision-vo/07-v3.jpg
+    label: 改圖後三大風險
+    alt: 7/9 工期延誤、成本增加及責任不清，須更新 Programme、量化影響並以書面釐清修改原因
+  - src: /images/readers/design-build-drawing-revision-vo/08-v3.jpg
+    label: 收到改圖後做四件事
+    alt: 8/9 QS 實務建議：對照 ER 與 Proposal、確認修改性質、查合約指示程序、評估成本工期並保存證據
+  - src: /images/readers/design-build-drawing-revision-vo/09-v3.jpg
+    label: 改圖未必係 VO，關鍵係責任與影響
+    alt: 9/9 先釐清改動原因，再評估成本與工期，最後按合約處理 VO、設計深化或雇主變更
 discussionQuestion: 你最近收到嘅 Revised Drawing，最難判斷係設計深化、修正錯誤，定 Employer 改咗 ER？
 isProCourseAvailable: false
 skoolCourseUrl: ""
