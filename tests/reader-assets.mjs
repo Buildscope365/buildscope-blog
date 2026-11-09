@@ -30,3 +30,12 @@ for (const name of files) {
   publicReaders++;
 }
 console.log(`Reader assets: ${files.length} entries, ${publicReaders} public URLs, ${images} images; all sequences verified.`);
+
+const courseHtml = await readFile("dist/learn/dewatering/index.html", "utf8");
+assert.ok(!courseHtml.includes("Effective Stress Principle"), "paid lesson text leaked into public HTML");
+assert.ok(!courseHtml.includes("① Groundwater Control 目標係乜？"), "paid checklist questions leaked into public HTML");
+assert.ok((await stat("dist/images/learning/dewatering/course-cover.webp")).size > 100000, "course cover missing from build");
+const courseAssets = await readdir("dist/images/learning/dewatering");
+assert.ok(!courseAssets.some((name) => /^lesson-[1-6]\./.test(name)), "private lesson cover leaked into public build");
+assert.ok(!courseAssets.some((name) => /checklist|resource/i.test(name)), "private resource leaked into public build");
+console.log("Dewatering public build: cover present; private lesson text and covers absent.");
