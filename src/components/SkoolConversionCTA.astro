@@ -28,7 +28,6 @@ const {
   resourceTitle,
   resourcePreview,
   resourceUrl,
-  discussionQuestion,
   discussionUrl,
   isProCourseAvailable = false,
 } = Astro.props;
@@ -38,8 +37,8 @@ const secondaryUrl = verifiedCourseUrl ?? discussionUrl ?? "https://www.skool.co
 const secondaryLabel = verifiedCourseUrl
   ? `已是會員？前往 ${courseTitle ?? "Skool Classroom"} →`
   : discussionUrl
-    ? `在 Skool 繼續討論：${discussionQuestion} ↗`
-    : "免費加入工程 Community →";
+    ? `已是會員？前往 Skool 討論 ↗`
+    : "查看付費 Learning Lab 會籍 →";
 const destinationType = verifiedCourseUrl ? "skool_course" : discussionUrl ? "skool_discussion" : "skool_community";
 ---
 
