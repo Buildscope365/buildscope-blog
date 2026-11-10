@@ -46,8 +46,9 @@ slides:
     label: 改圖未必係 VO，關鍵係責任與影響
     alt: 9/9 先釐清改動原因，再評估成本與工期，最後按合約處理 VO、設計深化或雇主變更
 discussionQuestion: 你最近收到嘅 Revised Drawing，最難判斷係設計深化、修正錯誤，定 Employer 改咗 ER？
-isProCourseAvailable: false
-skoolCourseUrl: ""
+courseTitle: D&B 設計責任與 VO 判斷
+isProCourseAvailable: true
+skoolCourseUrl: https://www.skool.com/buildscope-learning-lab-1916/classroom/4055560c?md=4675981dac1c44b880b876679251a4aa
 skoolResourceUrl: ""
 skoolDiscussionUrl: ""
 ---
