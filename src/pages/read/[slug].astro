@@ -60,8 +60,8 @@ const { reader } = Astro.props;
         ? `${reader.courseTitle}：由理解去到應用。`
         : "睇完圖解，下一步學識點樣應用。"}
       description={reader.isProCourseAvailable
-        ? `免費圖解幫你理解「${reader.title}」嘅基本概念。了解 BuildScope PRO，再到 Skool 繼續完整 Micro Course 同實務 Resources。`
-        : "免費圖解幫你掌握工程概念。你可以了解 BuildScope PRO，或者沿用現有 Skool Discussion 同其他工程人繼續交流。"}
+        ? `呢組圖解可公開閱讀，幫你理解「${reader.title}」嘅基本概念。BuildScope Learning Lab 係付費會員社群；加入後可按會籍權限到 Skool 學習 Micro Course 同使用實務 Resources。`
+        : "呢組圖解可公開閱讀，幫你掌握工程概念。BuildScope Learning Lab 係付費會員社群；會員可按會籍權限到 Skool 繼續學習同參與討論。"}
       courseTitle={reader.courseTitle}
       courseUrl={reader.skoolCourseUrl}
       resourceTitle={reader.resourceTitle}
