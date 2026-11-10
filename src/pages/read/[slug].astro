@@ -85,7 +85,8 @@ const { reader } = Astro.props;
 </BaseLayout>
 
 <style>
-  :global(body) { background: #f4f1eb; }
+  :global(html), :global(body) { background: #f4f1eb; }
+  :global(main) { width: 100%; min-width: 0; }
   .reader-page { width: min(calc(100% - 28px), 52rem); margin-inline: auto; padding: 32px 0 46px; }
   .reader-header { max-width: 46rem; margin: 0 auto 30px; }
   .back-library { display: inline-block; margin-bottom: 25px; color: #657486; font-size: .8rem; font-weight: 800; }
@@ -110,7 +111,7 @@ const { reader } = Astro.props;
   .reader-footer p { margin: 0; }
   .reader-footer strong { color: #0b1b2f; }
   @media (max-width: 560px) {
-    .reader-page { padding-top: 22px; }
+    .reader-page { width: calc(100vw - 28px); padding-top: 22px; }
     .reader-header { margin-bottom: 24px; }
     .reading-room { margin-top: 28px; }
     .reader-note { grid-template-columns: 1fr; gap: 10px; }
