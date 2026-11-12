@@ -109,6 +109,8 @@ const readers = defineCollection({
       alt: z.string(),
     })).min(1).max(20),
     discussionQuestion: z.string(),
+    sourceTitle: z.string().optional(),
+    sourceUrl: optionalUrl,
     courseTitle: z.string().optional(),
     resourceTitle: z.string().optional(),
     resourcePreview: z.string().optional(),
