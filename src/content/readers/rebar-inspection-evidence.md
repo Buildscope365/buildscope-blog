@@ -48,11 +48,11 @@ discussionQuestion: 你項目而家點樣將鋼筋照片連到圖則版本、TCP
 sourceTitle: 香港政府新聞公報《立法會一題：建築工程的監管》（2026 年 11 月 11 日）
 sourceUrl: https://www.info.gov.hk/gia/general/202611/11/P2026111100398.htm
 resourceTitle: Rebar Inspection Evidence Checklist
-resourcePreview: 鋼筋檢查及影像記錄清單；按連結前往 BuildScope Linktree 查閱資源入口。
+resourcePreview: 鋼筋檢查及影像記錄清單；按下方連結查看 Google Drive 文件。
 isProCourseAvailable: false
 skoolCourseUrl: ""
 skoolResourceUrl: ""
 skoolDiscussionUrl: ""
-toolUrl: https://linktr.ee/buildscope
-toolTitle: 前往 BuildScope Linktree 查閱 Rebar Inspection Evidence Checklist
+toolUrl: https://drive.google.com/file/d/1ZbHSwzmLu__FYKSuOnaKS0AKjOLGl73j/view?usp=drivesdk
+toolTitle: 查看 Rebar Inspection Evidence Checklist
 ---
