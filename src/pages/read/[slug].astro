@@ -42,6 +42,7 @@ const { reader } = Astro.props;
     <section class="reader-note" aria-labelledby="reader-note-title">
       <p id="reader-note-title">讀圖重點</p>
       <div>{reader.quickTakeaway}</div>
+      {reader.sourceUrl && <p class="reader-source">資料來源：<a href={reader.sourceUrl} target="_blank" rel="noopener noreferrer">{reader.sourceTitle ?? "查看原始資料"} ↗</a></p>}
     </section>
 
     {reader.toolUrl && (
@@ -101,6 +102,8 @@ const { reader } = Astro.props;
   .reader-note { display: grid; grid-template-columns: 8.5rem 1fr; gap: 24px; width: min(100%, 46rem); margin: 30px auto 0; padding: 24px 0; border-block: 1px solid rgba(11, 27, 47, .16); }
   .reader-note p { margin: 0; color: #c4510b; font-size: .7rem; font-weight: 900; letter-spacing: .13em; }
   .reader-note div { color: #26384c; font-size: 1rem; font-weight: 700; line-height: 1.75; }
+  .reader-note .reader-source { grid-column: 2; color: #52647a; font-size: .78rem; font-weight: 600; letter-spacing: 0; line-height: 1.6; }
+  .reader-source a { color: #a1410a; text-decoration: underline; text-underline-offset: 3px; }
   .reader-tool { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; width: min(100%, 46rem); margin: 18px auto 0; padding: 18px 22px; border-radius: 8px; color: #fff; background: #0b1b2f; }
   .reader-tool span { color: #ffc107; font-size: .75rem; font-weight: 900; letter-spacing: .08em; }
   .reader-tool a { color: #fff; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }
@@ -115,6 +118,7 @@ const { reader } = Astro.props;
     .reader-header { margin-bottom: 24px; }
     .reading-room { margin-top: 28px; }
     .reader-note { grid-template-columns: 1fr; gap: 10px; }
+    .reader-note .reader-source { grid-column: 1; }
   }
 </style>
 
