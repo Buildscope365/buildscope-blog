@@ -123,4 +123,23 @@ const readers = defineCollection({
   }),
 });
 
-export const collections = { blog, news, templates, ebooks, readers };
+const comics = defineCollection({
+  loader: glob({ base: "./src/content/comics", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(),
+    episode: z.number().int().positive(),
+    series: z.string(),
+    category: z.string(),
+    publishedDate: z.coerce.date(),
+    description: z.string(),
+    image: z.string(),
+    imageAlt: z.string(),
+    imageWidth: z.number().int().positive(),
+    imageHeight: z.number().int().positive(),
+    seoTitle: z.string(),
+    seoDescription: z.string(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, news, templates, ebooks, readers, comics };
