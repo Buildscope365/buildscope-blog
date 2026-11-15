@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const comics = (await getCollection("comics", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime() || b.data.episode - a.data.episode);
+const categories = [...new Set(comics.map(({ data }) => data.category))];
+---
+<BaseLayout title="工程人崩潰日常｜BuildScope Site Life Comics" description="工程人每日都有一個崩潰故事！由 QS、PM、Engineer 到地盤同事，用港式工程漫畫講盡建築業打工仔嘅辛酸與爆笑日常。" image={comics[0]?.data.image}>
+  <div class="comics-page">
+    <header class="hero"><div class="shell">
+      <p class="eyebrow">BUILDSCOPE · SITE LIFE COMICS</p>
+      <h1>工程人<br /><span>崩潰日常。</span></h1>
+      <p class="hero-desc">工程人每日都有一個崩潰故事！由 QS、PM、Engineer 到地盤同事，用港式工程漫畫講盡建築業打工仔嘅辛酸與爆笑日常。</p>
+      <p class="hero-count">{String(comics.length).padStart(2, "0")} EPISODE{comics.length === 1 ? "" : "S"} · 持續更新</p>
+    </div></header>
+    <section class="episodes shell" aria-labelledby="episode-heading">
+      <div class="section-heading"><div><p class="eyebrow">THE EPISODES</p><h2 id="episode-heading">最新漫畫</h2></div><span>由最新集數開始睇 ↓</span></div>
+      {categories.length > 1 && <nav class="category-list" aria-label="角色分類">{categories.map((category) => <span>{category}</span>)}</nav>}
+      <div class="grid">
+        {comics.map(({ id, data }) => <article class="card">
+          <a class="cover" href={`/comics/${id}/`} aria-label={`閱讀 ${data.series}：${data.title}`}>
+            <img src={data.image} alt={data.imageAlt} width={data.imageWidth} height={data.imageHeight} loading="eager" />
+            <span class="episode-badge">EP. {String(data.episode).padStart(2, "0")}</span>
+          </a>
+          <div class="card-copy"><p>{data.category} <span>／ {data.series}</span></p><h3><a href={`/comics/${id}/`}>{data.title}</a></h3><p class="summary">{data.description}</p><a class="card-link" href={`/comics/${id}/`}>睇漫畫 <span aria-hidden="true">↗</span></a></div>
+        </article>)}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+<style>
+  .comics-page{background:#0a1931;color:#fff;min-height:80vh}.shell{width:min(calc(100% - 32px),1120px);margin:auto}.hero{border-bottom:1px solid #36506d;background:radial-gradient(circle at 85% 20%,#203f67,#0a1931 55%);padding:clamp(65px,9vw,120px) 0 66px}.eyebrow{margin:0;color:#ffcb22;font-size:.76rem;font-weight:900;letter-spacing:.17em}.hero h1{font-size:clamp(3.5rem,10vw,8.2rem);line-height:1.08;letter-spacing:-.07em;margin:22px 0}.hero h1 span{color:#ffcb22}.hero-desc{max-width:650px;font-size:clamp(1rem,2.1vw,1.25rem);color:#e1eaf6;line-height:1.9}.hero-count{margin-top:44px;color:#ffcb22;font-size:.8rem;font-weight:900;letter-spacing:.15em}.episodes{padding:64px 0 110px}.section-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:32px}.section-heading h2{margin:8px 0 0;font-size:clamp(2rem,4vw,3.3rem)}.section-heading>span{color:#b8c8db;font-size:.85rem}.category-list{display:flex;gap:8px;margin-bottom:24px}.category-list span{border:1px solid #5e7290;padding:5px 12px;color:#ffcb22;font-size:.8rem}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:24px}.card{background:#162e4e;border:1px solid #385373;overflow:hidden}.cover{position:relative;display:block;background:#102442}.cover img{width:100%;height:auto;aspect-ratio:1229/1536;object-fit:contain}.episode-badge{position:absolute;top:16px;left:16px;background:#ffcb22;color:#0a1931;padding:6px 11px;font-weight:900;font-size:.8rem}.card-copy{padding:24px}.card-copy>p:first-child{color:#ffcb22;font-size:.78rem;font-weight:900}.card-copy>p:first-child span{color:#b9c8dd}.card h3{margin:13px 0;font-size:1.55rem;line-height:1.35}.summary{color:#d1deed}.card-link{display:inline-flex;gap:20px;align-items:center;color:#ffcb22;font-weight:900;margin-top:16px}.card a:focus-visible{outline:3px solid #ffcb22;outline-offset:3px}@media(max-width:600px){.hero{padding:55px 0}.hero h1{font-size:3.8rem}.episodes{padding:48px 0 70px}.section-heading>span{display:none}}
+</style>
