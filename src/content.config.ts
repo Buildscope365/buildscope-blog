@@ -138,6 +138,12 @@ const comics = defineCollection({
     imageHeight: z.number().int().positive(),
     seoTitle: z.string(),
     seoDescription: z.string(),
+    story: z.array(z.string()).min(1),
+    tipTitle: z.string(),
+    tipIntroduction: z.array(z.string()).min(1),
+    tipPoints: z.array(z.string()).min(1),
+    tipClosing: z.string(),
+    disclaimer: z.string(),
     draft: z.boolean().default(false),
   }),
 });
