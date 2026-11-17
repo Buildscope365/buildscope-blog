@@ -9,3 +9,7 @@
 - SEO: canonical, description, Open Graph and JSON-LD from BaseLayout; sitemap lists the nine public routes.
 - GA4: existing consent-gated page views and automatic `skool_cta_click` with course ID/location/destination; `learning_lab_search` and `learning_lab_preview_open` are new consent-gated events. In GA4 DebugView, accept consent, filter catalog and open a preview, then click a Skool CTA; check the events and parameters. A click does not prove a paid join.
 - QA: `npm test`, `npm run build`, `node tests/learning-lab-links.mjs`, `npm run test:assets`, and browser tests in `.github/workflows/phase1-qa.yml`.
+
+## Production deployment
+
+The `Deploy BuildScope Production` workflow runs on pushes to `main` and can be retried manually. It builds and checks the full checkout, then deploys the existing `buildscope-blog` Worker from `wrangler.jsonc`. Configure repository Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` before merging. Scope the token to this Cloudflare account and, where available, this Worker, with Workers Editor access. Never commit the token. Confirm the workflow succeeds and check `/learning-lab/`, all four courses and the Dewatering CTA on Production.
