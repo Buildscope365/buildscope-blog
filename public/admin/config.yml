@@ -22,6 +22,41 @@ slug:
   sanitize_replacement: "-"
 
 collections:
+  - name: "courses"
+    label: "Learning Lab 課程"
+    label_singular: "課程及免費預覽"
+    description: "課程簡介與公開 Lesson Preview；完整會員內容仍放在 Skool。"
+    folder: "src/content/courses"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    preview_path: "learning-lab/{{slug}}/"
+    summary: "{{sortOrder}} — {{title}}"
+    sortable_fields: ["sortOrder", "title", "category", "draft"]
+    editor:
+      preview: false
+    fields:
+      - { label: "課程名稱", name: "title", widget: "string" }
+      - { label: "課程簡介及 SEO 描述", name: "description", widget: "text" }
+      - label: "分類"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "合約與 QS", value: "contracts-qs" }
+          - { label: "AI 與工作流程", value: "ai-workflows" }
+          - { label: "法規與實務", value: "statutory" }
+          - { label: "地盤施工", value: "site-works" }
+      - { label: "適合對象", name: "audience", widget: "text" }
+      - { label: "學習方向", name: "outcomes", widget: "list", min: 1 }
+      - { label: "公開 Preview 標題", name: "previewTitle", widget: "string" }
+      - { label: "公開 Preview 摘要", name: "previewDescription", widget: "text" }
+      - { label: "已核實 Skool Classroom URL", name: "skoolCourseUrl", widget: "string", required: false, hint: "只填已確認的 BuildScope Classroom URL；留空時導向 Skool Community。" }
+      - { label: "排列次序", name: "sortOrder", widget: "number", value_type: "int", default: 100, min: 1 }
+      - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: true }
+      - { label: "免費 Lesson Preview 正文", name: "body", widget: "markdown", hint: "只寫可公開內容，不複製會員專屬完整課堂。" }
+
   - name: "readers"
     label: "Visual Library"
     label_singular: "圖解 Topic"

@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import LearningLabCTA from "../../../components/LearningLabCTA.astro";
+import { courseCategories, getPublishedCourses } from "../../../data/courses";
+import "../../../styles/learning-lab.css";
+export async function getStaticPaths() { return (await getPublishedCourses()).map((course) => ({ params: { slug: course.id }, props: { course } })); }
+const { course } = Astro.props;
+const { title, description, audience, outcomes, previewTitle, previewDescription, category, skoolCourseUrl } = course.data;
+const url = `https://buildscope-blog.com/learning-lab/${course.id}/`;
+---
+<BaseLayout title={`${title}｜BuildScope Learning Lab`} description={description} jsonLd={{"@context":"https://schema.org","@type":"Course",name:title,description,provider:{"@type":"Organization",name:"工程白話文 BuildScope"},url}}>
+  <div class="learning-lab lab-detail"><header class="lab-hero"><div class="lab-shell"><a class="lab-back" href="/learning-lab/">← 返回課程目錄</a><p>{courseCategories[category]}</p><h1>{title}</h1><p>{description}</p></div></header><div class="lab-shell lab-main"><p class="lead">先閱讀一篇公開 Lesson Preview。完整課堂及會員資源於 Skool BuildScope Learning Lab 提供。</p><div class="metadata"><strong>適合對象</strong><p>{audience}</p></div><h2>你會探索</h2><ul>{outcomes.map((item:string)=><li>{item}</li>)}</ul><section class="preview-panel"><h2>免費 Lesson Preview</h2><h3>{previewTitle}</h3><p>{previewDescription}</p><a class="lab-link" href={`/learning-lab/${course.id}/preview/`} data-content-id={course.id}>免費閱讀 Preview →</a></section><LearningLabCTA courseId={course.id} courseTitle={title} courseUrl={skoolCourseUrl} location="learning_lab_course" /></div></div>
+</BaseLayout>
