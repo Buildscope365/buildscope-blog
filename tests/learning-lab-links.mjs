@@ -20,6 +20,9 @@ for (const slug of slugs) {
   const preview = readFileSync(join(root, `learning-lab/${slug}/preview/index.html`), "utf8");
   assert.ok(landing.includes(`/learning-lab/${slug}/preview/`));
   assert.ok(preview.includes("data-cta-location=\"learning_lab_preview\""));
-  if (slug !== "pnrc") assert.ok(!landing.includes(`/classroom/`), `Unverified classroom on ${slug}`);
+  if (slug === "pnrc" || slug === "dewatering") {
+    assert.ok(landing.includes(slug === "pnrc" ? "/classroom/88fa0a8b" : "/classroom/40f6c74c"), `Verified classroom missing on ${slug}`);
+    assert.ok(preview.includes(slug === "pnrc" ? "/classroom/88fa0a8b" : "/classroom/40f6c74c"), `Verified preview CTA missing on ${slug}`);
+  } else assert.ok(!landing.includes(`/classroom/`), `Unverified classroom on ${slug}`);
 }
 console.log("Learning Lab: 9 routes, sitemap, canonical, internal links and CTA checks passed.");
