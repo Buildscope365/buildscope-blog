@@ -1,17 +1,19 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import { getReaders } from "../data/readers";
+import { getPublishedCourses } from "../data/courses";
 
 const site = "https://buildscope-blog.com";
-const staticPaths = ["/", "/about/", "/ai-tools/", "/blog/", "/comics/", "/dictionary/", "/ebooks/", "/news/", "/pro/", "/templates/", "/tools/", "/tools/retention/", "/visual-library/"];
+const staticPaths = ["/", "/about/", "/ai-tools/", "/blog/", "/comics/", "/dictionary/", "/ebooks/", "/learning-lab/", "/news/", "/pro/", "/templates/", "/tools/", "/tools/retention/", "/visual-library/"];
 const xml = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
 
 export const GET: APIRoute = async () => {
-  const [posts, news, readers, comics] = await Promise.all([
+  const [posts, news, readers, comics, courses] = await Promise.all([
     getCollection("blog", ({ data }) => !data.draft),
     getCollection("news", ({ data }) => !data.draft),
     getReaders(),
     getCollection("comics", ({ data }) => !data.draft),
+    getPublishedCourses(),
   ]);
   const entries: { path: string; date?: Date }[] = [
     ...staticPaths.map((path) => ({ path })),
@@ -19,6 +21,7 @@ export const GET: APIRoute = async () => {
     ...news.map((item) => ({ path: `/news/${item.id}/`, date: item.data.date })),
     ...readers.map((reader) => ({ path: `/read/${reader.slug}/` })),
     ...comics.map((comic) => ({ path: `/comics/${comic.id}/`, date: comic.data.publishedDate })),
+    ...courses.flatMap((course) => [{ path: `/learning-lab/${course.id}/` }, { path: `/learning-lab/${course.id}/preview/` }]),
   ];
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries.map(({ path, date }) => `<url><loc>${xml(new URL(path, site).toString())}</loc>${date ? `<lastmod>${date.toISOString().slice(0, 10)}</lastmod>` : ""}</url>`).join("")}</urlset>`;
   return new Response(body, { headers: { "Content-Type": "application/xml; charset=utf-8" } });

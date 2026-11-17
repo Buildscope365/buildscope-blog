@@ -1,0 +1,11 @@
+# Learning Lab Phase 1
+
+- Public routes: `/learning-lab/`, `/learning-lab/{slug}/`, `/learning-lab/{slug}/preview/`.
+- Content: `src/content/courses/*.md`; frontmatter drives catalog and landing page, Markdown body is the public preview.
+- CMS: `/admin` → Learning Lab 課程. Existing GitHub-backed workflow remains on `main` for production content editing after merge. `draft: true` hides a course and its preview from catalog, generated routes and sitemap.
+- Categories are constrained in `src/content.config.ts` and represented in `src/data/courses.ts` and CMS options. Align all three if categories change.
+- Only PNRC has a repository-verified Classroom URL (from `src/content/readers/pnrc-reading-guide.md`). The other course CTAs go to the verified community URL until their Classroom URLs are supplied and confirmed.
+- Skool remains responsible for membership, payment, downloads and full lessons. No duration, price or lesson count appears in the new pages.
+- SEO: canonical, description, Open Graph and JSON-LD from BaseLayout; sitemap lists the nine public routes.
+- GA4: existing consent-gated page views and automatic `skool_cta_click` with course ID/location/destination; `learning_lab_search` and `learning_lab_preview_open` are new consent-gated events. In GA4 DebugView, accept consent, filter catalog and open a preview, then click a Skool CTA; check the events and parameters. A click does not prove a paid join.
+- QA: `npm test`, `npm run build`, `node tests/learning-lab-links.mjs`, `npm run test:assets`, and browser tests in `.github/workflows/phase1-qa.yml`.

@@ -5,7 +5,9 @@ export type ConversionEventName =
   | "visual_library_search"
   | "skool_cta_click"
   | "pro_page_view"
-  | "pro_upgrade_click";
+  | "pro_upgrade_click"
+  | "learning_lab_search"
+  | "learning_lab_preview_open";
 
 export type ConsentStatus = "granted" | "denied";
 

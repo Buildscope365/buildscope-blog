@@ -148,4 +148,20 @@ const comics = defineCollection({
   }),
 });
 
-export const collections = { blog, news, templates, ebooks, readers, comics };
+const courses = defineCollection({
+  loader: glob({ base: "./src/content/courses", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    category: z.enum(["contracts-qs", "ai-workflows", "statutory", "site-works"]),
+    audience: z.string(),
+    outcomes: z.array(z.string()).min(1),
+    previewTitle: z.string(),
+    previewDescription: z.string(),
+    skoolCourseUrl: z.url().startsWith("https://www.skool.com/buildscope-learning-lab-1916/classroom/").optional(),
+    sortOrder: z.number().int().positive().default(100),
+    draft: z.boolean().default(true),
+  }),
+});
+
+export const collections = { blog, news, templates, ebooks, readers, comics, courses };
