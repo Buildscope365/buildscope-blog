@@ -9,6 +9,7 @@ outcomes:
   - 留意水位、鄰近環境及地盤監測
 previewTitle: Dewatering 同抽走地面積水，有咩唔同？
 previewDescription: 先認清水從哪裏來，再思考降水對開挖和周邊環境的影響。
+skoolCourseUrl: https://www.skool.com/buildscope-learning-lab-1916/classroom/40f6c74c?md=5f33270b03224ddabecb52fa0859d989
 sortOrder: 40
 draft: false
 ---
