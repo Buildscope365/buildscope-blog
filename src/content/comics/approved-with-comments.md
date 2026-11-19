@@ -25,4 +25,5 @@ tipPoints:
   - "保留修訂提交、回覆及現場紀錄；如批註影響工序、時間或成本，按合約程序評估及及時通知"
 tipClosing: "「Approved with Comments」唔等於所有批註都可以遲啲先處理；逐項確認條件及責任，先至知點樣落地。"
 disclaimer: "以上屬一般實務提示；批核效力、可否施工、設計責任及時間或費用後果，須按個別合約、批註內容及事實判斷。"
+skoolCourseUrl: "https://www.skool.com/buildscope-learning-lab-1916/classroom/1e876c4d?md=154d28f9d4a84b0d8857d458a06a8531"
 ---

@@ -144,6 +144,7 @@ const comics = defineCollection({
     tipPoints: z.array(z.string()).min(1),
     tipClosing: z.string(),
     disclaimer: z.string(),
+    skoolCourseUrl: z.url().startsWith("https://www.skool.com/buildscope-learning-lab-1916/classroom/").optional(),
     draft: z.boolean().default(false),
   }),
 });
