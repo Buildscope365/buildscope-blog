@@ -25,4 +25,5 @@ tipPoints:
   - "記錄受影響工序、物料、工期及成本，並按合約及項目程序及時跟進通知與指示"
 tipClosing: "「兩張都係 Latest」只代表版本狀態，唔代表衝突已解決；施工前要有協調後嘅明確做法。"
 disclaimer: "以上屬一般實務提示；施工安排、圖紙效力、優先次序，以及時間或費用責任，須按個別合約、圖紙及事實評估。"
+skoolCourseUrl: "https://www.skool.com/buildscope-learning-lab-1916/classroom/1e876c4d?md=154d28f9d4a84b0d8857d458a06a8531"
 ---
