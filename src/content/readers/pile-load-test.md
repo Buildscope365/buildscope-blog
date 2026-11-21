@@ -45,5 +45,5 @@ slides:
 discussionQuestion: 你個項目進行樁載荷試驗前，最容易漏咗安排測試時間、反力系統，定係合約責任？
 courseTitle: Pile Load Test｜樁載荷試驗
 isProCourseAvailable: true
-skoolCourseUrl: https://www.skool.com/buildscope-learning-lab-1916/classroom/f25b0fae?md=c27e0bdfa69c4f5080e3023a1322c2ad
+skoolCourseUrl: https://www.skool.com/buildscope-learning-lab-1916/classroom/a33ea27a?md=9293bd2c04ed435fac5e34d70d304eac
 ---
