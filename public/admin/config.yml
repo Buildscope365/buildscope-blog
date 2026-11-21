@@ -227,6 +227,29 @@ collections:
       - { label: "排列次序", name: "sortOrder", widget: "number", value_type: "int", default: 100, min: 1 }
       - { label: "補充說明", name: "body", widget: "markdown", required: false }
 
+  - name: "pocketGuides"
+    label: "Pocket Guide"
+    label_singular: "Pocket Guide"
+    folder: "src/content/pocket-guides"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    preview_path: "pocket-guides/"
+    summary: "{{sortOrder}} — {{title}}"
+    sortable_fields: ["sortOrder", "title", "draft"]
+    editor:
+      preview: false
+    fields:
+      - { label: "指南名稱", name: "title", widget: "string" }
+      - { label: "簡介", name: "description", widget: "text" }
+      - { label: "主題分類", name: "topic", widget: "string" }
+      - { label: "Gumroad 產品網址", name: "purchaseUrl", widget: "string", pattern: ["^https://", "請輸入完整 https 網址。"] }
+      - { label: "封面圖片", name: "coverImage", widget: "image", required: false }
+      - { label: "排列次序", name: "sortOrder", widget: "number", value_type: "int", default: 100, min: 1 }
+      - { label: "草稿（不公開）", name: "draft", widget: "boolean", default: false }
+
   - name: "ebooks"
     label: "電子書"
     label_singular: "電子書"

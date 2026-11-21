@@ -4,7 +4,7 @@ import { getReaders } from "../data/readers";
 import { getPublishedCourses } from "../data/courses";
 
 const site = "https://buildscope-blog.com";
-const staticPaths = ["/", "/about/", "/ai-tools/", "/blog/", "/comics/", "/dictionary/", "/ebooks/", "/learning-lab/", "/news/", "/pro/", "/templates/", "/tools/", "/tools/retention/", "/visual-library/"];
+const staticPaths = ["/", "/about/", "/ai-tools/", "/blog/", "/comics/", "/dictionary/", "/ebooks/", "/learning-lab/", "/news/", "/pocket-guides/", "/pro/", "/templates/", "/tools/", "/tools/retention/", "/visual-library/"];
 const xml = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
 
 export const GET: APIRoute = async () => {
