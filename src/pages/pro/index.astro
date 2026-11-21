@@ -10,7 +10,7 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
 ---
 
 <BaseLayout
-  title="BuildScope PRO Membership｜香港建築人的實務知識庫"
+  title="BuildScope Learning Lab｜香港建築人的實務知識庫"
   description="7天免費體驗 BuildScope Learning Lab：探索 Micro Courses、工程案例及實務資源。加入及會籍管理由 Skool 處理。"
   image={verifiedCourses[0]?.slides[0]?.src}
 >
@@ -18,7 +18,7 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
     <section class="pro-hero">
       <div class="pro-shell hero-grid">
         <div class="hero-copy">
-          <p class="section-label">BUILDSCOPE PRO MEMBERSHIP</p>
+          <p class="section-label">BUILDSCOPE LEARNING LAB</p>
           <h1>香港建築人的<br /><span>實務知識庫</span></h1>
           <p>由地盤施工、工程管理、合約 QS，到屋宇設備及 AI 應用。一個會籍，持續學習工程知識。</p>
           <p class="trial-highlight"><strong>7天免費體驗</strong><span>先入去睇吓，搵到啱自己工作嘅學習內容。</span></p>
@@ -36,14 +36,16 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
           </div>
           <small>加入及體驗安排以 Skool 頁面顯示為準；體驗期後的會籍條款亦請於 Skool 查閱。</small>
         </div>
-        <div class="hero-panel" aria-label="BuildScope PRO 內容範圍">
-          <p>PRO MEMBERSHIP</p>
+        <div class="hero-panel" aria-label="BuildScope Learning Lab 內容包括">
+          <p>BuildScope Learning Lab 內容包括👇</p>
           <ul>
-            <li><span>01</span>完整 Micro Courses</li>
-            <li><span>02</span>Excel Templates</li>
-            <li><span>03</span>PDF Resources</li>
-            <li><span>04</span>Practical Checklists</li>
-            <li><span>05</span>Case Studies</li>
+            <li><span>01</span>Learning Community</li>
+            <li><span>02</span>完整 Micro Courses</li>
+            <li><span>03</span>Excel Templates</li>
+            <li><span>04</span>PDF Resources</li>
+            <li><span>05</span>Practical Checklists</li>
+            <li><span>06</span>Case Studies</li>
+            <li><span>07</span>持續更新</li>
           </ul>
         </div>
       </div>
@@ -218,7 +220,7 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
   .secondary-button { border: 1px solid #6e8198; color: white; }
   .hero-copy small { display: block; max-width: 650px; margin-top: 16px; color: #93a3b6; line-height: 1.55; }
   .hero-panel { padding: 34px; border: 1px solid rgba(255,255,255,.18); background: rgba(20,42,73,.9); box-shadow: 18px 18px 0 rgba(255,193,7,.12); }
-  .hero-panel > p { margin: 0 0 20px; color: var(--yellow); font-size: .68rem; font-weight: 900; letter-spacing: .15em; }
+  .hero-panel > p { margin: 0 0 20px; color: var(--yellow); font-size: 1rem; font-weight: 900; line-height: 1.5; }
   .hero-panel ul { margin: 0; padding: 0; list-style: none; }
   .hero-panel li { display: grid; grid-template-columns: 42px 1fr; gap: 14px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.13); font-weight: 800; }
   .hero-panel li:last-child { border-bottom: 0; }
