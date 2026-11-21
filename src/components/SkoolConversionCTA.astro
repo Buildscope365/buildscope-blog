@@ -33,13 +33,11 @@ const {
 } = Astro.props;
 
 const verifiedCourseUrl = isProCourseAvailable && courseUrl ? courseUrl : null;
-const secondaryUrl = verifiedCourseUrl ?? discussionUrl ?? "https://www.skool.com/buildscope-learning-lab-1916";
+const secondaryUrl = verifiedCourseUrl ?? discussionUrl;
 const secondaryLabel = verifiedCourseUrl
   ? `已是會員？前往 ${courseTitle ?? "Skool Classroom"} →`
-  : discussionUrl
-    ? `已是會員？前往 Skool 討論 ↗`
-    : "查看付費 Learning Lab 會籍 →";
-const destinationType = verifiedCourseUrl ? "skool_course" : discussionUrl ? "skool_discussion" : "skool_community";
+  : "已是會員？前往 Skool 討論 ↗";
+const destinationType = verifiedCourseUrl ? "skool_course" : "skool_discussion";
 ---
 
 <section
@@ -89,18 +87,20 @@ const destinationType = verifiedCourseUrl ? "skool_course" : discussionUrl ? "sk
       data-cta-location="reader_conversion_panel"
       data-destination-type="pro_information"
     >了解 Learning Lab · 7天免費體驗</a>
-    <a
-      class="secondary-action"
-      href={secondaryUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-track-event="skool_cta_click"
-      data-cta-location="reader_conversion_panel"
-      data-destination-type={destinationType}
-    >{secondaryLabel}</a>
+    {secondaryUrl && (
+      <a
+        class="secondary-action"
+        href={secondaryUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-track-event="skool_cta_click"
+        data-cta-location="reader_conversion_panel"
+        data-destination-type={destinationType}
+      >{secondaryLabel}</a>
+    )}
   </div>
 
-  <p class="conversion-note">會籍登記、付款及內容存取均由 Skool 處理；BuildScope 網站不處理付款。</p>
+  {verifiedCourseUrl && <p class="conversion-note">會籍登記、付款及內容存取均由 Skool 處理；BuildScope 網站不處理付款。</p>}
 </section>
 
 <style>
