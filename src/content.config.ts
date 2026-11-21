@@ -80,6 +80,19 @@ const ebooks = defineCollection({
   }),
 });
 
+const pocketGuides = defineCollection({
+  loader: glob({ base: "./src/content/pocket-guides", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    topic: z.string(),
+    purchaseUrl: z.url().startsWith("https://"),
+    coverImage: z.string().optional(),
+    sortOrder: z.coerce.number().default(100),
+    draft: z.boolean().default(false),
+  }),
+});
+
 const optionalUrl = z.union([z.url(), z.literal("")]).optional();
 
 const readers = defineCollection({
@@ -165,4 +178,4 @@ const courses = defineCollection({
   }),
 });
 
-export const collections = { blog, news, templates, ebooks, readers, comics, courses };
+export const collections = { blog, news, templates, ebooks, pocketGuides, readers, comics, courses };
