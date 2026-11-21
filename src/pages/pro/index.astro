@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getReaders } from "../../data/readers";
 
-const skoolPlansUrl = "https://www.skool.com/buildscope-learning-lab-1916/plans";
+const skoolJoinUrl = "https://www.skool.com/buildscope-learning-lab-1916";
 const visualLibraryUrl = "/visual-library/";
 const readers = await getReaders();
 const verifiedCourses = readers.filter((reader) => reader.isProCourseAvailable && reader.skoolCourseUrl);
@@ -11,7 +11,7 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
 
 <BaseLayout
   title="BuildScope PRO Membership｜香港建築人的實務知識庫"
-  description="了解 BuildScope PRO：Micro Courses、Excel Templates、PDF Resources、Practical Checklists 及工程案例。會籍登記及付款由 Skool 處理。"
+  description="7天免費體驗 BuildScope Learning Lab：探索 Micro Courses、工程案例及實務資源。加入及會籍管理由 Skool 處理。"
   image={verifiedCourses[0]?.slides[0]?.src}
 >
   <div class="pro-page">
@@ -21,20 +21,20 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
           <p class="section-label">BUILDSCOPE PRO MEMBERSHIP</p>
           <h1>香港建築人的<br /><span>實務知識庫</span></h1>
           <p>由地盤施工、工程管理、合約 QS，到屋宇設備及 AI 應用。一個會籍，持續學習工程知識。</p>
-          <div class="hero-pricing"><strong>US$8/月</strong><span>或</span><strong>US$64/年</strong></div>
+          <p class="trial-highlight"><strong>7天免費體驗</strong><span>先入去睇吓，搵到啱自己工作嘅學習內容。</span></p>
           <div class="hero-actions">
             <a
               class="primary-button"
-              href={skoolPlansUrl}
+              href={skoolJoinUrl}
               target="_blank"
               rel="noopener noreferrer"
               data-track-event="pro_upgrade_click"
               data-cta-location="pro_hero"
-              data-destination-type="skool_membership_information"
-            >查看付費會籍方案 →</a>
+              data-destination-type="skool_community"
+            >開始 7 天免費體驗</a>
             <a class="secondary-button" href={visualLibraryUrl}>先免費探索工程圖解庫</a>
           </div>
-          <small>會籍登記、付款及內容存取均由 Skool 處理；BuildScope 網站不處理付款。</small>
+          <small>加入及體驗安排以 Skool 頁面顯示為準；體驗期後的會籍條款亦請於 Skool 查閱。</small>
         </div>
         <div class="hero-panel" aria-label="BuildScope PRO 內容範圍">
           <p>PRO MEMBERSHIP</p>
@@ -67,14 +67,14 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
             <a href={visualLibraryUrl}>開始免費閱讀 →</a>
           </article>
           <article class="plan pro-plan">
-            <p>付費會員</p>
+            <p>Learning Lab</p>
             <h3>由理解去到實務應用</h3>
             <ul>
               <li>Learning Lab Micro Courses</li>
               <li>Excel Templates、PDF Resources</li>
               <li>Practical Checklists、Case Studies</li>
             </ul>
-            <a href="#pricing">查看會籍選項 →</a>
+            <a href="#trial">了解 7 天免費體驗</a>
           </article>
         </div>
       </div>
@@ -143,24 +143,26 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
       ))}
     </section>
 
-    <section class="pricing-section" id="pricing" aria-labelledby="pricing-title">
-      <div class="pro-shell pricing-grid">
+    <section class="trial-section" id="trial" aria-labelledby="trial-title">
+      <div class="pro-shell trial-grid">
         <div>
-          <p class="section-label">MEMBERSHIP</p>
-          <h2 id="pricing-title">揀適合你嘅會籍周期。</h2>
-          <p>所有實際登記、付款、續訂及會籍管理均在 Skool 完成。</p>
+          <p class="section-label">EXPLORE BUILDSCOPE LEARNING LAB</p>
+          <h2 id="trial-title">先體驗 7 天，睇吓有冇幫到你。</h2>
+          <p>入去探索工程課堂、實務資源同會員交流，再決定點樣繼續學。實際可瀏覽內容按 Skool 顯示。</p>
         </div>
-        <div class="price-options">
-          <div><p>MONTHLY</p><strong>US$8</strong><span>/ 月</span></div>
-          <div><p>ANNUAL</p><strong>US$64</strong><span>/ 年</span></div>
+        <div class="trial-card">
+          <p>7 DAYS TO EXPLORE</p>
+          <strong>7天免費體驗</strong>
+          <span>由你感興趣嘅 Topic 開始，認識 BuildScope Learning Lab。</span>
           <a
-            href={skoolPlansUrl}
+            href={skoolJoinUrl}
             target="_blank"
             rel="noopener noreferrer"
             data-track-event="pro_upgrade_click"
-            data-cta-location="pro_pricing"
-            data-destination-type="skool_membership_information"
-          >查看付費會籍方案 →</a>
+            data-cta-location="pro_trial"
+            data-destination-type="skool_community"
+          >前往 Learning Lab 免費體驗</a>
+          <small>體驗資格、開始時間及期後安排以 Skool 加入頁面為準。</small>
         </div>
       </div>
     </section>
@@ -169,7 +171,8 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
       <div class="pro-shell faq-layout">
         <div><p class="section-label">FAQ</p><h2 id="faq-title">加入前常見問題</h2></div>
         <div class="faq-list">
-          <details open><summary>免費內容包括甚麼？</summary><p>你可以免費使用網站 Visual Library 閱讀工程圖解；Skool Learning Lab 現時為付費會員社群，課程及討論按會籍權限開放。</p></details>
+          <details open><summary>免費內容包括甚麼？</summary><p>網站 Visual Library 可以免費閱讀工程圖解。BuildScope Learning Lab 提供 7 天免費體驗；可瀏覽的課程與討論按 Skool 當時權限顯示。</p></details>
+          <details><summary>7 天體驗後會怎樣？</summary><p>體驗期後的會籍及續訂安排，請在加入前到 Skool 頁面查閱並確認。</p></details>
           <details><summary>PRO 主要提供甚麼？</summary><p>PRO 主要提供更多 Micro Courses，以及 Excel Templates、PDF Resources、Practical Checklists 同 Case Studies。</p></details>
           <details><summary>可唔可以直接在 BuildScope 網站付款？</summary><p>不可以。BuildScope 網站只提供課程及會籍資訊；實際登記、付款及內容存取由 Skool 處理。</p></details>
           <details><summary>點樣確認某個 Topic 有完整課程？</summary><p>只有已核實 Skool Classroom URL 的 Topic，先會顯示直接前往 Classroom 的連結。</p></details>
@@ -179,16 +182,16 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
 
     <section class="final-cta">
       <div class="pro-shell final-cta-inner">
-        <div><h2>準備由「睇明」行到「用得到」？</h2><p>先在 Skool 查看會籍資訊，或者繼續免費探索工程圖解。</p></div>
+        <div><h2>準備由「睇明」行到「用得到」？</h2><p>先體驗 7 天 Learning Lab，或者繼續免費探索工程圖解。</p></div>
         <div>
           <a
-            href={skoolPlansUrl}
+            href={skoolJoinUrl}
             target="_blank"
             rel="noopener noreferrer"
             data-track-event="pro_upgrade_click"
             data-cta-location="pro_final_cta"
-            data-destination-type="skool_membership_information"
-          >查看付費會籍方案 →</a>
+            data-destination-type="skool_community"
+          >開始 7 天免費體驗</a>
           <a href={visualLibraryUrl}>返回免費 Visual Library</a>
         </div>
       </div>
@@ -201,14 +204,14 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
   .pro-shell { width: min(calc(100% - 40px), 1180px); margin-inline: auto; }
   .section-label { margin: 0; color: #b34b0c; font-size: .72rem; font-weight: 900; letter-spacing: .15em; }
   .pro-hero { padding: clamp(60px, 9vw, 112px) 0; color: white; background: var(--navy); background-image: linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px); background-size: 44px 44px; }
-  .pro-hero .section-label, .courses-section .section-label, .pricing-section .section-label { color: var(--yellow); }
+  .pro-hero .section-label, .courses-section .section-label, .trial-section .section-label { color: var(--yellow); }
   .hero-grid { display: grid; grid-template-columns: 1.08fr .72fr; align-items: center; gap: clamp(50px, 9vw, 120px); }
   .hero-copy h1 { max-width: 10ch; margin: 18px 0 25px; font-size: clamp(3.4rem, 7.5vw, 7rem); line-height: .94; letter-spacing: -.075em; }
   .hero-copy h1 span { color: var(--yellow); }
   .hero-copy > p:not(.section-label) { max-width: 650px; margin: 0; color: #d4deeb; font-size: 1.12rem; line-height: 1.85; }
-  .hero-pricing { display: flex; align-items: baseline; gap: 12px; margin-top: 28px; }
-  .hero-pricing strong { color: var(--yellow); font-size: 1.5rem; }
-  .hero-pricing span { color: #93a3b6; }
+  .trial-highlight { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 28px 0 0; }
+  .trial-highlight strong { padding: 8px 14px; border: 1px solid var(--yellow); color: var(--yellow); font-size: 1.25rem; }
+  .trial-highlight span { color: #d4deeb; }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
   .hero-actions a { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 20px; font-weight: 900; }
   .primary-button { color: var(--navy); background: var(--yellow); }
@@ -221,7 +224,7 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
   .hero-panel li:last-child { border-bottom: 0; }
   .hero-panel li span { color: var(--yellow); font-family: ui-monospace, monospace; }
   .comparison-section, .resources-section, .faq-section { padding: clamp(70px, 9vw, 110px) 0; background: white; }
-  .section-heading h2, .pricing-grid h2, .faq-layout h2, .final-cta h2 { max-width: 760px; margin: 12px 0 0; font-size: clamp(2.25rem, 5vw, 4.5rem); line-height: 1.04; letter-spacing: -.06em; }
+  .section-heading h2, .trial-grid h2, .faq-layout h2, .final-cta h2 { max-width: 760px; margin: 12px 0 0; font-size: clamp(2.25rem, 5vw, 4.5rem); line-height: 1.04; letter-spacing: -.06em; }
   .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; margin-top: 42px; border: 1px solid #d9dee5; }
   .plan { min-height: 350px; padding: clamp(28px, 5vw, 52px); }
   .plan + .plan { border-left: 1px solid #d9dee5; }
@@ -257,16 +260,15 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
   .verified-resource h3 { margin: 0 0 4px; font-size: 1.35rem; }
   .verified-resource span { color: #aebbd0; }
   .verified-resource a { flex: 0 0 auto; color: var(--yellow); font-weight: 900; }
-  .pricing-section { padding: clamp(70px, 9vw, 110px) 0; color: white; background: var(--navy); }
-  .pricing-grid { display: grid; grid-template-columns: 1fr .9fr; align-items: center; gap: clamp(50px, 9vw, 110px); }
-  .pricing-grid > div:first-child > p:last-child { max-width: 600px; color: #aebbd0; }
-  .price-options { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid rgba(255,255,255,.18); }
-  .price-options > div { padding: 25px; }
-  .price-options > div + div { border-left: 1px solid rgba(255,255,255,.18); }
-  .price-options p { margin: 0 0 8px; color: var(--yellow); font-size: .68rem; font-weight: 900; letter-spacing: .13em; }
-  .price-options strong { font-size: 2.5rem; }
-  .price-options span { color: #aebbd0; }
-  .price-options > a { grid-column: 1 / -1; padding: 17px 22px; color: var(--navy); background: var(--yellow); text-align: center; font-weight: 900; }
+  .trial-section { padding: clamp(70px, 9vw, 110px) 0; color: white; background: var(--navy); }
+  .trial-grid { display: grid; grid-template-columns: 1fr .9fr; align-items: center; gap: clamp(50px, 9vw, 110px); }
+  .trial-grid > div:first-child > p:last-child { max-width: 600px; color: #aebbd0; line-height: 1.8; }
+  .trial-card { display: flex; flex-direction: column; gap: 16px; padding: clamp(26px, 5vw, 46px); border: 1px solid rgba(255,193,7,.6); background: var(--navy-soft); }
+  .trial-card p { margin: 0; color: var(--yellow); font-size: .8rem; font-weight: 900; letter-spacing: .13em; }
+  .trial-card strong { color: var(--yellow); font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.1; }
+  .trial-card span { color: #d4deeb; line-height: 1.7; }
+  .trial-card a { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 14px 22px; color: var(--navy); background: var(--yellow); text-align: center; font-weight: 900; }
+  .trial-card small { color: #aebbd0; line-height: 1.6; }
   .faq-layout { display: grid; grid-template-columns: .75fr 1.25fr; gap: clamp(50px, 9vw, 110px); }
   .faq-list { border-top: 1px solid #d9dee5; }
   details { border-bottom: 1px solid #d9dee5; }
@@ -280,7 +282,7 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
   .final-cta a { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; padding: 0 19px; border: 2px solid var(--navy); font-weight: 900; }
   .final-cta a:first-child { color: white; background: var(--navy); }
   @media (max-width: 850px) {
-    .hero-grid, .resource-layout, .pricing-grid, .faq-layout, .split-heading, .final-cta-inner { grid-template-columns: 1fr; }
+    .hero-grid, .resource-layout, .trial-grid, .faq-layout, .split-heading, .final-cta-inner { grid-template-columns: 1fr; }
     .hero-panel { box-shadow: none; }
     .split-heading { gap: 20px; }
     .verified-resource { align-items: flex-start; flex-direction: column; }
@@ -290,15 +292,12 @@ const verifiedResources = readers.filter((reader) => reader.isProCourseAvailable
     .pro-shell { width: min(calc(100% - 28px), 1180px); }
     .hero-copy h1 { font-size: clamp(3.2rem, 15vw, 4.7rem); }
     .hero-actions a { width: 100%; }
-    .hero-pricing { flex-wrap: wrap; }
     .comparison-grid, .course-row { grid-template-columns: 1fr; }
     .plan + .plan { border-top: 1px solid #d9dee5; border-left: 0; }
     .course-row img { max-height: 520px; }
     .resource-types > div { grid-template-columns: 35px 1fr; }
     .resource-types small { grid-column: 2; }
     .verified-resource { margin-top: 38px; padding: 24px; }
-    .price-options { grid-template-columns: 1fr; }
-    .price-options > div + div { border-top: 1px solid rgba(255,255,255,.18); border-left: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     .pro-page * { scroll-behavior: auto !important; }

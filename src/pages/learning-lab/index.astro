@@ -6,9 +6,9 @@ import "../../styles/learning-lab.css";
 const courses = await getPublishedCourses();
 const categories = Object.entries(courseCategories).filter(([key]) => courses.some((course) => course.data.category === key));
 ---
-<BaseLayout title="Learning Lab 課程目錄｜工程白話文 BuildScope" description="探索 NEC4、AI × Microsoft 365、PNRC 及 Dewatering 工程課程。先免費閱讀 Lesson Preview，再到 Skool BuildScope Learning Lab 學習完整內容。" jsonLd={{"@context":"https://schema.org","@type":"CollectionPage",name:"BuildScope Learning Lab 課程目錄",url:"https://buildscope-blog.com/learning-lab/"}}>
+<BaseLayout title="Learning Lab 課程目錄｜工程白話文 BuildScope" description="探索 NEC4、AI × Microsoft 365、PNRC 及 Dewatering 工程課程。先免費閱讀 Lesson Preview，再到 Skool BuildScope Learning Lab 體驗 7 天。" jsonLd={{"@context":"https://schema.org","@type":"CollectionPage",name:"BuildScope Learning Lab 課程目錄",url:"https://buildscope-blog.com/learning-lab/"}}>
   <div class="learning-lab"><header class="lab-hero"><div class="lab-shell"><h1>工程知識，<br /><span>由預覽開始。</span></h1><p>探索 BuildScope Learning Lab 課程，免費讀一篇 Lesson Preview，再決定點樣深入學習。</p></div></header>
-    <div class="lab-shell lab-main"><p class="lab-intro">網站提供課程簡介及公開預覽；完整課堂、下載資源及會員交流設於 Skool 付費平台。</p>
+    <div class="lab-shell lab-main"><p class="lab-intro">網站提供課程簡介及公開預覽；想深入探索，可以到 Skool 體驗 BuildScope Learning Lab 7 天。實際可瀏覽內容以 Skool 顯示為準。</p>
       <div class="lab-controls"><label for="lab-search">搜尋課程<input id="lab-search" type="search" autocomplete="off" placeholder="例如 NEC4、PNRC、AI" /></label><div class="lab-filters" role="group" aria-label="課程分類"><button type="button" data-category="all" aria-pressed="true">全部</button>{categories.map(([key,label])=><button type="button" data-category={key} aria-pressed="false">{label}</button>)}</div></div>
       <p role="status" aria-live="polite" data-results>顯示 {courses.length} 個課程</p>
       <div class="lab-list">{courses.map((course)=><article class="lab-card" data-course data-category={course.data.category} data-search={`${course.data.title} ${course.data.description} ${course.data.audience} ${courseCategories[course.data.category]}`}><small>{courseCategories[course.data.category]}</small><h2>{course.data.title}</h2><p>{course.data.description}</p><a href={`/learning-lab/${course.id}/`}>查看課程及免費預覽 →</a></article>)}</div>
