@@ -5,8 +5,8 @@ const { courseId, courseTitle, courseUrl, location } = Astro.props;
 const destination = courseUrl || skoolCommunityUrl;
 ---
 <section class="lab-cta" data-content-id={courseId} data-content-title={courseTitle} data-content-category="learning-lab">
-  <div><h2>想繼續學落去？</h2><p>BuildScope Learning Lab 提供 7 天免費體驗。完整課堂、下載資源及會員交流設於 Skool；實際存取按會籍權限顯示。</p></div>
-  <a href={destination} target="_blank" rel="noopener noreferrer" data-cta-location={location} data-destination-type={courseUrl ? "skool_course" : "skool_community"} data-content-id={courseId}> {courseUrl ? "前往 Skool Classroom" : "開始 7 天免費體驗"}</a>
+  <div><h2>想繼續學落去？</h2><p>BuildScope Learning Lab 提供 7天免費學習體驗。完整課堂、下載資源及會員交流設於 Skool；實際存取按會籍權限顯示。</p></div>
+  <a href={destination} target="_blank" rel="noopener noreferrer" data-cta-location={location} data-destination-type={courseUrl ? "skool_course" : "skool_community"} data-content-id={courseId}> {courseUrl ? "前往 Skool Classroom" : "開始 7天免費學習體驗"}</a>
 </section>
 <style>
 .lab-cta{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin:64px 0 0;padding:clamp(24px,5vw,42px);background:#0a1931;color:#fff;border-left:5px solid #ffc107}.lab-cta h2{margin:0 0 8px;font-size:clamp(1.5rem,3vw,2.25rem)}.lab-cta p{max-width:640px;margin:0;color:#d5deeb}.lab-cta a{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:10px 18px;background:#ffc107;color:#0a1931;font-weight:900;text-align:center}.lab-cta a:hover{background:#ffda55}@media(max-width:760px){.lab-cta{grid-template-columns:1fr}.lab-cta a{justify-self:start}}@media(max-width:420px){.lab-cta a{width:100%}}
