@@ -4,7 +4,7 @@ import EnglishFooter from '../components/en/EnglishFooter.astro';
 import EnglishConsent from '../components/en/EnglishConsent.astro';
 import '../styles/english.css';
 interface Props {title:string;description:string;image?:string;type?:'website'|'article';jsonLd?:Record<string,unknown>;}
-const {title,description,image='/images/en/architectural-grid.svg',type='website',jsonLd}=Astro.props;
+const {title,description,image='/images/en/construction-structure.webp',type='website',jsonLd}=Astro.props;
 const canonical=new URL(Astro.url.pathname,Astro.site).toString();
 const socialImage=new URL(image,Astro.site).toString();
 const ga4MeasurementId=import.meta.env.PUBLIC_GA4_MEASUREMENT_ID??'G-M7Q69J8X6F';

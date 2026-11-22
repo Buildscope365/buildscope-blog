@@ -16,7 +16,7 @@ English articles use **English / Engineering Insights**; illustrations may be up
 
 ## SEO
 
-English pages set `lang=en-GB`, unique titles and descriptions, canonical URLs, `og:locale=en_GB`, Open Graph images, WebSite/Article/Book and BreadcrumbList structured data, and published-only sitemap entries. Draft products, articles and resources have no public detail pages. The original Chinese layout and sitemap entries remain in place. The line illustration is an original local SVG; replace with rights-cleared photography when available.
+English pages set `lang=en-GB`, unique titles and descriptions, canonical URLs, `og:locale=en_GB`, Open Graph images, WebSite/Article/Book and BreadcrumbList structured data, and published-only sitemap entries. Draft products, articles and resources have no public detail pages. The original Chinese layout and sitemap entries remain in place. The hero uses an AI-generated architectural visualisation (not a photograph of a real project) compressed as a local WebP; supporting technical line work is an original local SVG. Replace or supplement with rights-cleared project photography when available.
 
 ## Analytics
 
