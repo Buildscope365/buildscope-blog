@@ -1,0 +1,6 @@
+---
+interface Props{title:string;description:string;href:string;label:string;image?:string;alt?:string}
+const{title,description,href,label,image,alt}=Astro.props;
+---
+<a class="card" href={href}><div class="card-media">{image?<img src={image} alt={alt||title} loading="lazy" decoding="async"/>:<img src="/images/en/architectural-grid.svg" alt="Architectural line illustration" loading="lazy" decoding="async"/>}</div><div class="card-body"><span class="card-tag">{label}</span><h3>{title}</h3><p>{description}</p><span class="read-more">Explore</span></div></a>
+<style>.read-more{font-weight:700;text-decoration:underline;text-underline-offset:5px}.card:hover .read-more{color:#a37300}</style>

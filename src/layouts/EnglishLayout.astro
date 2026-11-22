@@ -1,0 +1,14 @@
+---
+import EnglishHeader from '../components/en/EnglishHeader.astro';
+import EnglishFooter from '../components/en/EnglishFooter.astro';
+import EnglishConsent from '../components/en/EnglishConsent.astro';
+import '../styles/english.css';
+interface Props {title:string;description:string;image?:string;type?:'website'|'article';jsonLd?:Record<string,unknown>;}
+const {title,description,image='/images/en/architectural-grid.svg',type='website',jsonLd}=Astro.props;
+const canonical=new URL(Astro.url.pathname,Astro.site).toString();
+const socialImage=new URL(image,Astro.site).toString();
+const ga4MeasurementId=import.meta.env.PUBLIC_GA4_MEASUREMENT_ID??'G-M7Q69J8X6F';
+const ga4ConsentRequired=import.meta.env.PUBLIC_GA4_CONSENT_REQUIRED!=='false';
+const ga4DebugMode=import.meta.env.PUBLIC_GA4_DEBUG_MODE==='true';
+---
+<!doctype html><html lang="en-GB"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="theme-color" content="#10233b"/><meta name="description" content={description}/><link rel="canonical" href={canonical}/><link rel="icon" href="/images/buildscope-icon.png" type="image/png"/><meta property="og:locale" content="en_GB"/><meta property="og:site_name" content="BuildScope English"/><meta property="og:type" content={type}/><meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta property="og:url" content={canonical}/><meta property="og:image" content={socialImage}/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={title}/><meta name="twitter:description" content={description}/><meta name="twitter:image" content={socialImage}/>{jsonLd&&<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd).replaceAll('<','\\u003c')}/>}<title>{title}</title></head><body data-ga4-measurement-id={ga4MeasurementId} data-ga4-consent-required={String(ga4ConsentRequired)} data-ga4-debug-mode={String(ga4DebugMode)}><EnglishHeader/><main id="main"><slot/></main><EnglishFooter/><EnglishConsent enabled={Boolean(ga4MeasurementId)&&ga4ConsentRequired}/><script>import {initializeAnalytics} from '../scripts/conversionTracking';initializeAnalytics();</script><script>import {initializeEnglishTracking} from '../scripts/englishTracking';initializeEnglishTracking();</script></body></html>

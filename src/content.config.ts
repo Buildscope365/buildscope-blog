@@ -178,4 +178,46 @@ const courses = defineCollection({
   }),
 });
 
-export const collections = { blog, news, templates, ebooks, pocketGuides, readers, comics, courses };
+const englishProducts = defineCollection({
+  loader: glob({ base: "./src/content/en/products", pattern: "**/*.md" }),
+  schema: z.object({
+    productId: z.string().min(1),
+    title: z.string().min(1),
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    language: z.literal("en-GB"),
+    kind: z.enum(["pocket-guide", "ebook"]),
+    category: z.enum(["Engineering Essentials", "Construction Technology", "Quantity Surveying", "Contracts & Commercial Management", "Project Management", "AI & Digital Construction"]),
+    coverImage: z.string().optional(),
+    coverAlt: z.string().optional(),
+    description: z.string().min(1),
+    price: z.number().nonnegative().optional(),
+    currency: z.string().length(3).optional(),
+    previewUrl: z.string().startsWith("/en/").optional(),
+    gumroadUrl: z.url().startsWith("https://").refine((value) => new URL(value).hostname.endsWith("gumroad.com"), "Use a verified Gumroad URL").optional(),
+    publicationDate: z.coerce.date().optional(),
+    featured: z.boolean().default(false),
+    status: z.enum(["draft", "published"]).default("draft"),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
+  }).refine((value) => value.status === "draft" || Boolean(value.publicationDate), "Published products need a publication date"),
+});
+
+const englishInsights = defineCollection({
+  loader: glob({ base: "./src/content/en/insights", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(), description: z.string(), date: z.coerce.date(),
+    category: z.string(), coverImage: z.string().optional(), coverAlt: z.string().optional(),
+    seoTitle: z.string().optional(), draft: z.boolean().default(true),
+  }),
+});
+
+const englishResources = defineCollection({
+  loader: glob({ base: "./src/content/en/resources", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(), description: z.string(), date: z.coerce.date(),
+    category: z.string(), downloadUrl: z.string().startsWith("/en/").optional(),
+    draft: z.boolean().default(true),
+  }),
+});
+
+export const collections = { blog, news, templates, ebooks, pocketGuides, readers, comics, courses, englishProducts, englishInsights, englishResources };

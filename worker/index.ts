@@ -5,6 +5,9 @@ type OAuthEnv = Env & {
   IG_ACCESS_TOKEN?: string;
   IG_POST_ADMIN_TOKEN?: string;
   IG_GRAPH_VERSION?: string;
+  BREVO_EN_API_KEY?: string;
+  BREVO_EN_LIST_ID?: string;
+  BREVO_EN_DOI_TEMPLATE_ID?: string;
 };
 
 type GitHubTokenResponse = {
@@ -36,6 +39,25 @@ function isGitHubTokenResponse(value: unknown): value is GitHubTokenResponse {
 const OAUTH_STATE_COOKIE = "buildscope_oauth_state";
 const OAUTH_STATE_TTL_SECONDS = 10 * 60;
 const DEFAULT_IG_GRAPH_VERSION = "v24.0";
+
+async function handleEnglishNewsletter(request: Request, env: OAuthEnv): Promise<Response> {
+  if (request.method !== "POST") return jsonResponse({ error: "Method not allowed" }, { status: 405, headers: { Allow: "POST" } });
+  if (request.headers.get("Origin") !== env.CMS_ORIGIN || !request.headers.get("Content-Type")?.toLowerCase().startsWith("application/json")) return jsonResponse({ error: "Invalid request" }, { status: 403 });
+  if (!env.BREVO_EN_API_KEY || !env.BREVO_EN_LIST_ID || !/^\d+$/.test(env.BREVO_EN_LIST_ID) || !env.BREVO_EN_DOI_TEMPLATE_ID || !/^\d+$/.test(env.BREVO_EN_DOI_TEMPLATE_ID)) return jsonResponse({ error: "English mailing list is not configured" }, { status: 503 });
+  if (Number(request.headers.get("Content-Length")) > 2048) return jsonResponse({ error: "Request too large" }, { status: 413 });
+  let body: { email?: unknown; consent?: unknown; website?: unknown };
+  try { const raw = await request.text(); if (raw.length > 2048) return jsonResponse({ error: "Request too large" }, { status: 413 }); body = JSON.parse(raw) as typeof body; } catch { return jsonResponse({ error: "Invalid request" }, { status: 400 }); }
+  if (body.website) return jsonResponse({ ok: true }); // Honeypot; do not submit bots to Brevo.
+  if (typeof body.email !== "string" || body.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email) || body.consent !== true) return jsonResponse({ error: "A valid email and consent are required" }, { status: 400 });
+  try {
+    const response = await fetch("https://api.brevo.com/v3/contacts/doubleOptinConfirmation", {
+      method: "POST", headers: { "Content-Type": "application/json", "api-key": env.BREVO_EN_API_KEY },
+      body: JSON.stringify({ email: body.email.trim(), includeListIds: [Number(env.BREVO_EN_LIST_ID)], templateId: Number(env.BREVO_EN_DOI_TEMPLATE_ID), redirectionUrl: `${env.CMS_ORIGIN}/en/?subscribed=1` }),
+    });
+    if (!response.ok) { jsonLog("error", "English newsletter provider request failed", { status: response.status }); return jsonResponse({ error: "Subscription is temporarily unavailable" }, { status: 502 }); }
+    return jsonResponse({ ok: true });
+  } catch { return jsonResponse({ error: "Subscription is temporarily unavailable" }, { status: 502 }); }
+}
 
 function jsonLog(level: "info" | "error", message: string, details: Record<string, unknown> = {}) {
   const entry = JSON.stringify({ level, message, ...details });
@@ -410,6 +432,7 @@ export default {
       if (url.pathname === "/auth") return await handleAuth(request, env);
       if (url.pathname === "/callback") return await handleCallback(request, env);
       if (url.pathname === "/api/instagram/publish") return await handleInstagramPublish(request, env);
+      if (url.pathname === "/api/en/newsletter") return await handleEnglishNewsletter(request, env);
       return env.ASSETS.fetch(request);
     } catch (error) {
       jsonLog("error", "Unhandled Worker error", {

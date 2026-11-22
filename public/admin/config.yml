@@ -22,6 +22,78 @@ slug:
   sanitize_replacement: "-"
 
 collections:
+  - name: "englishProducts"
+    label: "English / Products"
+    folder: "src/content/en/products"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    identifier_field: "slug"
+    summary: "{{productId}} — {{title}} — {{status}}"
+    editor: { preview: false }
+    fields:
+      - { label: "Product ID", name: "productId", widget: "string" }
+      - { label: "Product title", name: "title", widget: "string" }
+      - { label: "URL slug (lowercase hyphens)", name: "slug", widget: "string", pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Use lowercase letters, digits and hyphens"] }
+      - { label: "Language", name: "language", widget: "hidden", default: "en-GB" }
+      - { label: "Type", name: "kind", widget: "select", options: [{label: "Pocket Guide", value: "pocket-guide"}, {label: "eBook", value: "ebook"}] }
+      - { label: "Category", name: "category", widget: "select", options: ["Engineering Essentials", "Construction Technology", "Quantity Surveying", "Contracts & Commercial Management", "Project Management", "AI & Digital Construction"] }
+      - { label: "Cover image", name: "coverImage", widget: "image", required: false }
+      - { label: "Cover alt text", name: "coverAlt", widget: "string", required: false }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Price", name: "price", widget: "number", value_type: "float", min: 0, required: false }
+      - { label: "Currency (ISO 4217)", name: "currency", widget: "string", required: false }
+      - { label: "Preview URL (site path)", name: "previewUrl", widget: "string", required: false }
+      - { label: "Verified Gumroad product URL", name: "gumroadUrl", widget: "string", required: false }
+      - { label: "Publication date", name: "publicationDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Status", name: "status", widget: "select", default: "draft", options: ["draft", "published"] }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO description", name: "seoDescription", widget: "text", required: false }
+      - { label: "Product detail", name: "body", widget: "markdown", required: false }
+
+  - name: "englishInsights"
+    label: "English / Engineering Insights"
+    folder: "src/content/en/insights"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    preview_path: "en/insights/{{slug}}/"
+    editor: { preview: false }
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Publication date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "Category", name: "category", widget: "string" }
+      - { label: "Cover image", name: "coverImage", widget: "image", required: false }
+      - { label: "Cover alt text", name: "coverAlt", widget: "string", required: false }
+      - { label: "SEO title", name: "seoTitle", widget: "string", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: true }
+      - { label: "Article", name: "body", widget: "markdown" }
+
+  - name: "englishResources"
+    label: "English / Free Resources"
+    folder: "src/content/en/resources"
+    create: true
+    delete: true
+    extension: "md"
+    format: "yaml-frontmatter"
+    slug: "{{slug}}"
+    preview_path: "en/resources/{{slug}}/"
+    editor: { preview: false }
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Publication date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "Category", name: "category", widget: "string" }
+      - { label: "Download URL (/en/...)", name: "downloadUrl", widget: "string", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: true }
+      - { label: "Resource content", name: "body", widget: "markdown" }
+
   - name: "courses"
     label: "Learning Lab 課程"
     label_singular: "課程及免費預覽"

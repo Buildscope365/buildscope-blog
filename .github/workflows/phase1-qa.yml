@@ -24,6 +24,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: node tests/learning-lab-links.mjs
+      - run: node tests/english-edition.mjs
       - run: npm run test:assets
       - run: npx playwright install --with-deps chromium
       - name: Browser QA
@@ -34,6 +35,7 @@ jobs:
           node tests/sop-browser.mjs
           node tests/nec-browser.mjs
           node tests/learning-lab-browser.mjs
+          node tests/english-browser.mjs
         env:
           SCREENSHOT_DIR: /tmp/buildscope-phase1-screenshots
       - uses: actions/upload-artifact@v4
