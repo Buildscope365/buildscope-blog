@@ -193,7 +193,7 @@ const englishProducts = defineCollection({
     price: z.number().nonnegative().optional(),
     currency: z.string().length(3).optional(),
     previewUrl: z.string().startsWith("/en/").optional(),
-    gumroadUrl: z.url().startsWith("https://").refine((value) => new URL(value).hostname.endsWith("gumroad.com"), "Use a verified Gumroad URL").optional(),
+    gumroadUrl: z.url().startsWith("https://").refine((value) => { const host = new URL(value).hostname; return host === "gumroad.com" || host.endsWith(".gumroad.com"); }, "Use a verified Gumroad URL").optional(),
     publicationDate: z.coerce.date().optional(),
     featured: z.boolean().default(false),
     status: z.enum(["draft", "published"]).default("draft"),
