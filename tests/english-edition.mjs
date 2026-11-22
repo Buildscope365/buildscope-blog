@@ -14,4 +14,14 @@ const chinese=await html('index.html');assert.match(chinese,/<html lang="zh-Hant
 for(const route of english)await access(new URL(`${route}index.html`,dist));
 const assets=await readdir(new URL('images/en/',dist));assert.ok(assets.includes('architectural-grid.svg'));
 assert.ok(assets.includes('construction-structure.webp'));
+const routes=[...english,'en/insights/reading-construction-drawings/','en/resources/drawing-review-checklist/'];
+for(const route of routes){
+  const page=await html(`${route}index.html`);
+  for(const match of page.matchAll(/(?:href|src)="(\/[^"]+)"/g)){
+    const path=match[1].split(/[?#]/)[0];
+    if(!path||path==='/')continue;
+    const target=path.endsWith('/')?`${path.slice(1)}index.html`:path.slice(1);
+    await assert.doesNotReject(access(new URL(target,dist)),`Broken link or image on ${route}: ${path}`);
+  }
+}
 console.log('English edition: routes, content isolation, SEO, draft visibility, assets and Chinese homepage passed');
