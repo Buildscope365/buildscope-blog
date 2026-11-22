@@ -1,0 +1,54 @@
+name: English Edition Cloudflare Preview
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/english-preview.yml'
+      - 'src/**'
+      - 'public/**'
+      - 'worker/**'
+      - 'wrangler.jsonc'
+      - 'package*.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: buildscope-english-preview
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'feature/buildscope-english-edition')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Publish isolated Cloudflare Preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo 'Cloudflare Preview skipped: repository deployment credentials are unavailable.' | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          npx wrangler preview --name buildscope-english-pr-58 2>&1 | tee /tmp/buildscope-preview.log
+          PREVIEW_URL=$(grep -Eo 'https://[^[:space:]]+\.workers\.dev' /tmp/buildscope-preview.log | head -1)
+          if [ -z "$PREVIEW_URL" ]; then
+            echo 'Preview was published, but its URL was not found in Wrangler output.' >&2
+            exit 1
+          fi
+          echo "Cloudflare Preview: $PREVIEW_URL" >> "$GITHUB_STEP_SUMMARY"
+          curl --fail --silent --show-error --retry 5 --retry-delay 2 "$PREVIEW_URL/en/" | grep -q 'Construction knowledge. Made practical.'
+          for path in /admin/ /api/en/newsletter; do
+            status=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "$PREVIEW_URL$path")
+            test "$status" = 404 || { echo "Unexpected $path status: $status" >&2; exit 1; }
+          done

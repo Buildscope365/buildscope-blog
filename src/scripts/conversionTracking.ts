@@ -7,11 +7,18 @@ export type ConversionEventName =
   | "pro_page_view"
   | "pro_upgrade_click"
   | "learning_lab_search"
-  | "learning_lab_preview_open";
+  | "learning_lab_preview_open"
+  | "english_page_view"
+  | "english_pocket_library_view"
+  | "english_product_view"
+  | "english_gumroad_click"
+  | "english_resource_download"
+  | "english_newsletter_signup";
 
 export type ConsentStatus = "granted" | "denied";
 
 export type ConversionEventParameters = {
+  site_edition?: "english";
   content_id?: string;
   content_title?: string;
   content_category?: string;
@@ -224,6 +231,7 @@ function loadGoogleAnalytics(): void {
     page_location: sanitizedPageLocation(),
     page_title: document.title.slice(0, 200),
     ...campaignParameters(),
+    ...(window.location.pathname.startsWith("/en/") ? { site_edition: "english" as const } : {}),
   };
   exposeDebugEvent("page_view", pageViewParameters);
   gtag("event", "page_view", pageViewParameters);
