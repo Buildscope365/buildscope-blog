@@ -1,4 +1,5 @@
 type OAuthEnv = Env & {
+  PREVIEW_MODE?: string;
   GITHUB_OAUTH_ID?: string;
   GITHUB_OAUTH_SECRET?: string;
   IG_USER_ID?: string;
@@ -423,6 +424,10 @@ async function handleCallback(request: Request, env: OAuthEnv): Promise<Response
 export default {
   async fetch(request: Request, env: OAuthEnv): Promise<Response> {
     const url = new URL(request.url);
+
+    if (env.PREVIEW_MODE === "true" && (/^\/(admin|auth|callback)(\/|$)/.test(url.pathname) || url.pathname.startsWith("/api/"))) {
+      return new Response("Not available in this preview", { status: 404, headers: noStoreHeaders() });
+    }
 
     try {
       if (url.pathname.startsWith("/admin") && url.origin !== env.CMS_ORIGIN) {

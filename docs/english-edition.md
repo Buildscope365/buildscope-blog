@@ -32,4 +32,4 @@ Do not merge this feature branch until approved. To roll back after release, rev
 
 ## Preview
 
-The repository's PR workflow runs browser QA locally and uploads screenshots; it does not provision a Cloudflare Preview URL. A preview requires a separately configured Cloudflare preview environment and deployment credentials. Do not use the production Wrangler project name for a preview deployment.
+The English Preview GitHub Action builds this feature branch and runs `wrangler preview --name buildscope-english-pr-58` using existing Cloudflare deployment credentials. The preview's static assets are isolated from the production Worker. Its `PREVIEW_MODE` disables `/admin`, `/auth`, `/callback` and `/api/*`, and no OAuth, Instagram or Brevo secrets are supplied to the preview. Read the URL and smoke test result in the Action run summary. A preview URL cannot be generated if the repository lacks the existing Cloudflare credentials; no production deploy command runs in this workflow.
