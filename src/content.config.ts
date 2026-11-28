@@ -86,11 +86,14 @@ const pocketGuides = defineCollection({
     title: z.string(),
     description: z.string(),
     topic: z.string(),
-    purchaseUrl: z.url().startsWith("https://"),
+    purchaseUrl: z.url().startsWith("https://").optional(),
+    downloadUrl: z.string().startsWith("/pocket-guides/").optional(),
+    actionLabel: z.string().optional(),
+    actionNote: z.string().optional(),
     coverImage: z.string().optional(),
     sortOrder: z.coerce.number().default(100),
     draft: z.boolean().default(false),
-  }),
+  }).refine((value) => Boolean(value.purchaseUrl || value.downloadUrl), "A Pocket Guide needs a purchase or download URL"),
 });
 
 const optionalUrl = z.union([z.url(), z.literal("")]).optional();
